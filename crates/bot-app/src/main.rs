@@ -14,6 +14,7 @@ fn compose(music: Arc<module_music::MusicService>) -> Result<(ModuleRegistry, Ve
         module_moderation::module(),
         module_utility::module(),
         module_music::module(music),
+        module_torbox::module(),
     ])?;
     let mut commands = Vec::new();
     for module in &mut registry.modules {
@@ -112,9 +113,11 @@ async fn main() -> Result<()> {
     let database = Database::open(&config.database.url, config.database.max_connections).await?;
     let manager = songbird::Songbird::serenity();
     let music = Arc::new(module_music::MusicService::new(&config, manager.clone()));
+    let torbox = Arc::new(module_torbox::TorBoxService::from_env()?);
     let (registry, commands) = compose(music.clone())?;
     let mut services = ServiceRegistry::default();
     services.insert(music)?;
+    services.insert(torbox)?;
     let data = BotData {
         config: config.clone(),
         database: database.clone(),
@@ -253,12 +256,13 @@ mod tests {
             songbird::Songbird::serenity(),
         ));
         let (registry, commands) = compose(service).unwrap();
-        assert_eq!(registry.modules.len(), 6);
+        assert_eq!(registry.modules.len(), 7);
         assert!(commands.len() > 30);
         assert_eq!(registry.owner("queue.move").unwrap(), "music");
         assert_eq!(registry.owner("module.disable").unwrap(), "core");
         assert_eq!(registry.owner("role.add").unwrap(), "admin");
         assert_eq!(registry.owner("role.info").unwrap(), "general");
+        assert_eq!(registry.owner("torbox.download").unwrap(), "torbox");
         let definitions = poise::builtins::create_application_commands(&commands);
         assert_eq!(definitions.len(), commands.len());
     }

@@ -7,6 +7,9 @@ Versioning and Keep a Changelog conventions.
 
 ### Added
 
+- Optional TorBox module for resolving cached magnet files into temporary
+  download links, with subscription-gated video streaming support and safe
+  handling for unavailable plans.
 - Root-level agent guidance covering architecture, module boundaries, runtime
   invariants, focused context loading, verification, and deployment safety.
 - Initial Docker deployment with persistent SQLite storage, an integrity-checked

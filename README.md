@@ -17,6 +17,7 @@ release; see [release status](docs/release-status.md).
 2. Copy `config/example.toml` to `config/config.toml` and add a private test
    guild ID under `commands.development_guilds`.
 3. Set `DISCORD_TOKEN` in your environment. Never put it in the TOML file.
+   Set `TORBOX_API_KEY` as well when using the optional TorBox module.
 4. Start with Docker Compose:
 
    ```powershell
@@ -63,9 +64,13 @@ when the command tree changes; pass `--sync-commands` to force it.
 - Utility: choose, polls, persisted reminders, and timestamps
 - Music: play, transport controls, queue editing, repeat, shuffle, buttons, and
   guild-local playlists
+- TorBox: cached-magnet file links and subscription-gated video streams
 
 Core is always enabled. General and Utility are enabled by default. Admin,
-Moderation, and Music require `/module enable <module>` in each server.
+Moderation, Music, and TorBox require `/module enable <module>` in each server.
+TorBox also requires `TORBOX_API_KEY`. Restrict it to trusted roles with
+`/permissions` before enabling it because users share the operator's TorBox
+account and rate limits.
 
 ## Operations
 

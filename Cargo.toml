@@ -23,7 +23,7 @@ poise = { version = "0.7", default-features = false, features = ["cache", "chron
 serenity = { version = "0.12.5", default-features = false, features = ["client", "gateway", "model", "cache", "native_tls_backend"] }
 songbird = { version = "0.6", default-features = false, features = ["driver", "gateway", "serenity", "native", "tungstenite"] }
 sqlx = { version = "0.9", default-features = false, features = ["runtime-tokio", "sqlite", "migrate", "macros"] }
-reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "stream"] }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "stream", "multipart"] }
 url = "2"
 uuid = { version = "1", features = ["v4"] }
 rand = "0.9"
@@ -38,6 +38,7 @@ module-admin = { version = "0.1.0", path = "crates/module-admin" }
 module-moderation = { version = "0.1.0", path = "crates/module-moderation" }
 module-utility = { version = "0.1.0", path = "crates/module-utility" }
 module-music = { version = "0.1.0", path = "crates/module-music" }
+module-torbox = { version = "0.1.0", path = "crates/module-torbox" }
 
 [profile.dev]
 debug = 0

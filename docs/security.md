@@ -54,3 +54,10 @@ by the application.
 Do not commit bot tokens, local TOML, `.env`, SQLite files, resolver outputs,
 or signed media URLs. Default logs omit command arguments and dependency
 error payloads. Debug logging of third-party crates may expose extra data.
+
+TorBox uses a fixed HTTPS API origin and reads `TORBOX_API_KEY` only from the
+environment. Magnet arguments, API responses, generated file links, and stream
+tokens must not be logged or persisted. Generated links are sent only in
+ephemeral Discord responses. Keep the module disabled or permission-restricted
+outside trusted guild roles because those links consume the operator's TorBox
+account and bandwidth.

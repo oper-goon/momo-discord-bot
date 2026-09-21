@@ -176,6 +176,7 @@ dependencies = [
  "module-general",
  "module-moderation",
  "module-music",
+ "module-torbox",
  "module-utility",
  "poise",
  "serde_json",
@@ -2303,6 +2304,19 @@ dependencies = [
  "tracing",
  "url",
  "uuid",
+]
+
+[[package]]
+name = "module-torbox"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "bot-core",
+ "poise",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "url",
 ]
 
 [[package]]
