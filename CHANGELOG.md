@@ -7,7 +7,9 @@ Versioning and Keep a Changelog conventions.
 
 ### Added
 
-- Private test-guild acceptance run and production deployment remain queued.
+- Initial Docker deployment with persistent SQLite storage, an integrity-checked
+  online backup, and verified Discord reconnection after a graceful restart.
+- Private test-guild command and permission acceptance remains queued.
 
 ## [0.1.0] - 2026-09-20
 
