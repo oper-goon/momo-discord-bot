@@ -1,0 +1,15 @@
+services:
+  bot:
+    build: .
+    restart: unless-stopped
+    environment:
+      DISCORD_TOKEN: ${DISCORD_TOKEN:?Set DISCORD_TOKEN in your shell or private .env file}
+      DATABASE_URL: sqlite:///data/bot.db
+      RUST_LOG: info,serenity=warn,songbird=warn,sqlx=warn
+    command: ["--config", "/app/config/config.toml"]
+    volumes:
+      - momo-data:/data
+      - ./config/config.toml:/app/config/config.toml:ro
+    stop_grace_period: 20s
+volumes:
+  momo-data:

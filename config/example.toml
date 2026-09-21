@@ -1,0 +1,25 @@
+[discord]
+owners = []
+default_prefix = "!"
+prefix_commands = false
+administrator_bypass = true
+
+[commands]
+mode = "guild"
+development_guilds = [] # Set your private test guild ID before starting.
+
+[database]
+url = "sqlite://data/bot.db"
+max_connections = 5
+
+[music]
+yt_dlp_path = "yt-dlp"
+resolver_timeout_seconds = 30
+idle_disconnect_seconds = 300
+empty_channel_disconnect_seconds = 120
+default_volume_percent = 100
+max_queue_length = 500
+max_playlist_import = 100
+
+[logging]
+format = "pretty"

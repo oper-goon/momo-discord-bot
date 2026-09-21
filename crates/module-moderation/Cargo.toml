@@ -1,0 +1,13 @@
+[package]
+name = "module-moderation"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+tracing.workspace = true
+anyhow.workspace = true
+poise.workspace = true
+serenity.workspace = true
+bot-core.workspace = true
+bot-database.workspace = true

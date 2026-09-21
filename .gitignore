@@ -1,0 +1,9 @@
+/target/
+/.tools/
+/data/
+/.env
+/config/config.toml
+*.db
+*.db-shm
+*.db-wal
+*.log

@@ -1,0 +1,25 @@
+[package]
+name = "module-music"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+futures-util.workspace = true
+symphonia.workspace = true
+anyhow.workspace = true
+async-trait.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+tracing.workspace = true
+poise.workspace = true
+serenity.workspace = true
+songbird.workspace = true
+reqwest.workspace = true
+url.workspace = true
+rand.workspace = true
+uuid.workspace = true
+bot-core.workspace = true
+bot-database.workspace = true

@@ -1,0 +1,24 @@
+[package]
+name = "bot-app"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+poise.workspace = true
+serenity.workspace = true
+songbird.workspace = true
+sha2.workspace = true
+serde_json.workspace = true
+bot-core.workspace = true
+bot-database.workspace = true
+module-general.workspace = true
+module-admin.workspace = true
+module-moderation.workspace = true
+module-utility.workspace = true
+module-music.workspace = true
