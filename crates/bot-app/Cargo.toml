@@ -23,3 +23,4 @@ module-moderation.workspace = true
 module-utility.workspace = true
 module-music.workspace = true
 module-torbox.workspace = true
+module-download.workspace = true

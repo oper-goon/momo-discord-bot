@@ -8,6 +8,7 @@ pub struct AppConfig {
     pub commands: CommandConfig,
     pub database: DatabaseConfig,
     pub music: MusicConfig,
+    pub download: DownloadConfig,
     pub logging: LoggingConfig,
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -82,6 +83,37 @@ impl Default for MusicConfig {
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields)]
+pub struct DownloadConfig {
+    pub yt_dlp_path: String,
+    pub scan_messages: u8,
+    pub timeout_seconds: u64,
+    pub max_duration_seconds: u64,
+    pub absolute_max_bytes: u64,
+    pub allowed_domains: Vec<String>,
+}
+impl Default for DownloadConfig {
+    fn default() -> Self {
+        Self {
+            yt_dlp_path: "yt-dlp".into(),
+            scan_messages: 25,
+            timeout_seconds: 180,
+            max_duration_seconds: 900,
+            absolute_max_bytes: 500 * 1024 * 1024,
+            allowed_domains: vec![
+                "youtube.com".into(),
+                "youtu.be".into(),
+                "tiktok.com".into(),
+                "x.com".into(),
+                "twitter.com".into(),
+                "reddit.com".into(),
+                "v.redd.it".into(),
+                "instagram.com".into(),
+            ],
+        }
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(default, deny_unknown_fields)]
 pub struct LoggingConfig {
     pub format: String,
 }
@@ -103,7 +135,8 @@ impl AppConfig {
             c.database.url = url;
         }
         if let Ok(path) = std::env::var("YT_DLP_PATH") {
-            c.music.yt_dlp_path = path;
+            c.music.yt_dlp_path = path.clone();
+            c.download.yt_dlp_path = path;
         }
         c.validate()?;
         Ok(c)
@@ -145,6 +178,33 @@ impl AppConfig {
         ensure!(
             (1..=self.music.max_queue_length).contains(&self.music.max_playlist_import),
             "Playlist limit must fit the queue limit"
+        );
+        ensure!(
+            (1..=100).contains(&self.download.scan_messages),
+            "Download history scan must be 1–100 messages"
+        );
+        ensure!(
+            (10..=900).contains(&self.download.timeout_seconds),
+            "Download timeout must be 10–900 seconds"
+        );
+        ensure!(
+            (1..=86400).contains(&self.download.max_duration_seconds),
+            "Download duration limit must be 1–86400 seconds"
+        );
+        ensure!(
+            (1024 * 1024..=2 * 1024 * 1024 * 1024).contains(&self.download.absolute_max_bytes),
+            "Download byte ceiling must be between 1 MiB and 2 GiB"
+        );
+        ensure!(
+            !self.download.allowed_domains.is_empty()
+                && self.download.allowed_domains.iter().all(|domain| {
+                    !domain.is_empty()
+                        && domain == &domain.to_ascii_lowercase()
+                        && !domain.contains('/')
+                        && !domain.starts_with('.')
+                        && !domain.ends_with('.')
+                }),
+            "Download domains must be lowercase hostnames"
         );
         self.music_defaults()
             .validate(self.music.max_queue_length)?;

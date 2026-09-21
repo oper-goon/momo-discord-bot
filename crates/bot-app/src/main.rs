@@ -6,7 +6,10 @@ use songbird::SerenityInit;
 use std::{sync::Arc, time::Duration};
 use tracing_subscriber::EnvFilter;
 
-fn compose(music: Arc<module_music::MusicService>) -> Result<(ModuleRegistry, Vec<Command>)> {
+fn compose(
+    music: Arc<module_music::MusicService>,
+    download: Arc<module_download::DownloadService>,
+) -> Result<(ModuleRegistry, Vec<Command>)> {
     let mut registry = ModuleRegistry::new(vec![
         commands::module(),
         module_general::module(),
@@ -15,6 +18,7 @@ fn compose(music: Arc<module_music::MusicService>) -> Result<(ModuleRegistry, Ve
         module_utility::module(),
         module_music::module(music),
         module_torbox::module(),
+        module_download::module(download),
     ])?;
     let mut commands = Vec::new();
     for module in &mut registry.modules {
@@ -114,10 +118,12 @@ async fn main() -> Result<()> {
     let manager = songbird::Songbird::serenity();
     let music = Arc::new(module_music::MusicService::new(&config, manager.clone()));
     let torbox = Arc::new(module_torbox::TorBoxService::from_env()?);
-    let (registry, commands) = compose(music.clone())?;
+    let download = Arc::new(module_download::DownloadService::new(&config));
+    let (registry, commands) = compose(music.clone(), download.clone())?;
     let mut services = ServiceRegistry::default();
     services.insert(music)?;
     services.insert(torbox)?;
+    services.insert(download)?;
     let data = BotData {
         config: config.clone(),
         database: database.clone(),
@@ -255,14 +261,16 @@ mod tests {
             &config,
             songbird::Songbird::serenity(),
         ));
-        let (registry, commands) = compose(service).unwrap();
-        assert_eq!(registry.modules.len(), 7);
+        let download = Arc::new(module_download::DownloadService::new(&config));
+        let (registry, commands) = compose(service, download).unwrap();
+        assert_eq!(registry.modules.len(), 8);
         assert!(commands.len() > 30);
         assert_eq!(registry.owner("queue.move").unwrap(), "music");
         assert_eq!(registry.owner("module.disable").unwrap(), "core");
         assert_eq!(registry.owner("role.add").unwrap(), "admin");
         assert_eq!(registry.owner("role.info").unwrap(), "general");
         assert_eq!(registry.owner("torbox.download").unwrap(), "torbox");
+        assert_eq!(registry.owner("download").unwrap(), "download");
         let definitions = poise::builtins::create_application_commands(&commands);
         assert_eq!(definitions.len(), commands.len());
     }

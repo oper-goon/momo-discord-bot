@@ -51,6 +51,16 @@ For a hostile multi-tenant deployment, also enforce outbound network policy
 around the yt-dlp subprocess; its own website traversal cannot be DNS-pinned
 by the application.
 
+The Download module separately invokes yt-dlp without a shell or operator
+configuration. It rejects playlists and live media, applies time, duration,
+concurrency, site, and byte ceilings, and writes each job into an isolated
+temporary directory. Slash invocations use Discord's reported attachment
+limit, bounded by the operator ceiling. Prefix invocations fall back to the
+documented guild boost-tier limit because message events do not report an
+attachment limit. Discord attachment fetches accept only pinned public HTTPS
+addresses on Discord CDN hosts. Temporary media, source URLs, resolver output,
+and signed attachment URLs are neither persisted nor logged.
+
 Do not commit bot tokens, local TOML, `.env`, SQLite files, resolver outputs,
 or signed media URLs. Default logs omit command arguments and dependency
 error payloads. Debug logging of third-party crates may expose extra data.

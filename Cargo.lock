@@ -173,6 +173,7 @@ dependencies = [
  "bot-core",
  "bot-database",
  "module-admin",
+ "module-download",
  "module-general",
  "module-moderation",
  "module-music",
@@ -2258,6 +2259,24 @@ dependencies = [
  "bot-core",
  "poise",
  "serenity",
+]
+
+[[package]]
+name = "module-download"
+version = "0.2.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "bot-core",
+ "futures-util",
+ "poise",
+ "reqwest",
+ "serde_json",
+ "tokio",
+ "tokio-util",
+ "tracing",
+ "url",
+ "uuid",
 ]
 
 [[package]]
