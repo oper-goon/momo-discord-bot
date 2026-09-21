@@ -167,7 +167,7 @@ dependencies = [
 
 [[package]]
 name = "bot-app"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "bot-core",
@@ -191,7 +191,7 @@ dependencies = [
 
 [[package]]
 name = "bot-core"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -211,7 +211,7 @@ dependencies = [
 
 [[package]]
 name = "bot-database"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "bot-module-api",
@@ -224,7 +224,7 @@ dependencies = [
 
 [[package]]
 name = "bot-module-api"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2252,7 +2252,7 @@ dependencies = [
 
 [[package]]
 name = "module-admin"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "bot-core",
@@ -2262,7 +2262,7 @@ dependencies = [
 
 [[package]]
 name = "module-general"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "bot-core",
@@ -2272,7 +2272,7 @@ dependencies = [
 
 [[package]]
 name = "module-moderation"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "bot-core",
@@ -2284,7 +2284,7 @@ dependencies = [
 
 [[package]]
 name = "module-music"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2308,7 +2308,7 @@ dependencies = [
 
 [[package]]
 name = "module-torbox"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "bot-core",
@@ -2321,7 +2321,7 @@ dependencies = [
 
 [[package]]
 name = "module-utility"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "bot-core",

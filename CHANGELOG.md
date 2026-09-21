@@ -5,6 +5,8 @@ Versioning and Keep a Changelog conventions.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-21
+
 ### Added
 
 - Optional TorBox module for resolving cached magnet files into temporary
@@ -50,5 +52,6 @@ Versioning and Keep a Changelog conventions.
 - Docker image, Compose service, CI, Dependabot, cargo-deny policy, security
   backport regression guard, and committed lockfile.
 
-[Unreleased]: https://github.com/oper-goon/momo-discord-bot/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/oper-goon/momo-discord-bot/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/oper-goon/momo-discord-bot/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/oper-goon/momo-discord-bot/releases/tag/v0.1.0

@@ -5,7 +5,7 @@ per-server module activation, deterministic command policy, moderation audit
 cases, persistent reminders, utility commands, and isolated music players with
 saved playlists.
 
-This repository currently identifies as `0.1.0`. The implementation follows
+This repository currently identifies as `0.2.0`. The implementation follows
 the checked-in [technical specification](docs/specification.md). Live Discord
 acceptance testing is still required before calling it a production `1.0.0`
 release; see [release status](docs/release-status.md).

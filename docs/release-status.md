@@ -1,6 +1,6 @@
 # Release status
 
-Current revision: `0.1.0` foundation release candidate.
+Current revision: `0.2.0` feature release.
 
 ## Verified locally
 
@@ -12,6 +12,17 @@ Current revision: `0.1.0` foundation release candidate.
 - Dependency advisory, license, source, and ban policy
 - Offline application startup check with migrations and command-tree assembly
 - Git secrets/path exclusions
+
+## Verified for v0.2.0
+
+- Exercised the TorBox cached-download flow against the live service, including
+  generated file links and the three-hour expiry warning.
+- Confirmed uncached magnets are rejected without being queued or downloaded.
+- Confirmed the TorBox module's role allow rule and everyone deny rule in the
+  private Discord test guild.
+- Live TorBox Web Player streaming remains unverified because the configured
+  Essentials subscription does not include that feature; this is a documented
+  validation gap rather than a blocker for the cached-download release.
 
 ## Verified on the deployment host
 
