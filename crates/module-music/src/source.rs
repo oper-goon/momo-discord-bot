@@ -1,15 +1,33 @@
 use anyhow::{Context, Result, ensure};
 use async_trait::async_trait;
 use bot_core::{TrackRef, config::MusicConfig};
+use futures_util::TryStreamExt;
+use reqwest::{
+    Client,
+    header::{ACCEPT_RANGES, CONTENT_LENGTH, CONTENT_RANGE, RANGE},
+};
 use serde_json::Value;
+use songbird::input::{
+    AsyncAdapterStream, AsyncMediaSource, AudioStream, AudioStreamError, Compose, Input,
+};
 use std::{
+    io::{Error as IoError, ErrorKind as IoErrorKind, Result as IoResult, SeekFrom},
     net::{IpAddr, SocketAddr},
+    pin::Pin,
     process::Stdio,
     sync::Arc,
+    task::{Context as TaskContext, Poll},
     time::Duration,
 };
-use tokio::{io::AsyncReadExt, process::Command, sync::Semaphore};
+use tokio::{
+    io::{AsyncRead, AsyncReadExt, AsyncSeek, ReadBuf},
+    process::Command,
+    sync::Semaphore,
+};
+use tokio_util::io::StreamReader;
 use url::Url;
+
+const MAX_AUDIO_BYTES: u64 = 64 * 1024 * 1024;
 
 fn classify_resolver_diagnostics(diagnostics: &[u8]) -> &'static str {
     let text = String::from_utf8_lossy(diagnostics).to_ascii_lowercase();
@@ -102,43 +120,198 @@ async fn pinned_client(url: &Url) -> Result<reqwest::Client> {
         .no_proxy()
         .redirect(reqwest::redirect::Policy::none())
         .connect_timeout(Duration::from_secs(10))
-        .timeout(Duration::from_secs(120))
+        .read_timeout(Duration::from_secs(30))
         .resolve_to_addrs(host, &addresses)
         .build()?)
 }
-async fn download(url: &str) -> Result<PlayableTrack> {
+
+#[derive(Clone, Debug)]
+struct BoundedHttpRequest {
+    client: Client,
+    request: String,
+    max_bytes: u64,
+}
+
+impl BoundedHttpRequest {
+    fn new(client: Client, request: String, max_bytes: u64) -> Self {
+        Self {
+            client,
+            request,
+            max_bytes,
+        }
+    }
+
+    async fn create_stream(&self, offset: u64) -> Result<BoundedHttpStream, AudioStreamError> {
+        if offset >= self.max_bytes {
+            return Err(stream_error("Audio exceeds the 64 MiB limit"));
+        }
+        let response = self
+            .client
+            .get(&self.request)
+            .header(RANGE, format!("bytes={offset}-{}", self.max_bytes - 1))
+            .send()
+            .await
+            .map_err(|_| stream_error("Media stream request failed"))?;
+        if !response.status().is_success() {
+            return Err(stream_error(format!(
+                "Media source rejected the stream with status {}",
+                response.status()
+            )));
+        }
+        if offset > 0 && response.status() != reqwest::StatusCode::PARTIAL_CONTENT {
+            return Err(stream_error(
+                "Media source cannot resume an interrupted stream",
+            ));
+        }
+        let headers = response.headers();
+        let total_bytes = headers
+            .get(CONTENT_RANGE)
+            .and_then(|value| value.to_str().ok())
+            .and_then(|value| value.rsplit('/').next())
+            .filter(|value| *value != "*")
+            .and_then(|value| value.parse::<u64>().ok())
+            .or_else(|| {
+                headers
+                    .get(CONTENT_LENGTH)
+                    .and_then(|value| value.to_str().ok())
+                    .and_then(|value| value.parse::<u64>().ok())
+                    .map(|length| {
+                        if response.status() == reqwest::StatusCode::PARTIAL_CONTENT {
+                            offset.saturating_add(length)
+                        } else {
+                            length
+                        }
+                    })
+            });
+        if total_bytes.is_some_and(|length| length > self.max_bytes) {
+            return Err(stream_error("Audio exceeds the 64 MiB limit"));
+        }
+        let resumable = response.status() == reqwest::StatusCode::PARTIAL_CONTENT
+            || headers
+                .get(ACCEPT_RANGES)
+                .and_then(|value| value.to_str().ok())
+                .is_some_and(|value| value.eq_ignore_ascii_case("bytes"));
+        let stream = Box::new(StreamReader::new(
+            response.bytes_stream().map_err(IoError::other),
+        ));
+        Ok(BoundedHttpStream {
+            stream,
+            position: offset,
+            total_bytes,
+            max_bytes: self.max_bytes,
+            resume: resumable.then(|| self.clone()),
+        })
+    }
+}
+
+fn stream_error(message: impl Into<String>) -> AudioStreamError {
+    AudioStreamError::Fail(Box::new(IoError::other(message.into())))
+}
+
+struct BoundedHttpStream {
+    stream: Box<dyn AsyncRead + Send + Sync + Unpin>,
+    position: u64,
+    total_bytes: Option<u64>,
+    max_bytes: u64,
+    resume: Option<BoundedHttpRequest>,
+}
+
+impl AsyncRead for BoundedHttpStream {
+    fn poll_read(
+        mut self: Pin<&mut Self>,
+        context: &mut TaskContext<'_>,
+        buffer: &mut ReadBuf<'_>,
+    ) -> Poll<IoResult<()>> {
+        let before = buffer.filled().len();
+        match Pin::new(&mut *self.stream).poll_read(context, buffer) {
+            Poll::Ready(Ok(())) => {
+                let read = (buffer.filled().len() - before) as u64;
+                self.position = self.position.saturating_add(read);
+                if self.position > self.max_bytes {
+                    Poll::Ready(Err(IoError::other("Audio exceeds the 64 MiB limit")))
+                } else {
+                    Poll::Ready(Ok(()))
+                }
+            }
+            result => result,
+        }
+    }
+}
+
+impl AsyncSeek for BoundedHttpStream {
+    fn start_seek(self: Pin<&mut Self>, _: SeekFrom) -> IoResult<()> {
+        Err(IoErrorKind::Unsupported.into())
+    }
+
+    fn poll_complete(self: Pin<&mut Self>, _: &mut TaskContext<'_>) -> Poll<IoResult<u64>> {
+        Poll::Ready(Err(IoErrorKind::Unsupported.into()))
+    }
+}
+
+#[async_trait]
+impl AsyncMediaSource for BoundedHttpStream {
+    fn is_seekable(&self) -> bool {
+        false
+    }
+
+    async fn byte_len(&self) -> Option<u64> {
+        self.total_bytes
+    }
+
+    async fn try_resume(
+        &mut self,
+        offset: u64,
+    ) -> Result<Box<dyn AsyncMediaSource>, AudioStreamError> {
+        match &self.resume {
+            Some(request) => request
+                .create_stream(offset)
+                .await
+                .map(|stream| Box::new(stream) as Box<dyn AsyncMediaSource>),
+            None => Err(AudioStreamError::Unsupported),
+        }
+    }
+}
+
+#[async_trait]
+impl Compose for BoundedHttpRequest {
+    fn create(
+        &mut self,
+    ) -> Result<AudioStream<Box<dyn songbird::input::core::io::MediaSource>>, AudioStreamError>
+    {
+        Err(AudioStreamError::Unsupported)
+    }
+
+    async fn create_async(
+        &mut self,
+    ) -> Result<AudioStream<Box<dyn songbird::input::core::io::MediaSource>>, AudioStreamError>
+    {
+        self.create_stream(0).await.map(|stream| AudioStream {
+            input: Box::new(AsyncAdapterStream::new(Box::new(stream), 64 * 1024))
+                as Box<dyn songbird::input::core::io::MediaSource>,
+        })
+    }
+
+    fn should_create_async(&self) -> bool {
+        true
+    }
+}
+
+async fn stream(url: &str) -> Result<PlayableTrack> {
     let url = parse_url(url)?;
     let client = pinned_client(&url).await?;
-    let mut response = client
-        .get(url)
-        .send()
+    let mut input = Input::Lazy(Box::new(BoundedHttpRequest::new(
+        client,
+        url.to_string(),
+        MAX_AUDIO_BYTES,
+    )));
+    input = input
+        .make_playable_async(
+            songbird::input::codecs::get_codec_registry(),
+            songbird::input::codecs::get_probe(),
+        )
         .await
-        .map_err(|_| anyhow::anyhow!("Media download failed"))?;
-    ensure!(
-        response.status().is_success(),
-        "Media source rejected the request or redirected; use its final public URL"
-    );
-    const MAX: u64 = 64 * 1024 * 1024;
-    ensure!(
-        response.content_length().is_none_or(|n| n <= MAX),
-        "Audio exceeds the 64 MiB limit"
-    );
-    let mut bytes = Vec::new();
-    while let Some(chunk) = response
-        .chunk()
-        .await
-        .map_err(|_| anyhow::anyhow!("Media download interrupted"))?
-    {
-        ensure!(
-            bytes.len() + chunk.len() <= MAX as usize,
-            "Audio exceeds the 64 MiB limit"
-        );
-        bytes.extend_from_slice(&chunk);
-    }
-    ensure!(!bytes.is_empty(), "Media source returned an empty file");
-    Ok(PlayableTrack {
-        input: bytes.into(),
-    })
+        .map_err(|_| anyhow::anyhow!("Media stream could not start"))?;
+    Ok(PlayableTrack { input })
 }
 pub struct DirectHttpSource;
 #[async_trait]
@@ -168,7 +341,7 @@ impl AudioSourceProvider for DirectHttpSource {
         }])
     }
     async fn resolve(&self, track: &TrackRef) -> Result<PlayableTrack> {
-        download(&track.canonical_url).await
+        stream(&track.canonical_url).await
     }
     async fn health(&self) -> bool {
         true
@@ -359,7 +532,7 @@ impl AudioSourceProvider for YtDlpSource {
             .get("url")
             .and_then(Value::as_str)
             .context("Resolver returned no playable audio")?;
-        download(url).await
+        stream(url).await
     }
     async fn health(&self) -> bool {
         tokio::time::timeout(

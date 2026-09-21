@@ -9,7 +9,13 @@ Versioning and Keep a Changelog conventions.
 
 - Initial Docker deployment with persistent SQLite storage, an integrity-checked
   online backup, and verified Discord reconnection after a graceful restart.
+- Structured, privacy-safe audio failure diagnostics.
 - Private test-guild command and permission acceptance remains queued.
+
+### Changed
+
+- Audio playback now streams through a bounded, resumable HTTP source instead
+  of downloading the complete track before playback begins.
 
 ## [0.1.0] - 2026-09-20
 

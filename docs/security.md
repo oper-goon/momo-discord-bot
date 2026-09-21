@@ -33,9 +33,10 @@ licenses unless a specific reviewed exception is in `deny.toml`.
 
 Direct HTTP resolves and validates all DNS addresses, pins the checked result,
 disables proxies and redirects, rejects credentials and nonstandard ports,
-caps each audio file at 64 MiB, and applies connection/read timeouts. Local
-files are disabled. Playback buffers a bounded file before decoding, so live
-streams and files above 64 MiB are intentionally unsupported in this revision.
+caps each audio stream at 64 MiB, and applies connection/read timeouts. Local
+files are disabled. Playback begins after bounded header probing and resumes
+interrupted HTTP streams with byte-range requests when the source supports it;
+files above 64 MiB remain unsupported.
 
 yt-dlp runs without a shell or operator configuration, with bounded JSON,
 diagnostics, playlist size, and time. Supported extractor sites are YouTube,
