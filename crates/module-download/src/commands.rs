@@ -205,16 +205,25 @@ async fn upload(ctx: Context<'_>, path: &Path, filename: &str, limit: u64) -> Re
                 "https://discord.com/api/v10/channels/{}/messages",
                 ctx.channel_id()
             ))
-            .header(AUTHORIZATION, format!("Bot {}", ctx.http().token())),
+            // Serenity normalizes and stores this value with the required
+            // `Bot ` prefix already.
+            .header(AUTHORIZATION, ctx.http().token()),
     };
     let response = tokio::time::timeout(Duration::from_secs(600), request.multipart(form).send())
         .await
         .context("Discord upload timed out")?
         .context("Discord upload failed")?;
-    ensure!(
-        response.status().is_success(),
-        "Discord rejected the media upload"
-    );
+    let status = response.status();
+    if !status.is_success() {
+        tracing::warn!(status = %status, "Discord rejected a media upload");
+        let message = match status.as_u16() {
+            401 => "Discord rejected the bot authorization for this upload",
+            403 => "Discord denied the media upload; check this channel's Attach Files permission",
+            413 => "The media exceeds Discord's upload limit for this channel",
+            _ => "Discord rejected the media upload",
+        };
+        anyhow::bail!(message);
+    }
     if let poise::Context::Application(application) = ctx {
         let _ = application.interaction.delete_response(ctx.http()).await;
     }
