@@ -24,3 +24,22 @@ a green advisory scan alone is insufficient. Keep the patch until Songbird's dep
 the corrected upstream crate, then remove the vendor directory, patch entry,
 and regression guard together. ARM execution remains a release acceptance
 check; local validation was on Windows x86_64.
+
+## ringbuf
+
+`ringbuf/` is crates.io `ringbuf` 0.4.8 (MIT OR Apache-2.0), retained because
+Songbird 0.6 requires the `0.4` API. The package's `.cargo_vcs_info.json`
+records its upstream commit.
+
+`src/traits/consumer.rs` backports the `Consumer::skip`/`clear` drop guard from
+upstream `ringbuf` 0.5.2. The guard advances the read index during unwinding if
+an element destructor panics, preventing already-dropped elements from being
+dropped again. This fixes
+[RUSTSEC-2026-0293](https://rustsec.org/advisories/RUSTSEC-2026-0293).
+No public API or other implementation was changed.
+
+Cargo-deny does not match registry advisories against path dependencies. Keep
+the source regression guard in `bot-app`; a green advisory scan alone is not
+evidence that the patch remains present. Remove this vendor directory, patch
+entry, regression guard, and security-policy note together once Songbird uses
+`ringbuf` 0.5.2 or later.

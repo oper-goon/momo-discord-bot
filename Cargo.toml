@@ -1,7 +1,7 @@
 [workspace]
 resolver = "3"
 members = ["crates/*"]
-exclude = ["vendor/libcrux-secrets"]
+exclude = ["vendor/libcrux-secrets", "vendor/ringbuf"]
 
 [workspace.package]
 version = "0.1.0"
@@ -50,6 +50,9 @@ strip = true
 # Backport the upstream AArch64 selector mask fix to the API-compatible release.
 # See vendor/README.md for exact provenance and the four-line patch.
 libcrux-secrets = { path = "vendor/libcrux-secrets" }
+# Backport ringbuf's panic-safe consumer removal while Songbird requires 0.4.
+# See vendor/README.md for provenance, scope, and removal conditions.
+ringbuf = { path = "vendor/ringbuf" }
 
 
 

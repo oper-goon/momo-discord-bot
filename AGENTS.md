@@ -121,8 +121,9 @@ external response.
   when the task explicitly includes release documentation.
 - Never commit `.env`, `config/config.toml`, databases, tokens, logs, signed
   media URLs, or generated build artifacts.
-- `vendor/libcrux-secrets` contains an intentional security backport. Do not
-  replace or edit it casually; its invariant is tested in `bot-app`.
+- `vendor/libcrux-secrets` and `vendor/ringbuf` contain intentional security
+  backports. Do not replace or edit them casually; their invariants are tested
+  in `bot-app` and documented in `vendor/README.md` and `docs/security.md`.
 
 ## Verification
 

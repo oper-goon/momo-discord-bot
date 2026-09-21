@@ -21,6 +21,11 @@ Versioning and Keep a Changelog conventions.
 - Audio playback now streams through a bounded, resumable HTTP source instead
   of downloading the complete track before playback begins.
 
+### Fixed
+
+- Backported ringbuf's panic-safe consumer removal fix for RUSTSEC-2026-0293
+  while Songbird remains on the incompatible ringbuf 0.4 API.
+
 ## [0.1.0] - 2026-09-20
 
 ### Added

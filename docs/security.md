@@ -15,6 +15,11 @@ licenses unless a specific reviewed exception is in `deny.toml`.
   Cargo-deny does not scan this path dependency as a registry package; review
   its provenance and the regression guard separately. Local tests do not
   execute the ARM assembly.
+- `ringbuf` 0.4.8 is vendored with the upstream 0.5.2 panic-safe consumer
+  removal guard for RUSTSEC-2026-0293 because Songbird 0.6 still requires the
+  0.4 API. See `vendor/README.md`. Cargo-deny cannot associate registry
+  advisories with path dependencies, so the source regression guard and
+  provenance review are mandatory until Songbird supports 0.5.2 or later.
 - RUSTSEC-2026-0207 and RUSTSEC-2026-0208 in libcrux-sha3 0.0.8 have narrow
   reachability exceptions: its only active consumer, hpke-rs 0.6.1
   `src/kem.rs` lines 154 and 158, calls the one-shot `shake256::<32>` and

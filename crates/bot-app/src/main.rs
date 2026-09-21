@@ -267,5 +267,11 @@ mod tests {
         let source = include_str!("../../../vendor/libcrux-secrets/src/int.rs");
         assert!(!source.contains("cmp {cond:w}, 0"));
         assert_eq!(source.matches("tst {cond:w}, 0xff").count(), 4);
+
+        let source = include_str!("../../../vendor/ringbuf/src/traits/consumer.rs");
+        assert!(source.contains("struct Guard<'a, C: Consumer + ?Sized>"));
+        assert!(source.contains("self.consumer.advance_read_index(self.count)"));
+        assert!(source.contains("self.skip(usize::MAX)"));
+        assert!(!source.contains("let actual_count = usize::min(count"));
     }
 }
