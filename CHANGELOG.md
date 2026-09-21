@@ -7,6 +7,8 @@ Versioning and Keep a Changelog conventions.
 
 ### Added
 
+- Root-level agent guidance covering architecture, module boundaries, runtime
+  invariants, focused context loading, verification, and deployment safety.
 - Initial Docker deployment with persistent SQLite storage, an integrity-checked
   online backup, and verified Discord reconnection after a graceful restart.
 - Structured, privacy-safe audio failure diagnostics.
@@ -14,6 +16,8 @@ Versioning and Keep a Changelog conventions.
 
 ### Changed
 
+- Server Info and User Info now share a polished embed design with readable
+  identities, images, Discord timestamps, grouped details, and safe fallbacks.
 - Audio playback now streams through a bounded, resumable HTTP source instead
   of downloading the complete track before playback begins.
 
