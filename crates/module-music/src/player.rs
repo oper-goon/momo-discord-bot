@@ -1,5 +1,5 @@
 use crate::source::{PlayableTrack, Sources};
-use anyhow::{Context, Result, ensure};
+use anyhow::{Context, Error, Result, ensure};
 use async_trait::async_trait;
 use bot_core::serenity;
 use bot_core::{MusicSettings, TrackRef};
@@ -196,6 +196,7 @@ impl PlayerState {
 }
 
 pub struct Player {
+    id: uuid::Uuid,
     pub state: PlayerState,
     settings: MusicSettings,
     backend: Box<dyn VoiceBackend>,
@@ -226,6 +227,7 @@ impl Player {
         };
         (
             Self {
+                id: handle.id,
                 state: PlayerState::new(settings.default_volume_percent),
                 settings,
                 backend,
@@ -268,7 +270,19 @@ impl Player {
             .await;
         }
     }
-    async fn failed(&mut self, generation: u64) {
+    async fn failed(&mut self, generation: u64, stage: &'static str, error: Option<&Error>) {
+        let reason = error
+            .map(ToString::to_string)
+            .filter(|text| !text.contains("http") && !text.contains("token") && text.len() <= 250)
+            .unwrap_or_else(|| "external media operation failed".into());
+        tracing::warn!(
+            player_id = %self.id,
+            generation,
+            provider = self.state.current.as_ref().map(|track| track.provider.as_str()).unwrap_or("unknown"),
+            stage,
+            reason = %reason,
+            "Audio playback failed"
+        );
         if self.state.failed(generation) {
             self.backend.stop();
             self.notify(if self.state.halted{"Music stopped after three consecutive failures. Pending tracks were retained; use /skip to retry."}else{"A track could not play; advancing to the next queued track."}).await;
@@ -393,8 +407,8 @@ impl Player {
                 biased;
                 _=self.cancel.cancelled()=>break,
                 request=self.rx.recv()=>{let Some(request)=request else{break};let result=self.command(request.action).await;let done=result.as_ref().is_ok_and(|done|*done);let _=request.reply.send(result.map(|_|self.state.snapshot()));if done{break;}},
-                Some(result)=self.resolvers.join_next(),if !self.resolvers.is_empty()=>{match result{Ok((generation,result)) if generation==self.state.generation&&self.state.current.is_some()=>{match result{Ok(input)=>{if self.backend.play(input,generation,self.events_tx.clone(),self.state.volume).await.is_err(){self.failed(generation).await;}},Err(_)=>self.failed(generation).await}},_=>{}}},
-                Some(event)=self.events.recv()=>{match event{PlayerEvent::Started(g)if g==self.state.generation=>{self.state.failures=0;if self.settings.announce_now_playing&& let Some(track)=&self.state.current{self.notify(&format!("Now playing: {}",track.title)).await;}},PlayerEvent::Ended(g)if g==self.state.generation&&self.state.current.is_some()=>{self.state.advance(true);self.resolve_current();},PlayerEvent::Failed(g)=>self.failed(g).await,_=>{}}},
+                Some(result)=self.resolvers.join_next(),if !self.resolvers.is_empty()=>{match result{Ok((generation,result)) if generation==self.state.generation&&self.state.current.is_some()=>{match result{Ok(input)=>{if let Err(error)=self.backend.play(input,generation,self.events_tx.clone(),self.state.volume).await{self.failed(generation,"backend_play",Some(&error)).await;}},Err(error)=>self.failed(generation,"resolve",Some(&error)).await}},_=>{}}},
+                Some(event)=self.events.recv()=>{match event{PlayerEvent::Started(g)if g==self.state.generation=>{self.state.failures=0;if self.settings.announce_now_playing&& let Some(track)=&self.state.current{self.notify(&format!("Now playing: {}",track.title)).await;}},PlayerEvent::Ended(g)if g==self.state.generation&&self.state.current.is_some()=>{self.state.advance(true);self.resolve_current();},PlayerEvent::Failed(g)=>self.failed(g,"track_event",None).await,_=>{}}},
                 _=timer.tick()=>{if self.idle_since.is_some_and(|t|t.elapsed()>=Duration::from_secs(self.settings.idle_disconnect_seconds))||self.empty_since.is_some_and(|t|t.elapsed()>=Duration::from_secs(self.settings.empty_channel_disconnect_seconds)){break;}}
             }
         }

@@ -11,6 +11,21 @@ use std::{
 use tokio::{io::AsyncReadExt, process::Command, sync::Semaphore};
 use url::Url;
 
+fn classify_resolver_diagnostics(diagnostics: &[u8]) -> &'static str {
+    let text = String::from_utf8_lossy(diagnostics).to_ascii_lowercase();
+    if text.contains("sign in") || text.contains("captcha") || text.contains("bot") {
+        "source access challenge"
+    } else if text.contains("private video") || text.contains("members-only") {
+        "source unavailable or restricted"
+    } else if text.contains("requested format") {
+        "requested audio format unavailable"
+    } else if text.contains("timed out") || text.contains("timeout") {
+        "source request timed out"
+    } else {
+        "resolver exited unsuccessfully"
+    }
+}
+
 pub struct PlayableTrack {
     pub input: songbird::input::Input,
 }
@@ -233,15 +248,17 @@ impl YtDlpSource {
                 let mut bytes = vec![];
                 stderr.take(65537).read_to_end(&mut bytes).await?;
                 ensure!(bytes.len() <= 65536, "Resolver diagnostics exceeded limit");
-                Ok::<_, anyhow::Error>(())
+                Ok::<_, anyhow::Error>(bytes)
             };
-            let (out, _, status) = tokio::try_join!(out, err, async {
+            let (out, diagnostics, status) = tokio::try_join!(out, err, async {
                 Ok::<_, anyhow::Error>(child.wait().await?)
             })?;
-            ensure!(
-                status.success(),
-                "Media resolver could not load this source"
-            );
+            if !status.success() {
+                anyhow::bail!(
+                    "Media resolver failed: {}",
+                    classify_resolver_diagnostics(&diagnostics)
+                );
+            }
             serde_json::from_slice::<Value>(&out).context("Resolver returned invalid metadata")
         };
         let result = tokio::time::timeout(
