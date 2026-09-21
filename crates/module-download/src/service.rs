@@ -156,9 +156,7 @@ impl DownloadService {
     async fn download_web(&self, url: &Url, limit: u64, path: &Path) -> Result<PathBuf> {
         ensure!(self.accepts(url), "Unsupported media website");
         let output = path.join("media.%(ext)s");
-        let format = format!(
-            "b[filesize<={limit}][vcodec!=none]/b[filesize_approx<={limit}][vcodec!=none]/b[vcodec!=none]"
-        );
+        let format = format_selector(limit);
         let filter = format!(
             "!is_live & duration <= {}",
             self.config.max_duration_seconds
@@ -177,6 +175,8 @@ impl DownloadService {
                 &limit.to_string(),
                 "--match-filter",
                 &filter,
+                "--merge-output-format",
+                "mp4",
                 "--restrict-filenames",
                 "-f",
                 &format,
@@ -295,6 +295,20 @@ impl DownloadService {
     }
 }
 
+fn format_selector(limit: u64) -> String {
+    const MIB: u64 = 1024 * 1024;
+    // Reserve a bounded portion of the Discord limit for audio. yt-dlp applies
+    // each selector constraint before merging, and the final artifact is
+    // checked against the full limit before upload.
+    let audio_limit = (limit / 5).clamp(2 * MIB, 32 * MIB).min(limit / 2);
+    let video_limit = limit.saturating_sub(audio_limit);
+    format!(
+        "bv[filesize<={video_limit}][vcodec!=none]+ba[filesize<={audio_limit}]/\
+bv[filesize_approx<={video_limit}][vcodec!=none]+ba[filesize_approx<={audio_limit}]/\
+b[filesize<={limit}][vcodec!=none]/b[filesize_approx<={limit}][vcodec!=none]/b[vcodec!=none]"
+    )
+}
+
 async fn single_output(path: &Path) -> Result<PathBuf> {
     let mut entries = tokio::fs::read_dir(path).await?;
     let mut output = None;
@@ -396,5 +410,13 @@ mod tests {
         assert!(!discord_cdn(
             &Url::parse("https://cdn.discordapp.com.example.test/a").unwrap()
         ));
+    }
+
+    #[test]
+    fn format_selector_supports_bounded_video_audio_merges() {
+        let selector = format_selector(100 * 1024 * 1024);
+        assert!(selector.contains("bv[filesize<=83886080]"));
+        assert!(selector.contains("+ba[filesize<=20971520]"));
+        assert!(selector.contains("b[filesize<=104857600]"));
     }
 }

@@ -422,6 +422,18 @@ pub async fn on_error(error: poise::FrameworkError<'_, BotData, BotError>) {
             };
             let _ = reply(ctx, safe).await;
         }
+        poise::FrameworkError::CooldownHit {
+            remaining_cooldown,
+            ctx,
+            ..
+        } => {
+            let seconds = remaining_cooldown.as_secs().max(1);
+            let _ = reply(
+                ctx,
+                format!("Please wait {seconds} second(s) before using this command again."),
+            )
+            .await;
+        }
         other => {
             if let Some(ctx) = other.ctx() {
                 let _ = reply(
