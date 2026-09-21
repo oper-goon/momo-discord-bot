@@ -130,12 +130,15 @@ Prefer the workspace wrapper on Windows because it configures the checked-in
 Rust/LLVM/CMake/Ninja tool paths:
 
 ```powershell
-./scripts/dev.ps1 fmt --all -- --check
-./scripts/dev.ps1 clippy --locked --workspace --all-targets --all-features -- -D warnings
-./scripts/dev.ps1 test --locked --workspace
-./scripts/dev.ps1 run --locked -p bot-app -- --check
-./scripts/dev.ps1 deny check
+./scripts/dev.ps1 --% fmt --all -- --check
+./scripts/dev.ps1 --% clippy --locked --workspace --all-targets --all-features -- -D warnings
+./scripts/dev.ps1 --% test --locked --workspace
+./scripts/dev.ps1 --% run --locked -p bot-app -- --check
+./scripts/dev.ps1 --% deny check
 ```
+
+The PowerShell stop-parsing token `--%` is intentional: it preserves Cargo's
+`--` separator and short flags when forwarding them through `dev.ps1`.
 
 For a focused iteration, run `check`, `clippy`, and tests for the changed crate;
 before merge/push, run the full relevant gates. `bot-app --check` validates
