@@ -2295,6 +2295,7 @@ name = "module-image"
 version = "0.2.0"
 dependencies = [
  "anyhow",
+ "async-trait",
  "bot-core",
  "poise",
  "reqwest",

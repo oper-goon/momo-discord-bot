@@ -16,17 +16,29 @@ const MAX_SEARCH_PAGE_BYTES: usize = 1024 * 1024;
 const MAX_RESPONSE_BYTES: usize = 2 * 1024 * 1024;
 const CACHE_TTL: Duration = Duration::from_secs(10 * 60);
 const MAX_CACHE_ENTRIES: usize = 128;
+const SESSION_TTL: Duration = Duration::from_secs(5 * 60);
+const MAX_SESSIONS: usize = 256;
+const MAX_RESULTS: usize = 10;
 
 pub struct DuckDuckGoImageService {
     client: Client,
     cache: Mutex<HashMap<String, CacheEntry>>,
+    sessions: Mutex<HashMap<u64, ImageSession>>,
     requests: Semaphore,
 }
 
 #[derive(Clone)]
 struct CacheEntry {
     stored_at: Instant,
-    result: Option<ImageResult>,
+    results: Vec<ImageResult>,
+}
+
+struct ImageSession {
+    owner: u64,
+    query: String,
+    results: Vec<ImageResult>,
+    current: usize,
+    touched_at: Instant,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -35,6 +47,25 @@ pub struct ImageResult {
     pub image_url: String,
     pub page_url: Option<String>,
     pub source: Option<String>,
+}
+
+#[derive(Clone, Copy)]
+pub(crate) enum PageDirection {
+    Previous,
+    Next,
+}
+
+pub(crate) enum SessionAdvance {
+    Updated(ImagePage),
+    Expired,
+    NotOwner,
+}
+
+pub(crate) struct ImagePage {
+    pub query: String,
+    pub result: ImageResult,
+    pub index: usize,
+    pub total: usize,
 }
 
 #[derive(Deserialize)]
@@ -70,11 +101,12 @@ impl DuckDuckGoImageService {
         Ok(Self {
             client,
             cache: Mutex::new(HashMap::new()),
+            sessions: Mutex::new(HashMap::new()),
             requests: Semaphore::new(4),
         })
     }
 
-    pub async fn search(&self, query: &str) -> Result<Option<ImageResult>> {
+    pub async fn search(&self, query: &str) -> Result<Vec<ImageResult>> {
         let query = validate_query(query)?;
         let cache_key = query.to_lowercase();
         if let Some(result) = self.cached(&cache_key)? {
@@ -129,12 +161,12 @@ impl DuckDuckGoImageService {
             .await
             .map_err(|_| anyhow!("DuckDuckGo Image Search request failed"))?;
         let response: SearchResponse = read_json(response).await?;
-        let result = select_result(response.results);
-        self.store(cache_key, result.clone())?;
-        Ok(result)
+        let results = select_results(response.results);
+        self.store(cache_key, results.clone())?;
+        Ok(results)
     }
 
-    fn cached(&self, key: &str) -> Result<Option<Option<ImageResult>>> {
+    fn cached(&self, key: &str) -> Result<Option<Vec<ImageResult>>> {
         let cache = self
             .cache
             .lock()
@@ -142,10 +174,10 @@ impl DuckDuckGoImageService {
         Ok(cache
             .get(key)
             .filter(|entry| entry.stored_at.elapsed() < CACHE_TTL)
-            .map(|entry| entry.result.clone()))
+            .map(|entry| entry.results.clone()))
     }
 
-    fn store(&self, key: String, result: Option<ImageResult>) -> Result<()> {
+    fn store(&self, key: String, results: Vec<ImageResult>) -> Result<()> {
         let mut cache = self
             .cache
             .lock()
@@ -158,10 +190,70 @@ impl DuckDuckGoImageService {
             key,
             CacheEntry {
                 stored_at: Instant::now(),
-                result,
+                results,
             },
         );
         Ok(())
+    }
+
+    pub(crate) fn register_session(
+        &self,
+        id: u64,
+        owner: u64,
+        query: String,
+        results: Vec<ImageResult>,
+    ) -> Result<ImagePage> {
+        let page = image_page(&query, &results, 0)
+            .ok_or_else(|| anyhow!("No safe image results were found"))?;
+        let mut sessions = self
+            .sessions
+            .lock()
+            .map_err(|_| anyhow!("Image Search controls are unavailable"))?;
+        sessions.retain(|_, session| session.touched_at.elapsed() < SESSION_TTL);
+        if sessions.len() >= MAX_SESSIONS {
+            sessions.clear();
+        }
+        sessions.insert(
+            id,
+            ImageSession {
+                owner,
+                query,
+                results,
+                current: 0,
+                touched_at: Instant::now(),
+            },
+        );
+        Ok(page)
+    }
+
+    pub(crate) fn advance_session(
+        &self,
+        id: u64,
+        user: u64,
+        direction: PageDirection,
+    ) -> Result<SessionAdvance> {
+        let mut sessions = self
+            .sessions
+            .lock()
+            .map_err(|_| anyhow!("Image Search controls are unavailable"))?;
+        sessions.retain(|_, session| session.touched_at.elapsed() < SESSION_TTL);
+        let Some(session) = sessions.get_mut(&id) else {
+            return Ok(SessionAdvance::Expired);
+        };
+        if session.owner != user {
+            return Ok(SessionAdvance::NotOwner);
+        }
+        session.current = match direction {
+            PageDirection::Previous => session
+                .current
+                .checked_sub(1)
+                .unwrap_or(session.results.len() - 1),
+            PageDirection::Next => (session.current + 1) % session.results.len(),
+        };
+        session.touched_at = Instant::now();
+        let page = image_page(&session.query, &session.results, session.current)
+            .ok_or_else(|| anyhow!("Image Search controls are unavailable"))?;
+        Ok(SessionAdvance::Updated(page))
     }
 }
 
@@ -189,20 +281,33 @@ fn extract_vqd(page: &str) -> Option<&str> {
         })
 }
 
-fn select_result(results: Vec<ApiImageResult>) -> Option<ImageResult> {
-    results.into_iter().find_map(|result| {
-        let image_url = result.thumbnail.or(result.image)?;
-        let image_url = safe_url(image_url, true)?;
-        let page_url = result.url.and_then(|url| safe_url(url, false));
-        Some(ImageResult {
-            title: result
-                .title
-                .filter(|title| !title.trim().is_empty())
-                .unwrap_or_else(|| "Image result".into()),
-            image_url,
-            page_url,
-            source: result.source.filter(|source| !source.trim().is_empty()),
+fn select_results(results: Vec<ApiImageResult>) -> Vec<ImageResult> {
+    results
+        .into_iter()
+        .filter_map(|result| {
+            let image_url = result.thumbnail.or(result.image)?;
+            let image_url = safe_url(image_url, true)?;
+            let page_url = result.url.and_then(|url| safe_url(url, false));
+            Some(ImageResult {
+                title: result
+                    .title
+                    .filter(|title| !title.trim().is_empty())
+                    .unwrap_or_else(|| "Image result".into()),
+                image_url,
+                page_url,
+                source: result.source.filter(|source| !source.trim().is_empty()),
+            })
         })
+        .take(MAX_RESULTS)
+        .collect()
+}
+
+fn image_page(query: &str, results: &[ImageResult], index: usize) -> Option<ImagePage> {
+    Some(ImagePage {
+        query: query.to_owned(),
+        result: results.get(index)?.clone(),
+        index,
+        total: results.len(),
     })
 }
 
@@ -285,14 +390,54 @@ mod tests {
         }))
         .unwrap();
         assert_eq!(
-            select_result(response.results),
-            Some(ImageResult {
+            select_results(response.results),
+            vec![ImageResult {
                 title: "Cat".into(),
                 image_url: "https://external-content.duckduckgo.com/cat.jpg".into(),
                 page_url: Some("https://example.com/cat".into()),
                 source: Some("example.com".into()),
-            })
+            }]
         );
+    }
+
+    #[test]
+    fn image_sessions_are_owner_scoped_and_wrap() {
+        let service = DuckDuckGoImageService::new().unwrap();
+        let results = vec![
+            ImageResult {
+                title: "One".into(),
+                image_url: "https://example.com/one.jpg".into(),
+                page_url: None,
+                source: None,
+            },
+            ImageResult {
+                title: "Two".into(),
+                image_url: "https://example.com/two.jpg".into(),
+                page_url: None,
+                source: None,
+            },
+        ];
+        let first = service
+            .register_session(7, 42, "cats".into(), results)
+            .unwrap();
+        assert_eq!(first.index, 0);
+        assert!(matches!(
+            service.advance_session(7, 99, PageDirection::Next).unwrap(),
+            SessionAdvance::NotOwner
+        ));
+        let SessionAdvance::Updated(previous) = service
+            .advance_session(7, 42, PageDirection::Previous)
+            .unwrap()
+        else {
+            panic!("expected an updated page");
+        };
+        assert_eq!(previous.index, 1);
+        let SessionAdvance::Updated(next) =
+            service.advance_session(7, 42, PageDirection::Next).unwrap()
+        else {
+            panic!("expected an updated page");
+        };
+        assert_eq!(next.index, 0);
     }
 
     #[test]
@@ -311,6 +456,6 @@ mod tests {
             .search("orange cat")
             .await
             .unwrap();
-        assert!(result.is_some());
+        assert!(!result.is_empty());
     }
 }

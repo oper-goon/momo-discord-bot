@@ -9,6 +9,7 @@ use tracing_subscriber::EnvFilter;
 fn compose(
     music: Arc<module_music::MusicService>,
     download: Arc<module_download::DownloadService>,
+    image: Arc<module_image::DuckDuckGoImageService>,
 ) -> Result<(ModuleRegistry, Vec<Command>)> {
     let mut registry = ModuleRegistry::new(vec![
         commands::module(),
@@ -19,7 +20,7 @@ fn compose(
         module_music::module(music),
         module_torbox::module(),
         module_download::module(download),
-        module_image::module(),
+        module_image::module(image),
     ])?;
     let mut commands = Vec::new();
     for module in &mut registry.modules {
@@ -121,7 +122,7 @@ async fn main() -> Result<()> {
     let torbox = Arc::new(module_torbox::TorBoxService::from_env()?);
     let download = Arc::new(module_download::DownloadService::new(&config));
     let image = Arc::new(module_image::DuckDuckGoImageService::new()?);
-    let (registry, commands) = compose(music.clone(), download.clone())?;
+    let (registry, commands) = compose(music.clone(), download.clone(), image.clone())?;
     let mut services = ServiceRegistry::default();
     services.insert(music)?;
     services.insert(torbox)?;
@@ -265,7 +266,8 @@ mod tests {
             songbird::Songbird::serenity(),
         ));
         let download = Arc::new(module_download::DownloadService::new(&config));
-        let (registry, commands) = compose(service, download).unwrap();
+        let image = Arc::new(module_image::DuckDuckGoImageService::new().unwrap());
+        let (registry, commands) = compose(service, download, image).unwrap();
         assert_eq!(registry.modules.len(), 9);
         assert!(commands.len() > 30);
         assert_eq!(registry.owner("queue.move").unwrap(), "music");

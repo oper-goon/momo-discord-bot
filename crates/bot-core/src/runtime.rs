@@ -303,6 +303,11 @@ impl ModuleRegistry {
             } if component.data.custom_id.starts_with("music:") => {
                 ("music_component", component.guild_id.map(|g| g.get()))
             }
+            serenity::FullEvent::InteractionCreate {
+                interaction: serenity::Interaction::Component(component),
+            } if component.data.custom_id.starts_with("image:") => {
+                ("image_component", component.guild_id.map(|g| g.get()))
+            }
             serenity::FullEvent::VoiceStateUpdate { new, .. } => {
                 ("voice_state", new.guild_id.map(|g| g.get()))
             }
