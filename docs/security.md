@@ -60,6 +60,10 @@ documented guild boost-tier limit because message events do not report an
 attachment limit. Discord attachment fetches accept only pinned public HTTPS
 addresses on Discord CDN hosts. Temporary media, source URLs, resolver output,
 and signed attachment URLs are neither persisted nor logged.
+The container pins Deno and installs yt-dlp's matching EJS scripts for YouTube
+challenge solving. Deno update checks and prompts are disabled, and yt-dlp
+invokes the runtime with its restricted default permissions. No browser
+cookies or Google account credentials are supplied.
 
 Do not commit bot tokens, local TOML, `.env`, SQLite files, resolver outputs,
 or signed media URLs. Default logs omit command arguments and dependency

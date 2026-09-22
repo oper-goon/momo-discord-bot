@@ -26,7 +26,8 @@ release; see [release status](docs/release-status.md).
    ```
 
    The SQLite database lives in the named `momo-data` volume. The image includes
-   a pinned stable yt-dlp release and FFmpeg for bounded video/audio merges.
+   pinned yt-dlp and Deno releases, yt-dlp's matching EJS challenge scripts,
+   and FFmpeg for bounded video/audio merges.
 
 On a Linux deployment host, keep the token in a private `.env` file and make
 the bind-mounted configuration readable by the container's unprivileged user:
