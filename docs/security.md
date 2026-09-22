@@ -64,6 +64,10 @@ The container pins Deno and installs yt-dlp's matching EJS scripts for YouTube
 challenge solving. Deno update checks and prompts are disabled, and yt-dlp
 invokes the runtime with its restricted default permissions. No browser
 cookies or Google account credentials are supplied.
+The Compose deployment also pins the BgUtils PO-token plugin and provider to
+the same release. The provider is reachable only on the private Compose network;
+it publishes no host port. It receives bounded requests from yt-dlp and does
+not receive Discord credentials, browser cookies, or Google account credentials.
 
 Do not commit bot tokens, local TOML, `.env`, SQLite files, resolver outputs,
 or signed media URLs. Default logs omit command arguments and dependency

@@ -2,6 +2,8 @@ services:
   bot:
     build: .
     restart: unless-stopped
+    depends_on:
+      - pot-provider
     environment:
       DISCORD_TOKEN: ${DISCORD_TOKEN:?Set DISCORD_TOKEN in your shell or private .env file}
       TORBOX_API_KEY: ${TORBOX_API_KEY:-}
@@ -12,5 +14,9 @@ services:
       - momo-data:/data
       - ./config/config.toml:/app/config/config.toml:ro
     stop_grace_period: 20s
+  pot-provider:
+    image: brainicism/bgutil-ytdlp-pot-provider:2.0.0-deno
+    init: true
+    restart: unless-stopped
 volumes:
   momo-data:

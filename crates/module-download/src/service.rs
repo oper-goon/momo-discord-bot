@@ -171,6 +171,8 @@ impl DownloadService {
                 "deno",
                 "--sleep-requests",
                 "1",
+                "--extractor-args",
+                "youtubepot-bgutilhttp:base_url=http://pot-provider:4416",
                 "--socket-timeout",
                 "15",
                 "--retries",
@@ -215,18 +217,8 @@ impl DownloadService {
         })?;
         if !status.success() {
             let text = String::from_utf8_lossy(&diagnostics).to_ascii_lowercase();
-            let reason = if text.contains("larger than max-filesize")
-                || text.contains("max-filesize")
-            {
-                "No available video fits Discord's upload limit"
-            } else if text.contains("duration") || text.contains("live") {
-                "The video is live or exceeds the duration limit"
-            } else if text.contains("sign in") || text.contains("private") || text.contains("login")
-            {
-                "The source is private or requires authentication"
-            } else {
-                "The media provider could not download this video"
-            };
+            let (reason, category) = classify_download_failure(&text);
+            tracing::warn!(category, "Media provider rejected a download request");
             anyhow::bail!(reason);
         }
         single_output(path).await
@@ -296,6 +288,39 @@ impl DownloadService {
         )
         .await
         .is_ok_and(|result| result.is_ok_and(|status| status.success()))
+    }
+}
+
+fn classify_download_failure(text: &str) -> (&'static str, &'static str) {
+    if text.contains("larger than max-filesize") || text.contains("max-filesize") {
+        ("No available video fits Discord's upload limit", "size")
+    } else if text.contains("duration") || text.contains("live") {
+        (
+            "The video is live or exceeds the duration limit",
+            "duration",
+        )
+    } else if text.contains("confirm you're not a bot")
+        || text.contains("confirm you’re not a bot")
+        || text.contains("bot check")
+    {
+        (
+            "YouTube blocked this server temporarily; try again shortly",
+            "youtube_bot_check",
+        )
+    } else if text.contains("private video")
+        || text.contains("members-only")
+        || text.contains("login required")
+        || text.contains("requires authentication")
+    {
+        (
+            "The source is private or requires authentication",
+            "authentication",
+        )
+    } else {
+        (
+            "The media provider could not download this video",
+            "provider",
+        )
     }
 }
 
@@ -422,5 +447,21 @@ mod tests {
         assert!(selector.contains("bv[filesize<=83886080]"));
         assert!(selector.contains("+ba[filesize<=20971520]"));
         assert!(selector.contains("b[filesize<=104857600]"));
+    }
+
+    #[test]
+    fn download_failures_distinguish_bot_checks_from_private_media() {
+        assert_eq!(
+            classify_download_failure("sign in to confirm you're not a bot").1,
+            "youtube_bot_check"
+        );
+        assert_eq!(
+            classify_download_failure("this is a private video").1,
+            "authentication"
+        );
+        assert_eq!(
+            classify_download_failure("login attempt failed").1,
+            "provider"
+        );
     }
 }
