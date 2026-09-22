@@ -17,6 +17,8 @@ services:
   pot-provider:
     image: brainicism/bgutil-ytdlp-pot-provider:2.0.0-deno
     init: true
+    logging:
+      driver: none
     restart: unless-stopped
 volumes:
   momo-data:

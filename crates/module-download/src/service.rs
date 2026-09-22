@@ -172,6 +172,8 @@ impl DownloadService {
                 "--sleep-requests",
                 "1",
                 "--extractor-args",
+                "youtube:player_client=mweb",
+                "--extractor-args",
                 "youtubepot-bgutilhttp:base_url=http://pot-provider:4416",
                 "--socket-timeout",
                 "15",
