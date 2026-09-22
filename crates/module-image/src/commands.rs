@@ -14,7 +14,7 @@ fn service(ctx: Context<'_>) -> Result<Arc<DuckDuckGoImageService>> {
     ctx.data().services.get::<DuckDuckGoImageService>()
 }
 
-/// Search the web for images using DuckDuckGo.
+/// Search the web for images using DuckDuckGo with a Bing fallback.
 #[poise::command(
     slash_command,
     prefix_command,
@@ -128,7 +128,8 @@ fn embed(page: &ImagePage) -> serenity::CreateEmbed {
     let mut embed = serenity::CreateEmbed::new()
         .title(truncate(&result.title, 256))
         .description(format!(
-            "DuckDuckGo image result for **{}**",
+            "{} image result for **{}**",
+            result.provider,
             truncate(&page.query, 200)
         ))
         .image(result.image_url.clone())

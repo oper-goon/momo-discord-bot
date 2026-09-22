@@ -3,6 +3,8 @@ use reqwest::{Client, StatusCode, header};
 use serde::Deserialize;
 use std::{
     collections::HashMap,
+    error::Error,
+    fmt,
     sync::Mutex,
     time::{Duration, Instant},
 };
@@ -11,6 +13,9 @@ use url::Url;
 
 const SEARCH_URL: &str = "https://duckduckgo.com/";
 const IMAGES_URL: &str = "https://duckduckgo.com/i.js";
+const BING_IMAGES_URL: &str = "https://www.bing.com/images/async";
+const DUCKDUCKGO_PROVIDER: &str = "DuckDuckGo";
+const BING_PROVIDER: &str = "Bing";
 const USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36";
 const MAX_SEARCH_PAGE_BYTES: usize = 1024 * 1024;
 const MAX_RESPONSE_BYTES: usize = 2 * 1024 * 1024;
@@ -43,11 +48,23 @@ struct ImageSession {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ImageResult {
+    pub provider: &'static str,
     pub title: String,
     pub image_url: String,
     pub page_url: Option<String>,
     pub source: Option<String>,
 }
+
+#[derive(Debug)]
+struct DuckDuckGoBlocked;
+
+impl fmt::Display for DuckDuckGoBlocked {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter.write_str("DuckDuckGo Image Search rejected the request")
+    }
+}
+
+impl Error for DuckDuckGoBlocked {}
 
 #[derive(Clone, Copy)]
 pub(crate) enum PageDirection {
@@ -122,6 +139,16 @@ impl DuckDuckGoImageService {
             return Ok(result);
         }
 
+        let results = match self.search_duckduckgo(query).await {
+            Ok(results) => results,
+            Err(error) if error.is::<DuckDuckGoBlocked>() => self.search_bing(query).await?,
+            Err(error) => return Err(error),
+        };
+        self.store(cache_key, results.clone())?;
+        Ok(results)
+    }
+
+    async fn search_duckduckgo(&self, query: &str) -> Result<Vec<ImageResult>> {
         let search_page = self
             .client
             .get(SEARCH_URL)
@@ -129,7 +156,9 @@ impl DuckDuckGoImageService {
             .send()
             .await
             .map_err(|_| anyhow!("DuckDuckGo Image Search request failed"))?;
-        let search_page = read_body(search_page, MAX_SEARCH_PAGE_BYTES).await?;
+        reject_blocked_duckduckgo(&search_page)?;
+        let search_page =
+            read_body(search_page, MAX_SEARCH_PAGE_BYTES, DUCKDUCKGO_PROVIDER).await?;
         let search_page = std::str::from_utf8(&search_page)
             .map_err(|_| anyhow!("DuckDuckGo returned an invalid search page"))?;
         let vqd = extract_vqd(search_page).ok_or_else(|| {
@@ -160,10 +189,34 @@ impl DuckDuckGoImageService {
             .send()
             .await
             .map_err(|_| anyhow!("DuckDuckGo Image Search request failed"))?;
-        let response: SearchResponse = read_json(response).await?;
-        let results = select_results(response.results);
-        self.store(cache_key, results.clone())?;
-        Ok(results)
+        reject_blocked_duckduckgo(&response)?;
+        let response: SearchResponse = read_json(response, DUCKDUCKGO_PROVIDER).await?;
+        Ok(select_results(response.results, DUCKDUCKGO_PROVIDER))
+    }
+
+    async fn search_bing(&self, query: &str) -> Result<Vec<ImageResult>> {
+        let response = self
+            .client
+            .get(BING_IMAGES_URL)
+            .header(
+                header::ACCEPT,
+                "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            )
+            .header(header::ACCEPT_LANGUAGE, "en-US,en;q=0.5")
+            .query(&[
+                ("q", query),
+                ("async", "1"),
+                ("first", "1"),
+                ("count", "35"),
+                ("adlt", "strict"),
+            ])
+            .send()
+            .await
+            .map_err(|_| anyhow!("Bing Image Search fallback request failed"))?;
+        let response = read_body(response, MAX_RESPONSE_BYTES, BING_PROVIDER).await?;
+        let response = std::str::from_utf8(&response)
+            .map_err(|_| anyhow!("Bing returned an invalid image response"))?;
+        Ok(select_bing_results(response))
     }
 
     fn cached(&self, key: &str) -> Result<Option<Vec<ImageResult>>> {
@@ -281,7 +334,7 @@ fn extract_vqd(page: &str) -> Option<&str> {
         })
 }
 
-fn select_results(results: Vec<ApiImageResult>) -> Vec<ImageResult> {
+fn select_results(results: Vec<ApiImageResult>, provider: &'static str) -> Vec<ImageResult> {
     results
         .into_iter()
         .filter_map(|result| {
@@ -289,6 +342,7 @@ fn select_results(results: Vec<ApiImageResult>) -> Vec<ImageResult> {
             let image_url = safe_url(image_url, true)?;
             let page_url = result.url.and_then(|url| safe_url(url, false));
             Some(ImageResult {
+                provider,
                 title: result
                     .title
                     .filter(|title| !title.trim().is_empty())
@@ -300,6 +354,75 @@ fn select_results(results: Vec<ApiImageResult>) -> Vec<ImageResult> {
         })
         .take(MAX_RESULTS)
         .collect()
+}
+
+#[derive(Deserialize)]
+struct BingImageResult {
+    #[serde(default)]
+    t: Option<String>,
+    #[serde(default)]
+    murl: Option<String>,
+    #[serde(default)]
+    turl: Option<String>,
+    #[serde(default)]
+    purl: Option<String>,
+}
+
+fn select_bing_results(page: &str) -> Vec<ImageResult> {
+    page.split("<a ")
+        .skip(1)
+        .filter_map(|element| {
+            let tag = element.split_once('>')?.0;
+            if !tag.contains("class=\"iusc\"") {
+                return None;
+            }
+            let metadata = tag.split_once(" m=\"")?.1.split_once('"')?.0;
+            let metadata = decode_html_attribute(metadata)?;
+            let result: BingImageResult = serde_json::from_str(&metadata).ok()?;
+            let image_url = safe_url(result.turl.or(result.murl)?, true)?;
+            let page_url = result.purl.and_then(|url| safe_url(url, false));
+            let source = page_url
+                .as_deref()
+                .and_then(|url| Url::parse(url).ok())
+                .and_then(|url| url.host_str().map(str::to_owned));
+            Some(ImageResult {
+                provider: BING_PROVIDER,
+                title: result
+                    .t
+                    .filter(|title| !title.trim().is_empty())
+                    .unwrap_or_else(|| "Image result".into()),
+                image_url,
+                page_url,
+                source,
+            })
+        })
+        .take(MAX_RESULTS)
+        .collect()
+}
+
+fn decode_html_attribute(value: &str) -> Option<String> {
+    let mut decoded = String::with_capacity(value.len());
+    let mut remaining = value;
+    while let Some((before, entity)) = remaining.split_once('&') {
+        decoded.push_str(before);
+        let (entity, after) = entity.split_once(';')?;
+        let character = match entity {
+            "amp" => '&',
+            "quot" => '"',
+            "apos" | "#39" => '\'',
+            "lt" => '<',
+            "gt" => '>',
+            value if value.starts_with("#x") => {
+                char::from_u32(u32::from_str_radix(&value[2..], 16).ok()?)?
+            }
+            value if value.starts_with('#') => char::from_u32(value[1..].parse().ok()?)?,
+            _ => return None,
+        };
+        decoded.push(character);
+        remaining = after;
+    }
+    decoded.push_str(remaining);
+    Some(decoded)
 }
 
 fn image_page(query: &str, results: &[ImageResult], index: usize) -> Option<ImagePage> {
@@ -327,16 +450,30 @@ fn safe_url(value: String, https_only: bool) -> Option<String> {
     Some(value)
 }
 
-async fn read_body(mut response: reqwest::Response, limit: usize) -> Result<Vec<u8>> {
+fn reject_blocked_duckduckgo(response: &reqwest::Response) -> Result<()> {
+    if matches!(
+        response.status(),
+        StatusCode::FORBIDDEN | StatusCode::TOO_MANY_REQUESTS
+    ) {
+        return Err(DuckDuckGoBlocked.into());
+    }
+    Ok(())
+}
+
+async fn read_body(
+    mut response: reqwest::Response,
+    limit: usize,
+    provider: &str,
+) -> Result<Vec<u8>> {
     let status = response.status();
     if status == StatusCode::TOO_MANY_REQUESTS {
         return Err(anyhow!(
-            "DuckDuckGo Image Search is rate limited; try again later"
+            "{provider} Image Search is rate limited; try again later"
         ));
     }
     if !status.is_success() {
         return Err(anyhow!(
-            "DuckDuckGo Image Search failed with status {}",
+            "{provider} Image Search failed with status {}",
             status.as_u16()
         ));
     }
@@ -345,21 +482,24 @@ async fn read_body(mut response: reqwest::Response, limit: usize) -> Result<Vec<
     while let Some(chunk) = response
         .chunk()
         .await
-        .map_err(|_| anyhow!("DuckDuckGo response could not be read"))?
+        .map_err(|_| anyhow!("{provider} response could not be read"))?
     {
         ensure!(
             body.len().saturating_add(chunk.len()) <= limit,
-            "DuckDuckGo response was too large"
+            "{provider} response was too large"
         );
         body.extend_from_slice(&chunk);
     }
     Ok(body)
 }
 
-async fn read_json<T: for<'de> Deserialize<'de>>(response: reqwest::Response) -> Result<T> {
-    let body = read_body(response, MAX_RESPONSE_BYTES).await?;
+async fn read_json<T: for<'de> Deserialize<'de>>(
+    response: reqwest::Response,
+    provider: &str,
+) -> Result<T> {
+    let body = read_body(response, MAX_RESPONSE_BYTES, provider).await?;
     serde_json::from_slice(&body).map_err(|_| {
-        anyhow!("DuckDuckGo returned an invalid response; its image endpoint may have changed")
+        anyhow!("{provider} returned an invalid response; its image endpoint may have changed")
     })
 }
 
@@ -390,8 +530,9 @@ mod tests {
         }))
         .unwrap();
         assert_eq!(
-            select_results(response.results),
+            select_results(response.results, DUCKDUCKGO_PROVIDER),
             vec![ImageResult {
+                provider: DUCKDUCKGO_PROVIDER,
                 title: "Cat".into(),
                 image_url: "https://external-content.duckduckgo.com/cat.jpg".into(),
                 page_url: Some("https://example.com/cat".into()),
@@ -405,12 +546,14 @@ mod tests {
         let service = DuckDuckGoImageService::new().unwrap();
         let results = vec![
             ImageResult {
+                provider: DUCKDUCKGO_PROVIDER,
                 title: "One".into(),
                 image_url: "https://example.com/one.jpg".into(),
                 page_url: None,
                 source: None,
             },
             ImageResult {
+                provider: DUCKDUCKGO_PROVIDER,
                 title: "Two".into(),
                 image_url: "https://example.com/two.jpg".into(),
                 page_url: None,
@@ -441,6 +584,21 @@ mod tests {
     }
 
     #[test]
+    fn extracts_safe_bing_image_metadata() {
+        let page = r#"<a class="iusc" m="{&quot;t&quot;:&quot;Orange &amp; white cat&quot;,&quot;murl&quot;:&quot;https://images.example/cat.jpg&quot;,&quot;turl&quot;:&quot;https://thumb.example/cat.jpg&quot;,&quot;purl&quot;:&quot;https://example.com/cat&quot;}">result</a>"#;
+        assert_eq!(
+            select_bing_results(page),
+            vec![ImageResult {
+                provider: BING_PROVIDER,
+                title: "Orange & white cat".into(),
+                image_url: "https://thumb.example/cat.jpg".into(),
+                page_url: Some("https://example.com/cat".into()),
+                source: Some("example.com".into()),
+            }]
+        );
+    }
+
+    #[test]
     fn enforces_query_limits() {
         assert!(validate_query("cats").is_ok());
         assert!(validate_query("   ").is_err());
@@ -457,5 +615,14 @@ mod tests {
             .await
             .unwrap();
         assert!(!result.is_empty());
+    }
+
+    #[tokio::test]
+    #[ignore = "uses the live unofficial Bing image endpoint"]
+    async fn live_bing_smoke_test() {
+        let service = DuckDuckGoImageService::new().unwrap();
+        let result = service.search_bing("orange cat").await.unwrap();
+        assert!(!result.is_empty());
+        assert!(result.iter().all(|result| result.provider == BING_PROVIDER));
     }
 }

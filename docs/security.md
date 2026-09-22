@@ -76,11 +76,11 @@ ephemeral Discord responses. Keep the module disabled or permission-restricted
 outside trusted guild roles because those links consume the operator's TorBox
 account and bandwidth.
 
-Image Search uses DuckDuckGo's fixed HTTPS search and image-result origins.
-DuckDuckGo does not publish a supported image-search API, so endpoint changes
-must fail closed without exposing response bodies. Queries and response
-payloads must not be logged or persisted. Strict SafeSearch is always
-requested, remote images are referenced in Discord embeds rather than fetched
-by the bot, and responses are bounded before token extraction or JSON parsing.
-Keep the module disabled or permission-restricted where automated upstream
-traffic must be controlled.
+Image Search uses fixed HTTPS DuckDuckGo and Bing search origins. DuckDuckGo
+does not publish a supported image-search API; a 403 or 429 falls back to
+Bing's strict SafeSearch endpoint, while other endpoint changes fail closed
+without exposing response bodies. Queries and response payloads must not be
+logged or persisted. Remote images are referenced in Discord embeds rather
+than fetched by the bot, and responses are bounded before token extraction,
+JSON parsing, or HTML metadata parsing. Keep the module disabled or
+permission-restricted where automated upstream traffic must be controlled.

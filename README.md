@@ -68,8 +68,9 @@ when the command tree changes; pass `--sync-commands` to force it.
 - TorBox: cached-magnet file links and subscription-gated video streams
 - Download: reupload public videos from an explicit URL, replied message, or
   recent channel history
-- Image Search: `/image` searches DuckDuckGo Images with strict SafeSearch and
-  owner-only Previous/Next buttons for cycling through cached results
+- Image Search: `/image` searches DuckDuckGo Images with strict SafeSearch,
+  falls back to Bing when DuckDuckGo blocks the request, and provides owner-only
+  Previous/Next buttons for cycling through cached results
 
 Core is always enabled. General and Utility are enabled by default. Admin,
 Moderation, Music, and TorBox require `/module enable <module>` in each server.
