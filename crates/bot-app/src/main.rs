@@ -19,6 +19,7 @@ fn compose(
         module_music::module(music),
         module_torbox::module(),
         module_download::module(download),
+        module_image::module(),
     ])?;
     let mut commands = Vec::new();
     for module in &mut registry.modules {
@@ -119,11 +120,13 @@ async fn main() -> Result<()> {
     let music = Arc::new(module_music::MusicService::new(&config, manager.clone()));
     let torbox = Arc::new(module_torbox::TorBoxService::from_env()?);
     let download = Arc::new(module_download::DownloadService::new(&config));
+    let image = Arc::new(module_image::DuckDuckGoImageService::new()?);
     let (registry, commands) = compose(music.clone(), download.clone())?;
     let mut services = ServiceRegistry::default();
     services.insert(music)?;
     services.insert(torbox)?;
     services.insert(download)?;
+    services.insert(image)?;
     let data = BotData {
         config: config.clone(),
         database: database.clone(),
@@ -263,7 +266,7 @@ mod tests {
         ));
         let download = Arc::new(module_download::DownloadService::new(&config));
         let (registry, commands) = compose(service, download).unwrap();
-        assert_eq!(registry.modules.len(), 8);
+        assert_eq!(registry.modules.len(), 9);
         assert!(commands.len() > 30);
         assert_eq!(registry.owner("queue.move").unwrap(), "music");
         assert_eq!(registry.owner("module.disable").unwrap(), "core");
@@ -271,6 +274,7 @@ mod tests {
         assert_eq!(registry.owner("role.info").unwrap(), "general");
         assert_eq!(registry.owner("torbox.download").unwrap(), "torbox");
         assert_eq!(registry.owner("download").unwrap(), "download");
+        assert_eq!(registry.owner("image").unwrap(), "image");
         let definitions = poise::builtins::create_application_commands(&commands);
         assert_eq!(definitions.len(), commands.len());
     }

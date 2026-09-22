@@ -175,6 +175,7 @@ dependencies = [
  "module-admin",
  "module-download",
  "module-general",
+ "module-image",
  "module-moderation",
  "module-music",
  "module-torbox",
@@ -2287,6 +2288,20 @@ dependencies = [
  "bot-core",
  "poise",
  "serenity",
+]
+
+[[package]]
+name = "module-image"
+version = "0.2.0"
+dependencies = [
+ "anyhow",
+ "bot-core",
+ "poise",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tokio",
+ "url",
 ]
 
 [[package]]

@@ -40,6 +40,7 @@ module-utility = { version = "0.2.0", path = "crates/module-utility" }
 module-music = { version = "0.2.0", path = "crates/module-music" }
 module-torbox = { version = "0.2.0", path = "crates/module-torbox" }
 module-download = { version = "0.2.0", path = "crates/module-download" }
+module-image = { version = "0.2.0", path = "crates/module-image" }
 
 [profile.dev]
 debug = 0

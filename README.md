@@ -68,6 +68,7 @@ when the command tree changes; pass `--sync-commands` to force it.
 - TorBox: cached-magnet file links and subscription-gated video streams
 - Download: reupload public videos from an explicit URL, replied message, or
   recent channel history
+- Image Search: `/image` searches DuckDuckGo Images with strict SafeSearch
 
 Core is always enabled. General and Utility are enabled by default. Admin,
 Moderation, Music, and TorBox require `/module enable <module>` in each server.
@@ -75,6 +76,9 @@ Download is also disabled by default because it consumes host and Discord
 bandwidth. Slash downloads honor Discord's reported attachment limit; prefix
 downloads use the server boost tier limit because message commands do not carry
 an attachment-limit field.
+Image Search is disabled by default because DuckDuckGo does not publish a
+supported image-search API. It requires no account or API key; repeated
+identical queries are cached briefly to reduce upstream traffic.
 TorBox also requires `TORBOX_API_KEY`. Restrict it to trusted roles with
 `/permissions` before enabling it because users share the operator's TorBox
 account and rate limits.
