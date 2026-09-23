@@ -9,6 +9,7 @@ pub struct AppConfig {
     pub database: DatabaseConfig,
     pub music: MusicConfig,
     pub download: DownloadConfig,
+    pub social_embeds: SocialEmbedsConfig,
     pub logging: LoggingConfig,
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -117,6 +118,25 @@ impl Default for DownloadConfig {
 pub struct LoggingConfig {
     pub format: String,
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct SocialEmbedsConfig {
+    pub probe_timeout_seconds: u64,
+    pub instagram_providers: Vec<String>,
+}
+impl Default for SocialEmbedsConfig {
+    fn default() -> Self {
+        Self {
+            probe_timeout_seconds: 6,
+            instagram_providers: vec![
+                "oginstagram.com".into(),
+                "vxinstagram.com".into(),
+                "instagram7.com".into(),
+            ],
+        }
+    }
+}
 impl Default for LoggingConfig {
     fn default() -> Self {
         Self {
@@ -206,6 +226,25 @@ impl AppConfig {
                 }),
             "Download domains must be lowercase hostnames"
         );
+        ensure!(
+            (1..=15).contains(&self.social_embeds.probe_timeout_seconds),
+            "Social embed probe timeout must be 1–15 seconds"
+        );
+        ensure!(
+            !self.social_embeds.instagram_providers.is_empty()
+                && self.social_embeds.instagram_providers.len() <= 5
+                && self.social_embeds.instagram_providers.iter().all(|domain| {
+                    [
+                        "oginstagram.com",
+                        "vxinstagram.com",
+                        "kkinstagram.com",
+                        "instagram7.com",
+                        "zzinstagram.com",
+                    ]
+                    .contains(&domain.as_str())
+                }),
+            "Instagram providers must be 1–5 approved embed hosts"
+        );
         self.music_defaults()
             .validate(self.music.max_queue_length)?;
         ensure!(
@@ -240,5 +279,9 @@ mod tests {
         c.music.default_volume_percent = 201;
         assert!(c.validate().is_err());
         assert!(toml::from_str::<AppConfig>("typo=1").is_err());
+
+        let mut c = AppConfig::default();
+        c.social_embeds.instagram_providers = vec!["localhost".into()];
+        assert!(c.validate().is_err());
     }
 }

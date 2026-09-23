@@ -90,3 +90,18 @@ logged or persisted. Remote images are referenced in Discord embeds rather
 than fetched by the bot, and responses are bounded before token extraction,
 JSON parsing, or HTML metadata parsing. Keep the module disabled or
 permission-restricted where automated upstream traffic must be controlled.
+
+Social Embeds processes guild message content only while its per-guild module
+is enabled. It rewrites recognized public HTTPS social-post URLs to a fixed set
+of embed providers and never logs or persists message content, source URLs, or
+webhook tokens. Provider pages needed for Instagram selection or missing author
+metadata are fetched with a Discord crawler user agent, strict time and
+response-size bounds, no proxy, and no redirects; only fixed, code-reviewed
+hosts or operator-selected Instagram hosts are accepted. Each provider receives
+the source post path, so operators should trust every configured provider.
+Webhook reposts disable allowed mentions, add `via Momo` to the sender's
+display name, and reuse the sender's public Discord avatar. The original is
+deleted only after a successful repost; if deletion fails, Momo removes the
+new webhook message to avoid duplicates. Messages with attachments, stickers,
+or polls are not reposted. The module requires Message Content plus Discord's
+Manage Messages and Manage Webhooks permissions and is disabled by default.

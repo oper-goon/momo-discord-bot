@@ -314,6 +314,9 @@ impl ModuleRegistry {
             serenity::FullEvent::GuildCreate { guild, .. } => {
                 ("guild_create", Some(guild.id.get()))
             }
+            serenity::FullEvent::Message { new_message } => {
+                ("message", new_message.guild_id.map(|g| g.get()))
+            }
             _ => return,
         };
         for module in &self.modules {

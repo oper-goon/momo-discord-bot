@@ -10,6 +10,7 @@ fn compose(
     music: Arc<module_music::MusicService>,
     download: Arc<module_download::DownloadService>,
     image: Arc<module_image::DuckDuckGoImageService>,
+    social_embeds: Arc<module_social_embeds::SocialEmbedService>,
 ) -> Result<(ModuleRegistry, Vec<Command>)> {
     let mut registry = ModuleRegistry::new(vec![
         commands::module(),
@@ -21,6 +22,7 @@ fn compose(
         module_torbox::module(),
         module_download::module(download),
         module_image::module(image),
+        module_social_embeds::module(social_embeds),
     ])?;
     let mut commands = Vec::new();
     for module in &mut registry.modules {
@@ -122,12 +124,19 @@ async fn main() -> Result<()> {
     let torbox = Arc::new(module_torbox::TorBoxService::from_env()?);
     let download = Arc::new(module_download::DownloadService::new(&config));
     let image = Arc::new(module_image::DuckDuckGoImageService::new()?);
-    let (registry, commands) = compose(music.clone(), download.clone(), image.clone())?;
+    let social_embeds = Arc::new(module_social_embeds::SocialEmbedService::new(&config)?);
+    let (registry, commands) = compose(
+        music.clone(),
+        download.clone(),
+        image.clone(),
+        social_embeds.clone(),
+    )?;
     let mut services = ServiceRegistry::default();
     services.insert(music)?;
     services.insert(torbox)?;
     services.insert(download)?;
     services.insert(image)?;
+    services.insert(social_embeds)?;
     let data = BotData {
         config: config.clone(),
         database: database.clone(),
@@ -267,8 +276,10 @@ mod tests {
         ));
         let download = Arc::new(module_download::DownloadService::new(&config));
         let image = Arc::new(module_image::DuckDuckGoImageService::new().unwrap());
-        let (registry, commands) = compose(service, download, image).unwrap();
-        assert_eq!(registry.modules.len(), 9);
+        let social_embeds =
+            Arc::new(module_social_embeds::SocialEmbedService::new(&config).unwrap());
+        let (registry, commands) = compose(service, download, image, social_embeds).unwrap();
+        assert_eq!(registry.modules.len(), 10);
         assert!(commands.len() > 30);
         assert_eq!(registry.owner("queue.move").unwrap(), "music");
         assert_eq!(registry.owner("module.disable").unwrap(), "core");

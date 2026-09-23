@@ -41,6 +41,7 @@ module-music = { version = "0.2.0", path = "crates/module-music" }
 module-torbox = { version = "0.2.0", path = "crates/module-torbox" }
 module-download = { version = "0.2.0", path = "crates/module-download" }
 module-image = { version = "0.2.0", path = "crates/module-image" }
+module-social-embeds = { version = "0.2.0", path = "crates/module-social-embeds" }
 
 [profile.dev]
 debug = 0

@@ -178,6 +178,7 @@ dependencies = [
  "module-image",
  "module-moderation",
  "module-music",
+ "module-social-embeds",
  "module-torbox",
  "module-utility",
  "poise",
@@ -2339,6 +2340,18 @@ dependencies = [
  "tracing",
  "url",
  "uuid",
+]
+
+[[package]]
+name = "module-social-embeds"
+version = "0.2.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "bot-core",
+ "reqwest",
+ "tokio",
+ "url",
 ]
 
 [[package]]

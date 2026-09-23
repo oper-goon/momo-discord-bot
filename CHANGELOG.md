@@ -5,6 +5,13 @@ Versioning and Keep a Changelog conventions.
 
 ## [Unreleased]
 
+### Added
+
+- Optional Social Embeds module for webhook-based X/Twitter, Instagram,
+  TikTok, Reddit, Threads, and Bluesky embeds, including Instagram provider
+  failover and linked original, provider, and creator attribution.
+- A dedicated command reference grouped by module and linked from the README.
+
 ## [0.2.0] - 2026-09-21
 
 ### Added

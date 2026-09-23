@@ -1,0 +1,13 @@
+[package]
+name = "module-social-embeds"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+async-trait.workspace = true
+bot-core.workspace = true
+reqwest.workspace = true
+tokio.workspace = true
+url.workspace = true
