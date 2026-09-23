@@ -98,7 +98,11 @@ environment. Magnet arguments, API responses, generated file links, and stream
 tokens must not be logged or persisted. Generated links are sent only in
 ephemeral Discord responses. Keep the module disabled or permission-restricted
 outside trusted guild roles because those links consume the operator's TorBox
-account and bandwidth.
+account and bandwidth. Interactive file-picker sessions are memory-only,
+owner-bound, limited to five minutes and 250 eligible files, and capped at 64
+concurrent sessions. The magnet is not retained in picker state, infected files
+are excluded, and temporary URLs are generated only after the user selects a
+file.
 
 Image Search uses fixed HTTPS DuckDuckGo and Bing search origins. DuckDuckGo
 does not publish a supported image-search API; a 403 or 429 falls back to

@@ -22,6 +22,8 @@ Versioning and Keep a Changelog conventions.
   searchable message bookmarks.
 - A bounded media toolbox for inspection, audio extraction, video compression,
   GIF conversion, and thumbnail extraction.
+- Private, owner-bound TorBox file pickers with pagination, expiry, infected-file
+  filtering, and direct file-number fallback for cached downloads and streams.
 
 ## [0.2.0] - 2026-09-21
 

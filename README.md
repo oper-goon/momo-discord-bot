@@ -73,7 +73,7 @@ The complete syntax and description for every command is in the
 | `music` | No | Voice playback, queues, controls, repeat, shuffle, and saved playlists |
 | `download` | No | Bounded downloads, media inspection, conversion, and Discord reuploads |
 | `image` | No | Safe image search with interactive result navigation |
-| `torbox` | No | Cached-magnet file links and subscription-gated video streams |
+| `torbox` | No | Interactive cached-magnet file picking, temporary links, and subscription-gated video streams |
 | `social-embeds` | No | Webhook-based embeds for X, Instagram, TikTok, Reddit, Threads, and Bluesky |
 
 Core is always enabled. Optional modules can be changed per server with

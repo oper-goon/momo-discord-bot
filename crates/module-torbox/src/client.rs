@@ -1,3 +1,4 @@
+use crate::picker::PickerStore;
 use anyhow::{Result, anyhow, ensure};
 use reqwest::{Client, StatusCode, multipart};
 use serde::Deserialize;
@@ -12,6 +13,7 @@ pub struct TorBoxService {
     client: Client,
     api_key: Option<Box<str>>,
     base_url: Box<str>,
+    pub(crate) pickers: PickerStore,
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -97,6 +99,7 @@ impl TorBoxService {
             client,
             api_key: api_key.map(String::into_boxed_str),
             base_url: base_url.trim_end_matches('/').into(),
+            pickers: PickerStore::default(),
         })
     }
 

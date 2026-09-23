@@ -12,6 +12,8 @@ Current revision: `0.2.0` feature release.
 - Dependency advisory, license, source, and ban policy
 - Offline application startup check with migrations and command-tree assembly
 - Git secrets/path exclusions
+- The TorBox interactive picker is covered by unit and registry tests; its
+  Discord select-menu rendering still requires live acceptance testing.
 
 ## Verified for v0.2.0
 
@@ -23,7 +25,6 @@ Current revision: `0.2.0` feature release.
 - Live TorBox Web Player streaming remains unverified because the configured
   Essentials subscription does not include that feature; this is a documented
   validation gap rather than a blocker for the cached-download release.
-
 ## Verified on the deployment host
 
 - Built the release image on an x86_64 Ubuntu host with rootless Docker

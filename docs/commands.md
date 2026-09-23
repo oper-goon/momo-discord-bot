@@ -162,8 +162,12 @@ Disabled by default and slash-only. It requires the operator's
 
 | Command | Description |
 | --- | --- |
-| `/torbox download <magnet> [file-number]` | Generate temporary links for files in a cached magnet. |
-| `/torbox stream <magnet> [file-number]` | Generate a video stream for a file in a cached magnet. |
+| `/torbox download <magnet> [file-number]` | Choose a safe cached file from a private, paginated picker and generate its temporary download link. Supply a one-based file number to bypass the picker. |
+| `/torbox stream <magnet> [file-number]` | Choose a safe video from a private, paginated picker and generate its stream. Supply a one-based file number to bypass the picker. |
+
+Pickers accept up to 250 eligible files, show 25 per page, work only for the
+person who ran the command, and expire after five minutes. Files TorBox marks
+as potentially infected are never offered.
 
 ## Social Embeds (`social-embeds`)
 
