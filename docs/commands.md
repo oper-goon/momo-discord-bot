@@ -66,6 +66,11 @@ Enabled by default.
 | `/bookmark delete <id>` | Delete one of your bookmarks. |
 | `/timestamp <unix-seconds>` | Render a Discord timestamp and its reusable markup. |
 
+Bookmark management is slash-only so saved excerpts, notes, and results remain
+private. Create bookmarks from a message's **Apps** menu with `Bookmark
+Message`; reminders and their management commands also support the configured
+server prefix.
+
 ## Administration (`admin`)
 
 Disabled by default. Commands enforce both Discord permissions and role
@@ -137,6 +142,10 @@ Disabled by default.
 | `/media compress [URL]` | Re-encode a video as a smaller MP4. |
 | `/media gif [URL]` | Convert the first ten seconds of a video into a GIF. |
 | `/media thumbnail [URL]` | Extract a JPEG thumbnail from a video. |
+
+When a media URL is omitted, these commands inspect a replied message and then
+recent channel history. Downloads and conversions share the same supported-site,
+size, duration, concurrency, and Discord upload limits.
 
 ## Image Search (`image`)
 

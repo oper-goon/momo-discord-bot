@@ -82,6 +82,10 @@ by default because it consumes host and Discord bandwidth. Slash downloads
 honor Discord's reported attachment limit; prefix downloads use the server
 boost tier limit because message commands do not carry an attachment-limit
 field.
+Right-click or long-press a message and open **Apps** for `Bookmark Message`,
+`Remind Me in 1 Hour`, `Download Media`, and `Repair Social Embed`. Each action
+still follows its module's enablement and permission policy; bookmark results
+and reminder confirmations are private.
 Image Search is disabled by default because DuckDuckGo does not publish a
 supported image-search API. It requires no account or API key; repeated
 identical queries are cached briefly to reduce upstream traffic. Each search
