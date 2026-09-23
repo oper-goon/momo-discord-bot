@@ -1919,8 +1919,6 @@ dependencies = [
 [[package]]
 name = "libcrux-chacha20poly1305"
 version = "0.0.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cc08d044676af21343b32b988411fa98dbb5cf65a03c9df478ced221bbdfdb1b"
 dependencies = [
  "libcrux-hacl-rs",
  "libcrux-macros",

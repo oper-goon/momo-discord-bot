@@ -1,7 +1,11 @@
 [workspace]
 resolver = "3"
 members = ["crates/*"]
-exclude = ["vendor/libcrux-secrets", "vendor/ringbuf"]
+exclude = [
+    "vendor/libcrux-chacha20poly1305",
+    "vendor/libcrux-secrets",
+    "vendor/ringbuf",
+]
 
 [workspace.package]
 version = "0.2.0"
@@ -51,6 +55,9 @@ lto = "thin"
 strip = true
 
 [patch.crates-io]
+# Backport the upstream overlong-output-buffer panic fix while HPKE pins 0.0.7.
+# See vendor/README.md for exact provenance, scope, and the regression guard.
+libcrux-chacha20poly1305 = { path = "vendor/libcrux-chacha20poly1305" }
 # Backport the upstream AArch64 selector mask fix to the API-compatible release.
 # See vendor/README.md for exact provenance and the four-line patch.
 libcrux-secrets = { path = "vendor/libcrux-secrets" }

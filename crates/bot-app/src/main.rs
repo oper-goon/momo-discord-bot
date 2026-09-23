@@ -293,6 +293,10 @@ mod tests {
     }
     #[test]
     fn vendored_security_backport_remains_applied() {
+        let source = include_str!("../../../vendor/libcrux-chacha20poly1305/src/impl_hacl.rs");
+        assert!(!source.contains("let (ctxt_cpa, tag) = ctxt.split_at_mut"));
+        assert!(source.contains("let (tag, _rest) = rest.split_at_mut(TAG_LEN)"));
+
         let source = include_str!("../../../vendor/libcrux-secrets/src/int.rs");
         assert!(!source.contains("cmp {cond:w}, 0"));
         assert_eq!(source.matches("tst {cond:w}, 0xff").count(), 4);

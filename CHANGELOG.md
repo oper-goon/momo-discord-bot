@@ -5,6 +5,11 @@ Versioning and Keep a Changelog conventions.
 
 ## [Unreleased]
 
+### Security
+
+- Backported the upstream `libcrux-chacha20poly1305` overlong-output-buffer
+  panic fix required by Songbird's pinned HPKE dependency chain.
+
 ### Added
 
 - Optional Social Embeds module for webhook-based X/Twitter, Instagram,

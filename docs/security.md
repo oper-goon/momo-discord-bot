@@ -10,6 +10,11 @@ licenses unless a specific reviewed exception is in `deny.toml`.
 - Serenity and Songbird use native TLS, removing Serenity 0.12.5's old
   rustls-webpki 0.102 chain. Linux deployments must keep system OpenSSL updated.
   Direct media HTTP uses the current rustls chain through reqwest.
+- `libcrux-chacha20poly1305` 0.0.7 is vendored with the upstream 0.0.8
+  overlong-output-buffer panic fix for RUSTSEC-2026-0124 because Songbird 0.6's
+  HPKE chain pins the older API. See `vendor/README.md`. The public API and
+  cryptographic output are unchanged. Cargo-deny cannot associate registry
+  advisories with path dependencies, so the regression guard remains required.
 - `libcrux-secrets` 0.0.5 is vendored with the upstream four-instruction fix for
   RUSTSEC-2026-0212. See `vendor/README.md`. No affected instruction remains.
   Cargo-deny does not scan this path dependency as a registry package; review

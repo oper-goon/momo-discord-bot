@@ -1,5 +1,24 @@
 # Dependency security backport
 
+`libcrux-chacha20poly1305/` is crates.io `libcrux-chacha20poly1305` 0.0.7
+(Apache-2.0), retained because Songbird 0.6's HPKE dependency chain pins
+`libcrux-aead` 0.0.7, which pins this exact version. The package's
+`.cargo_vcs_info.json` records its upstream commit.
+
+The `encrypt` implementation in `src/impl_hacl.rs` backports the upstream
+0.0.8 fix for
+[RUSTSEC-2026-0124](https://rustsec.org/advisories/RUSTSEC-2026-0124). It
+separates the fixed-size authentication tag from any excess output-buffer
+capacity instead of converting the entire remainder into a tag and panicking.
+The upstream regression case is included in `tests/chachapoly.rs`. No public API
+or cryptographic operation was changed.
+
+Cargo-deny does not match registry advisories against path dependencies. Keep
+the source regression guard in `bot-app`; a green advisory scan alone is not
+evidence that the patch remains present. Remove this vendor directory, patch
+entry, regression guard, and security-policy note together once Songbird's
+dependency chain supports `libcrux-chacha20poly1305` 0.0.8 or later.
+
 `libcrux-secrets/` is crates.io `libcrux-secrets` 0.0.5 (Apache-2.0), retained
 because Songbird 0.6's OpenMLS dependency chain pins this API and hax 0.3.6.
 The package's `.cargo_vcs_info.json` records its upstream commit.
