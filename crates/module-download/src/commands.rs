@@ -1,4 +1,7 @@
-use crate::{DownloadService, service::MediaSource};
+use crate::{
+    DownloadService,
+    service::{MediaOperation, MediaSource},
+};
 use anyhow::{Context as _, Result, ensure};
 use bot_core::{Command, Context, serenity};
 use reqwest::{Body, header::AUTHORIZATION, multipart};
@@ -8,7 +11,7 @@ use tokio_util::io::ReaderStream;
 use url::Url;
 
 pub fn commands() -> Vec<Command> {
-    vec![download()]
+    vec![download(), download_message(), media()]
 }
 
 fn service(ctx: Context<'_>) -> Result<Arc<DownloadService>> {
@@ -31,6 +34,28 @@ async fn download(
 ) -> Result<()> {
     let service = service(ctx)?;
     let source = resolve_source(ctx, &service, url.as_deref()).await?;
+    run_download(ctx, &service, source).await
+}
+
+/// Download media from this message.
+#[poise::command(
+    context_menu_command = "Download Media",
+    guild_only,
+    user_cooldown = 15,
+    required_bot_permissions = "SEND_MESSAGES | ATTACH_FILES"
+)]
+async fn download_message(ctx: Context<'_>, message: serenity::Message) -> Result<()> {
+    let service = service(ctx)?;
+    let source =
+        message_source(&service, &message).context("This message has no supported media")?;
+    run_download(ctx, &service, source).await
+}
+
+async fn run_download(
+    ctx: Context<'_>,
+    service: &DownloadService,
+    source: MediaSource,
+) -> Result<()> {
     let limit = upload_limit(ctx, service.config().absolute_max_bytes).await?;
     if let MediaSource::Attachment { declared_size, .. } = &source {
         ensure!(
@@ -39,6 +64,96 @@ async fn download(
         );
     }
     let artifact = service.download(source, limit).await?;
+    upload(ctx, &artifact.path, &artifact.filename, limit).await
+}
+
+/// Inspect or convert bounded media.
+#[poise::command(
+    slash_command,
+    prefix_command,
+    guild_only,
+    subcommands(
+        "media_info",
+        "media_audio",
+        "media_compress",
+        "media_gif",
+        "media_thumbnail"
+    ),
+    subcommand_required
+)]
+async fn media(ctx: Context<'_>) -> Result<()> {
+    bot_core::reply(ctx, "Use a media subcommand.").await
+}
+
+/// Show container, duration, size, and stream information.
+#[poise::command(slash_command, prefix_command, guild_only, rename = "info")]
+async fn media_info(ctx: Context<'_>, url: Option<String>) -> Result<()> {
+    let service = service(ctx)?;
+    let source = resolve_source(ctx, &service, url.as_deref()).await?;
+    bot_core::reply(ctx, service.inspect(source).await?).await
+}
+
+/// Extract MP3 audio from a video.
+#[poise::command(
+    slash_command,
+    prefix_command,
+    guild_only,
+    rename = "audio",
+    user_cooldown = 15,
+    required_bot_permissions = "SEND_MESSAGES | ATTACH_FILES"
+)]
+async fn media_audio(ctx: Context<'_>, url: Option<String>) -> Result<()> {
+    run_transform(ctx, url.as_deref(), MediaOperation::Audio).await
+}
+
+/// Re-encode a video to a smaller MP4.
+#[poise::command(
+    slash_command,
+    prefix_command,
+    guild_only,
+    rename = "compress",
+    user_cooldown = 15,
+    required_bot_permissions = "SEND_MESSAGES | ATTACH_FILES"
+)]
+async fn media_compress(ctx: Context<'_>, url: Option<String>) -> Result<()> {
+    run_transform(ctx, url.as_deref(), MediaOperation::Compress).await
+}
+
+/// Convert the first ten seconds of a video to a GIF.
+#[poise::command(
+    slash_command,
+    prefix_command,
+    guild_only,
+    rename = "gif",
+    user_cooldown = 15,
+    required_bot_permissions = "SEND_MESSAGES | ATTACH_FILES"
+)]
+async fn media_gif(ctx: Context<'_>, url: Option<String>) -> Result<()> {
+    run_transform(ctx, url.as_deref(), MediaOperation::Gif).await
+}
+
+/// Extract a JPEG thumbnail from a video.
+#[poise::command(
+    slash_command,
+    prefix_command,
+    guild_only,
+    rename = "thumbnail",
+    user_cooldown = 15,
+    required_bot_permissions = "SEND_MESSAGES | ATTACH_FILES"
+)]
+async fn media_thumbnail(ctx: Context<'_>, url: Option<String>) -> Result<()> {
+    run_transform(ctx, url.as_deref(), MediaOperation::Thumbnail).await
+}
+
+async fn run_transform(
+    ctx: Context<'_>,
+    explicit: Option<&str>,
+    operation: MediaOperation,
+) -> Result<()> {
+    let service = service(ctx)?;
+    let source = resolve_source(ctx, &service, explicit).await?;
+    let limit = upload_limit(ctx, service.config().absolute_max_bytes).await?;
+    let artifact = service.transform(source, limit, operation).await?;
     upload(ctx, &artifact.path, &artifact.filename, limit).await
 }
 
@@ -240,6 +355,8 @@ fn media_type(filename: &str) -> &'static str {
         Some("webm") => "video/webm",
         Some("mov") => "video/quicktime",
         Some("gif") => "image/gif",
+        Some("jpg" | "jpeg") => "image/jpeg",
+        Some("mp3") => "audio/mpeg",
         _ => "video/mp4",
     }
 }

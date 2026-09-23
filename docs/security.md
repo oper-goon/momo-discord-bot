@@ -71,6 +71,19 @@ not receive Discord credentials, browser cookies, or Google account credentials.
 Its container logging is disabled because upstream diagnostic output can include
 generated, short-lived tokens.
 
+Media Toolbox conversions run FFmpeg and FFprobe without a shell inside the
+Download module's isolated temporary workspace. They inherit the same source
+allowlist, DNS checks, single-job concurrency, cancellation, timeout, input
+ceiling, final upload-size check, and cleanup behavior. FFprobe requests only a
+fixed set of technical fields and caps its JSON output. FFmpeg diagnostics are
+bounded and never returned or logged verbatim.
+
+Utility bookmarks are an explicit persistence action. They store the invoking
+user ID, message location and author IDs, a short text excerpt or attachment
+name, and an optional note until the user deletes the bookmark. Bookmark lists
+and searches are ephemeral and ownership-scoped. Message reminders similarly
+store a bounded excerpt and jump link. They do not copy attachments or embeds.
+
 Do not commit bot tokens, local TOML, `.env`, SQLite files, resolver outputs,
 or signed media URLs. Default logs omit command arguments and dependency
 error payloads. Debug logging of third-party crates may expose extra data.
@@ -99,6 +112,10 @@ metadata are fetched with a Discord crawler user agent, strict time and
 response-size bounds, no proxy, and no redirects; only fixed, code-reviewed
 hosts or operator-selected Instagram hosts are accepted. Each provider receives
 the source post path, so operators should trust every configured provider.
+The manual Repair Social Embed message action may delete and replace the
+selected message only when invoked by its author or a member with Manage
+Messages. Normal module permission policy and current Discord permissions are
+re-evaluated for every invocation.
 Webhook reposts disable allowed mentions, add `via Momo` to the sender's
 display name, and reuse the sender's public Discord avatar. The original is
 deleted only after a successful repost; if deletion fails, Momo removes the

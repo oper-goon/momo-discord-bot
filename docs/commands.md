@@ -56,6 +56,14 @@ Enabled by default.
 | `/poll create <question> <options>` | Create a native Discord poll from 2–10 `|`-separated options. |
 | `/remind <duration> <message>` | Create a persistent reminder. |
 | `/reminders` | List your pending reminders. |
+| `/reminder repeat <interval> <message>` | Create a recurring reminder. |
+| `/reminder edit <id> <duration> [message]` | Reschedule a reminder and optionally replace its message. |
+| `/reminder snooze <id> <duration>` | Move a reminder later without changing its message. |
+| `/reminder cancel <id>` | Delete one of your reminders. |
+| `/bookmark list` | List your ten most recent private bookmarks. |
+| `/bookmark search <query>` | Search your saved message excerpts and notes. |
+| `/bookmark note <id> <note>` | Add or replace a private note on a bookmark. |
+| `/bookmark delete <id>` | Delete one of your bookmarks. |
 | `/timestamp <unix-seconds>` | Render a Discord timestamp and its reusable markup. |
 
 ## Administration (`admin`)
@@ -124,6 +132,11 @@ Disabled by default.
 | Command | Description |
 | --- | --- |
 | `/download [URL]` | Download and reupload media from a public URL; when omitted, inspect a replied message or recent channel history. |
+| `/media info [URL]` | Show container, duration, size, video, and audio stream information. |
+| `/media audio [URL]` | Extract MP3 audio from a video. |
+| `/media compress [URL]` | Re-encode a video as a smaller MP4. |
+| `/media gif [URL]` | Convert the first ten seconds of a video into a GIF. |
+| `/media thumbnail [URL]` | Extract a JPEG thumbnail from a video. |
 
 ## Image Search (`image`)
 
@@ -145,11 +158,23 @@ Disabled by default and slash-only. It requires the operator's
 
 ## Social Embeds (`social-embeds`)
 
-Disabled by default. This event-driven module has no feature command. When it
-sees a supported X/Twitter, Instagram, TikTok, Reddit, Threads, or Bluesky post
-URL, it reposts the message through a webhook with links to the original, the
-selected embed provider, and the platform creator when available.
+Disabled by default. When it sees a supported X/Twitter, Instagram, TikTok,
+Reddit, Threads, or Bluesky post URL, it reposts the message through a webhook
+with links to the original, the selected embed provider, and the platform
+creator when available.
 
 Use `/module enable social-embeds` to activate it. Add the standalone word
 `fxignore`, wrap a URL in angle brackets, or place it in inline or fenced code
 to leave a message untouched.
+
+## Message actions
+
+Right-click or long-press a message and open **Apps** to use these native
+context-menu actions when their module is enabled:
+
+| Action | Module | Description |
+| --- | --- | --- |
+| `Bookmark Message` | Utility | Save a private excerpt and jump link. |
+| `Remind Me in 1 Hour` | Utility | Create a one-hour reminder pointing back to the message. |
+| `Download Media` | Download | Download and reupload supported media from the selected message. |
+| `Repair Social Embed` | Social Embeds | Manually retry supported social links; other users' messages require Manage Messages. |

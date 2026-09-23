@@ -2349,6 +2349,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "bot-core",
+ "poise",
  "reqwest",
  "tokio",
  "url",

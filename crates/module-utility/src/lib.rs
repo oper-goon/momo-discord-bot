@@ -9,7 +9,17 @@ pub fn module() -> RegisteredModule {
         "Utility",
         false,
         true,
-        vec![choose(), poll(), remind(), reminders(), timestamp()],
+        vec![
+            choose(),
+            poll(),
+            remind(),
+            reminders(),
+            reminder(),
+            bookmark(),
+            bookmark_message(),
+            remind_message(),
+            timestamp(),
+        ],
     )
 }
 /// Choose one option separated by a vertical bar.
@@ -109,6 +119,7 @@ async fn remind(ctx: Context<'_>, duration: String, #[rest] message: String) -> 
             ctx.author().id.get(),
             &message,
             due,
+            None,
         )
         .await?;
     reply(
@@ -127,7 +138,17 @@ async fn reminders(ctx: Context<'_>) -> Result<()> {
         .await?;
     let lines: Vec<_> = rows
         .iter()
-        .map(|r| format!("#{} <t:{}:R> {}", r.id, r.due_at_ms / 1000, r.message))
+        .map(|r| {
+            format!(
+                "#{} <t:{}:R>{} {}",
+                r.id,
+                r.due_at_ms / 1000,
+                r.interval_seconds
+                    .map(|seconds| format!(" (every {})", format_duration(seconds as u64)))
+                    .unwrap_or_default(),
+                r.message
+            )
+        })
         .collect();
     reply(
         ctx,
@@ -138,6 +159,305 @@ async fn reminders(ctx: Context<'_>) -> Result<()> {
         },
     )
     .await
+}
+/// Edit, repeat, snooze, or cancel reminders.
+#[poise::command(
+    slash_command,
+    prefix_command,
+    subcommands(
+        "reminder_repeat",
+        "reminder_edit",
+        "reminder_snooze",
+        "reminder_cancel"
+    ),
+    subcommand_required
+)]
+async fn reminder(ctx: Context<'_>) -> Result<()> {
+    reply(ctx, "Use a reminder subcommand.").await
+}
+
+/// Create a recurring reminder.
+#[poise::command(slash_command, prefix_command, rename = "repeat", user_cooldown = 5)]
+async fn reminder_repeat(
+    ctx: Context<'_>,
+    interval: String,
+    #[rest] message: String,
+) -> Result<()> {
+    ensure!(
+        !message.trim().is_empty() && message.chars().count() <= 1500,
+        "Reminder must be 1–1500 characters"
+    );
+    let seconds = parse_duration(&interval)?;
+    ensure!(
+        seconds >= 60,
+        "Recurring reminders must be at least one minute apart"
+    );
+    let due = now_ms() + seconds as i64 * 1000;
+    let id = ctx
+        .data()
+        .database
+        .add_reminder(
+            ctx.guild_id().map(|guild| guild.get()),
+            ctx.channel_id().get(),
+            ctx.author().id.get(),
+            &message,
+            due,
+            Some(seconds),
+        )
+        .await?;
+    reply(
+        ctx,
+        format!("Recurring reminder #{id} starts <t:{}:R>.", due / 1000),
+    )
+    .await
+}
+
+/// Change when a reminder fires and optionally replace its message.
+#[poise::command(slash_command, prefix_command, rename = "edit")]
+async fn reminder_edit(
+    ctx: Context<'_>,
+    id: i64,
+    duration: String,
+    #[rest] message: Option<String>,
+) -> Result<()> {
+    edit_reminder(ctx, id, duration, message).await
+}
+
+async fn edit_reminder(
+    ctx: Context<'_>,
+    id: i64,
+    duration: String,
+    message: Option<String>,
+) -> Result<()> {
+    if let Some(message) = &message {
+        ensure!(
+            !message.trim().is_empty() && message.chars().count() <= 1500,
+            "Reminder must be 1–1500 characters"
+        );
+    }
+    let due = now_ms() + parse_duration(&duration)? as i64 * 1000;
+    ensure!(
+        ctx.data()
+            .database
+            .update_reminder(id, ctx.author().id.get(), due, message.as_deref())
+            .await?,
+        "Reminder not found"
+    );
+    reply(
+        ctx,
+        format!("Reminder #{id} updated for <t:{}:F>.", due / 1000),
+    )
+    .await
+}
+
+/// Move a reminder later without changing its message.
+#[poise::command(slash_command, prefix_command, rename = "snooze")]
+async fn reminder_snooze(ctx: Context<'_>, id: i64, duration: String) -> Result<()> {
+    edit_reminder(ctx, id, duration, None).await
+}
+
+/// Delete one of your reminders.
+#[poise::command(slash_command, prefix_command, rename = "cancel")]
+async fn reminder_cancel(ctx: Context<'_>, id: i64) -> Result<()> {
+    ensure!(
+        ctx.data()
+            .database
+            .cancel_reminder(id, ctx.author().id.get())
+            .await?,
+        "Reminder not found"
+    );
+    reply(ctx, format!("Reminder #{id} cancelled.")).await
+}
+
+/// Manage private message bookmarks.
+#[poise::command(
+    slash_command,
+    subcommands("bookmark_list", "bookmark_search", "bookmark_note", "bookmark_delete"),
+    subcommand_required
+)]
+async fn bookmark(ctx: Context<'_>) -> Result<()> {
+    reply(ctx, "Use a bookmark subcommand or right-click a message.").await
+}
+
+/// List your most recent bookmarks.
+#[poise::command(slash_command, rename = "list")]
+async fn bookmark_list(ctx: Context<'_>) -> Result<()> {
+    show_bookmarks(ctx, None).await
+}
+
+/// Search your saved message excerpts and notes.
+#[poise::command(slash_command, rename = "search")]
+async fn bookmark_search(ctx: Context<'_>, #[rest] query: String) -> Result<()> {
+    ensure!(
+        !query.trim().is_empty() && query.chars().count() <= 100,
+        "Search must be 1–100 characters"
+    );
+    show_bookmarks(ctx, Some(query.trim())).await
+}
+
+/// Add or replace a private note on a bookmark.
+#[poise::command(slash_command, rename = "note")]
+async fn bookmark_note(ctx: Context<'_>, id: i64, #[rest] note: String) -> Result<()> {
+    ensure!(
+        !note.trim().is_empty() && note.chars().count() <= 300,
+        "Note must be 1–300 characters"
+    );
+    ensure!(
+        ctx.data()
+            .database
+            .note_bookmark(id, ctx.author().id.get(), note.trim())
+            .await?,
+        "Bookmark not found"
+    );
+    reply(ctx, format!("Bookmark #{id} note updated.")).await
+}
+
+/// Delete one of your bookmarks.
+#[poise::command(slash_command, rename = "delete")]
+async fn bookmark_delete(ctx: Context<'_>, id: i64) -> Result<()> {
+    ensure!(
+        ctx.data()
+            .database
+            .delete_bookmark(id, ctx.author().id.get())
+            .await?,
+        "Bookmark not found"
+    );
+    reply(ctx, format!("Bookmark #{id} deleted.")).await
+}
+
+/// Save this message to your private bookmarks.
+#[poise::command(context_menu_command = "Bookmark Message")]
+async fn bookmark_message(ctx: Context<'_>, message: serenity::Message) -> Result<()> {
+    let excerpt = message_excerpt(&message);
+    let id = ctx
+        .data()
+        .database
+        .add_bookmark(
+            ctx.author().id.get(),
+            message.guild_id.map(|guild| guild.get()),
+            message.channel_id.get(),
+            message.id.get(),
+            message.author.id.get(),
+            &excerpt,
+        )
+        .await?;
+    reply(
+        ctx,
+        format!(
+            "Bookmark #{id} saved: [jump to message](<{}>)",
+            message_url(&message)
+        ),
+    )
+    .await
+}
+
+/// Create a one-hour reminder for this message.
+#[poise::command(context_menu_command = "Remind Me in 1 Hour")]
+async fn remind_message(ctx: Context<'_>, message: serenity::Message) -> Result<()> {
+    let due = now_ms() + 3600 * 1000;
+    let text = format!(
+        "Message from {}: {}\n{}",
+        message.author.display_name(),
+        message_excerpt(&message),
+        message_url(&message)
+    );
+    let id = ctx
+        .data()
+        .database
+        .add_reminder(
+            message.guild_id.map(|guild| guild.get()),
+            message.channel_id.get(),
+            ctx.author().id.get(),
+            &text,
+            due,
+            None,
+        )
+        .await?;
+    reply(
+        ctx,
+        format!("Reminder #{id} saved for <t:{}:F>.", due / 1000),
+    )
+    .await
+}
+
+async fn show_bookmarks(ctx: Context<'_>, search: Option<&str>) -> Result<()> {
+    let rows = ctx
+        .data()
+        .database
+        .bookmarks(ctx.author().id.get(), search)
+        .await?;
+    let lines: Vec<String> = rows
+        .iter()
+        .take(10)
+        .map(|bookmark| {
+            let guild = bookmark.guild_id.as_deref().unwrap_or("@me");
+            let note = bookmark
+                .note
+                .as_deref()
+                .map(|note| format!(" — {note}"))
+                .unwrap_or_default();
+            format!(
+                "#{} [jump](<https://discord.com/channels/{}/{}/{}>) <@{}> — {}{} · <t:{}:R>",
+                bookmark.id,
+                guild,
+                bookmark.channel_id,
+                bookmark.message_id,
+                bookmark.author_user_id,
+                bookmark.excerpt,
+                note,
+                bookmark.created_at_ms / 1000
+            )
+        })
+        .collect();
+    reply(
+        ctx,
+        if lines.is_empty() {
+            "No matching bookmarks.".to_owned()
+        } else {
+            lines.join("\n")
+        },
+    )
+    .await
+}
+
+fn message_excerpt(message: &serenity::Message) -> String {
+    let value = if message.content.trim().is_empty() {
+        message
+            .attachments
+            .first()
+            .map(|attachment| attachment.filename.as_str())
+            .unwrap_or("Message without text")
+    } else {
+        message.content.trim()
+    };
+    value
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ")
+        .chars()
+        .take(160)
+        .collect()
+}
+
+fn message_url(message: &serenity::Message) -> String {
+    format!(
+        "https://discord.com/channels/{}/{}/{}",
+        message
+            .guild_id
+            .map(|guild| guild.to_string())
+            .unwrap_or_else(|| "@me".to_owned()),
+        message.channel_id,
+        message.id
+    )
+}
+
+fn format_duration(seconds: u64) -> String {
+    for (suffix, unit) in [('d', 86_400), ('h', 3_600), ('m', 60)] {
+        if seconds.is_multiple_of(unit) {
+            return format!("{}{}", seconds / unit, suffix);
+        }
+    }
+    format!("{seconds}s")
 }
 /// Format a Unix timestamp in Discord's local time display.
 #[poise::command(slash_command, prefix_command)]

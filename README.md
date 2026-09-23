@@ -67,11 +67,11 @@ The complete syntax and description for every command is in the
 | --- | --- | --- |
 | `core` | Required | Help, module activation, permissions, prefixes, and server configuration |
 | `general` | Yes | Ping, avatars, and user, server, and role information |
-| `utility` | Yes | Choices, native polls, persistent reminders, and timestamps |
+| `utility` | Yes | Choices, polls, recurring reminders, private bookmarks, and timestamps |
 | `admin` | No | Announcements, slowmode, nicknames, and role assignment |
 | `moderation` | No | Kick, ban, timeout, purge, warnings, and auditable cases |
 | `music` | No | Voice playback, queues, controls, repeat, shuffle, and saved playlists |
-| `download` | No | Bounded video downloads and Discord reuploads |
+| `download` | No | Bounded downloads, media inspection, conversion, and Discord reuploads |
 | `image` | No | Safe image search with interactive result navigation |
 | `torbox` | No | Cached-magnet file links and subscription-gated video streams |
 | `social-embeds` | No | Webhook-based embeds for X, Instagram, TikTok, Reddit, Threads, and Bluesky |

@@ -32,6 +32,18 @@ pub struct Reminder {
     pub guild_id: Option<String>,
     pub message: String,
     pub due_at_ms: i64,
+    pub interval_seconds: Option<i64>,
+}
+#[derive(Debug)]
+pub struct Bookmark {
+    pub id: i64,
+    pub guild_id: Option<String>,
+    pub channel_id: String,
+    pub message_id: String,
+    pub author_user_id: String,
+    pub excerpt: String,
+    pub note: Option<String>,
+    pub created_at_ms: i64,
 }
 #[derive(Debug)]
 pub struct Case {
@@ -180,16 +192,17 @@ impl Database {
         user: u64,
         message: &str,
         due: i64,
+        interval_seconds: Option<u64>,
     ) -> Result<i64> {
-        Ok(sqlx::query_scalar("INSERT INTO reminders(guild_id,channel_id,user_id,message,due_at_ms) VALUES(?,?,?,?,?) RETURNING id").bind(guild.map(|v|v.to_string())).bind(channel.to_string()).bind(user.to_string()).bind(message).bind(due).fetch_one(&self.pool).await?)
+        Ok(sqlx::query_scalar("INSERT INTO reminders(guild_id,channel_id,user_id,message,due_at_ms,interval_seconds) VALUES(?,?,?,?,?,?) RETURNING id").bind(guild.map(|v|v.to_string())).bind(channel.to_string()).bind(user.to_string()).bind(message).bind(due).bind(interval_seconds.map(|value| value as i64)).fetch_one(&self.pool).await?)
     }
     pub async fn reminders(&self, user: Option<u64>, due: Option<i64>) -> Result<Vec<Reminder>> {
-        sqlx::query("SELECT * FROM reminders WHERE delivered_at_ms IS NULL AND (? IS NULL OR user_id=?) AND (? IS NULL OR due_at_ms<=?) ORDER BY due_at_ms LIMIT 100").bind(user.map(|v|v.to_string())).bind(user.map(|v|v.to_string())).bind(due).bind(due).fetch_all(&self.pool).await?.into_iter().map(|r|Ok(Reminder { id:r.try_get("id")?,user_id:r.try_get("user_id")?,channel_id:r.try_get("channel_id")?,guild_id:r.try_get("guild_id")?,message:r.try_get("message")?,due_at_ms:r.try_get("due_at_ms")? })).collect()
+        sqlx::query("SELECT * FROM reminders WHERE delivered_at_ms IS NULL AND (? IS NULL OR user_id=?) AND (? IS NULL OR due_at_ms<=?) ORDER BY due_at_ms LIMIT 100").bind(user.map(|v|v.to_string())).bind(user.map(|v|v.to_string())).bind(due).bind(due).fetch_all(&self.pool).await?.into_iter().map(|r|Ok(Reminder { id:r.try_get("id")?,user_id:r.try_get("user_id")?,channel_id:r.try_get("channel_id")?,guild_id:r.try_get("guild_id")?,message:r.try_get("message")?,due_at_ms:r.try_get("due_at_ms")?,interval_seconds:r.try_get("interval_seconds")? })).collect()
     }
     pub async fn reminder_result(&self, id: i64, success: bool) -> Result<()> {
         if success {
-            sqlx::query("UPDATE reminders SET delivered_at_ms=? WHERE id=?")
-                .bind(now_ms())
+            sqlx::query("UPDATE reminders SET delivered_at_ms=CASE WHEN interval_seconds IS NULL THEN ? ELSE NULL END,due_at_ms=CASE WHEN interval_seconds IS NULL THEN due_at_ms ELSE ?+(interval_seconds*1000) END,failure_count=0 WHERE id=?")
+                .bind(now_ms()).bind(now_ms())
                 .bind(id)
                 .execute(&self.pool)
                 .await?;
@@ -197,6 +210,56 @@ impl Database {
             sqlx::query("UPDATE reminders SET failure_count=failure_count+1,due_at_ms=?+MIN(3600000,30000*(failure_count+1)) WHERE id=?").bind(now_ms()).bind(id).execute(&self.pool).await?;
         }
         Ok(())
+    }
+    pub async fn update_reminder(
+        &self,
+        id: i64,
+        user: u64,
+        due: i64,
+        message: Option<&str>,
+    ) -> Result<bool> {
+        Ok(sqlx::query("UPDATE reminders SET due_at_ms=?,message=COALESCE(?,message),delivered_at_ms=NULL,failure_count=0 WHERE id=? AND user_id=?")
+            .bind(due).bind(message).bind(id).bind(user.to_string()).execute(&self.pool).await?.rows_affected() > 0)
+    }
+    pub async fn cancel_reminder(&self, id: i64, user: u64) -> Result<bool> {
+        Ok(
+            sqlx::query("DELETE FROM reminders WHERE id=? AND user_id=?")
+                .bind(id)
+                .bind(user.to_string())
+                .execute(&self.pool)
+                .await?
+                .rows_affected()
+                > 0,
+        )
+    }
+    pub async fn add_bookmark(
+        &self,
+        user: u64,
+        guild: Option<u64>,
+        channel: u64,
+        message: u64,
+        author: u64,
+        excerpt: &str,
+    ) -> Result<i64> {
+        Ok(sqlx::query_scalar("INSERT INTO bookmarks(user_id,guild_id,channel_id,message_id,author_user_id,excerpt,created_at_ms) VALUES(?,?,?,?,?,?,?) ON CONFLICT(user_id,message_id) DO UPDATE SET excerpt=excluded.excerpt RETURNING id")
+            .bind(user.to_string()).bind(guild.map(|value| value.to_string())).bind(channel.to_string()).bind(message.to_string()).bind(author.to_string()).bind(excerpt).bind(now_ms()).fetch_one(&self.pool).await?)
+    }
+    pub async fn bookmarks(&self, user: u64, search: Option<&str>) -> Result<Vec<Bookmark>> {
+        let search =
+            search.map(|value| format!("%{}%", value.replace('%', "\\%").replace('_', "\\_")));
+        sqlx::query("SELECT * FROM bookmarks WHERE user_id=? AND (? IS NULL OR excerpt LIKE ? ESCAPE '\\' OR note LIKE ? ESCAPE '\\') ORDER BY created_at_ms DESC LIMIT 25")
+            .bind(user.to_string()).bind(&search).bind(&search).bind(&search).fetch_all(&self.pool).await?.into_iter().map(|r| Ok(Bookmark { id:r.try_get("id")?,guild_id:r.try_get("guild_id")?,channel_id:r.try_get("channel_id")?,message_id:r.try_get("message_id")?,author_user_id:r.try_get("author_user_id")?,excerpt:r.try_get("excerpt")?,note:r.try_get("note")?,created_at_ms:r.try_get("created_at_ms")? })).collect()
+    }
+    pub async fn delete_bookmark(&self, id: i64, user: u64) -> Result<bool> {
+        Ok(
+            sqlx::query("DELETE FROM bookmarks WHERE id=? AND user_id=?")
+                .bind(id)
+                .bind(user.to_string())
+                .execute(&self.pool)
+                .await?
+                .rows_affected()
+                > 0,
+        )
     }
     pub async fn music_settings(&self, guild: u64) -> Result<Option<MusicSettings>> {
         let row = sqlx::query("SELECT * FROM music_settings WHERE guild_id=?")
@@ -280,6 +343,18 @@ impl Database {
         .rows_affected()
             > 0)
     }
+    pub async fn note_bookmark(&self, id: i64, user: u64, note: &str) -> Result<bool> {
+        Ok(
+            sqlx::query("UPDATE bookmarks SET note=? WHERE id=? AND user_id=?")
+                .bind(note)
+                .bind(id)
+                .bind(user.to_string())
+                .execute(&self.pool)
+                .await?
+                .rows_affected()
+                > 0,
+        )
+    }
     /// Lock the playlist for writing before reading its entries to avoid lost edits.
     pub async fn edit_playlist(
         &self,
@@ -345,7 +420,7 @@ mod tests {
     #[tokio::test]
     async fn migrations_repositories_and_transactions() -> Result<()> {
         let db = Database::open("sqlite::memory:", 1).await?;
-        assert_eq!(db.health().await?, 1);
+        assert_eq!(db.health().await?, 2);
         assert_eq!(db.module_enabled(u64::MAX, "music").await?, None);
         db.set_module(u64::MAX, "music", true, 1).await?;
         assert_eq!(db.module_enabled(u64::MAX, "music").await?, Some(true));
@@ -371,6 +446,23 @@ mod tests {
         assert_eq!(db.playlist(1, 2, "test").await?.len(), 1);
         assert!(db.delete_playlist(1, 2, "test").await?);
         assert!(db.playlist(1, 2, "test").await.is_err());
+        let reminder = db
+            .add_reminder(Some(1), 2, 3, "repeat", now_ms() + 60_000, Some(60))
+            .await?;
+        let reminders = db.reminders(Some(3), None).await?;
+        assert_eq!(reminders[0].interval_seconds, Some(60));
+        assert!(
+            db.update_reminder(reminder, 3, now_ms() + 120_000, Some("edited"))
+                .await?
+        );
+        assert!(db.cancel_reminder(reminder, 3).await?);
+        let bookmark = db
+            .add_bookmark(3, Some(1), 2, 4, 5, "useful message")
+            .await?;
+        assert_eq!(db.bookmarks(3, Some("useful")).await?.len(), 1);
+        assert!(db.note_bookmark(bookmark, 3, "reference").await?);
+        assert_eq!(db.bookmarks(3, Some("reference")).await?.len(), 1);
+        assert!(db.delete_bookmark(bookmark, 3).await?);
         db.close().await;
         Ok(())
     }

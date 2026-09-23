@@ -11,6 +11,12 @@ Versioning and Keep a Changelog conventions.
   TikTok, Reddit, Threads, and Bluesky embeds, including Instagram provider
   failover and linked original, provider, and creator attribution.
 - A dedicated command reference grouped by module and linked from the README.
+- Native message actions for bookmarking, one-hour reminders, media downloads,
+  and manual social-embed repair.
+- Recurring, editable, snoozable, and cancellable reminders plus private,
+  searchable message bookmarks.
+- A bounded media toolbox for inspection, audio extraction, video compression,
+  GIF conversion, and thumbnail extraction.
 
 ## [0.2.0] - 2026-09-21
 

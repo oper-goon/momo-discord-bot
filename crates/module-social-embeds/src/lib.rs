@@ -2,7 +2,10 @@
 
 use anyhow::{Context, Result, ensure};
 use async_trait::async_trait;
-use bot_core::{AppConfig, BotData, EventHandler, RegisteredModule, serenity};
+use bot_core::{
+    AppConfig, BotData, Context as BotContext, EventHandler, RegisteredModule,
+    effective_permissions, serenity,
+};
 use reqwest::header::{ACCEPT, CONTENT_TYPE, USER_AGENT};
 use std::{collections::HashMap, sync::Arc, time::Duration};
 use tokio::sync::{Mutex, Semaphore};
@@ -385,13 +388,50 @@ impl EventHandler for SocialEmbedEvents {
 }
 
 pub fn module(service: Arc<SocialEmbedService>) -> RegisteredModule {
-    let mut module = RegisteredModule::new("social-embeds", "Social Embeds", false, false, vec![]);
+    let mut module = RegisteredModule::new(
+        "social-embeds",
+        "Social Embeds",
+        false,
+        false,
+        vec![repair_embed()],
+    );
     module.descriptor.provided_services.push("social-embeds");
     module.intents =
         serenity::GatewayIntents::GUILD_MESSAGES | serenity::GatewayIntents::MESSAGE_CONTENT;
     module.subscriptions.push("message");
     module.handler = Some(Arc::new(SocialEmbedEvents { service }));
     module
+}
+
+/// Repair supported social links in this message.
+#[poise::command(
+    context_menu_command = "Repair Social Embed",
+    guild_only,
+    required_bot_permissions = "MANAGE_MESSAGES | MANAGE_WEBHOOKS"
+)]
+async fn repair_embed(ctx: BotContext<'_>, message: serenity::Message) -> Result<()> {
+    ensure!(
+        message.webhook_id.is_none(),
+        "Webhook messages cannot be repaired"
+    );
+    ensure!(
+        message.author.id == ctx.author().id
+            || effective_permissions(ctx)
+                .await?
+                .is_some_and(|permissions| {
+                    permissions.contains(serenity::Permissions::MANAGE_MESSAGES)
+                }),
+        "You can only repair your own messages"
+    );
+    let service = ctx.data().services.get::<SocialEmbedService>()?;
+    let content = service
+        .rewrite(&message.content)
+        .await?
+        .context("This message has no supported social link")?;
+    service
+        .repost(ctx.serenity_context(), &message, content)
+        .await?;
+    bot_core::reply(ctx, "Social embed repaired.").await
 }
 
 fn link_header(link: &RewrittenLink) -> String {

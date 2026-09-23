@@ -34,6 +34,14 @@ pub struct DownloadArtifact {
     _permit: tokio::sync::OwnedSemaphorePermit,
 }
 
+#[derive(Clone, Copy)]
+pub enum MediaOperation {
+    Audio,
+    Compress,
+    Gif,
+    Thumbnail,
+}
+
 struct TempJob {
     path: PathBuf,
 }
@@ -129,6 +137,149 @@ impl DownloadService {
             _job: job,
             _permit: permit,
         })
+    }
+
+    pub async fn transform(
+        &self,
+        source: MediaSource,
+        output_limit: u64,
+        operation: MediaOperation,
+    ) -> Result<DownloadArtifact> {
+        let mut artifact = self
+            .download(source, self.config.absolute_max_bytes)
+            .await?;
+        let (filename, arguments): (&str, &[&str]) = match operation {
+            MediaOperation::Audio => ("audio.mp3", &["-vn", "-c:a", "libmp3lame", "-b:a", "192k"]),
+            MediaOperation::Compress => (
+                "compressed.mp4",
+                &[
+                    "-c:v",
+                    "libx264",
+                    "-preset",
+                    "veryfast",
+                    "-crf",
+                    "28",
+                    "-c:a",
+                    "aac",
+                    "-b:a",
+                    "96k",
+                    "-movflags",
+                    "+faststart",
+                ],
+            ),
+            MediaOperation::Gif => (
+                "clip.gif",
+                &[
+                    "-t",
+                    "10",
+                    "-vf",
+                    "fps=10,scale=640:-2:flags=lanczos",
+                    "-loop",
+                    "0",
+                ],
+            ),
+            MediaOperation::Thumbnail => (
+                "thumbnail.jpg",
+                &[
+                    "-ss",
+                    "1",
+                    "-frames:v",
+                    "1",
+                    "-vf",
+                    "scale=1280:-2:force_original_aspect_ratio=decrease",
+                    "-q:v",
+                    "2",
+                ],
+            ),
+        };
+        let output = artifact
+            .path
+            .parent()
+            .context("Media workspace unavailable")?
+            .join(filename);
+        let mut command = Command::new("ffmpeg");
+        command
+            .args(["-nostdin", "-hide_banner", "-loglevel", "error", "-y", "-i"])
+            .arg(&artifact.path)
+            .args(arguments)
+            .arg(&output);
+        self.run_media_command(command, "Media conversion").await?;
+        let size = tokio::fs::metadata(&output).await?.len();
+        ensure!(size > 0, "Media conversion produced an empty file");
+        ensure!(
+            size <= output_limit.min(self.config.absolute_max_bytes),
+            "Converted media does not fit Discord's upload limit"
+        );
+        artifact.path = output;
+        artifact.filename = filename.to_owned();
+        Ok(artifact)
+    }
+
+    pub async fn inspect(&self, source: MediaSource) -> Result<String> {
+        let artifact = self
+            .download(source, self.config.absolute_max_bytes)
+            .await?;
+        let mut command = Command::new("ffprobe");
+        command
+            .args([
+                "-v",
+                "error",
+                "-show_entries",
+                "format=format_name,duration,size:stream=codec_type,codec_name,width,height,channels,sample_rate",
+                "-of",
+                "json",
+            ])
+            .arg(&artifact.path)
+            .stdin(Stdio::null())
+            .stderr(Stdio::null())
+            .kill_on_drop(true);
+        let output = tokio::time::timeout(
+            Duration::from_secs(self.config.timeout_seconds),
+            command.output(),
+        )
+        .await
+        .context("Media inspection timed out")??;
+        ensure!(output.status.success(), "Media inspection failed");
+        ensure!(
+            output.stdout.len() <= 64 * 1024,
+            "Media information was too large"
+        );
+        describe_probe(&serde_json::from_slice(&output.stdout)?)
+    }
+
+    async fn run_media_command(&self, mut command: Command, action: &str) -> Result<()> {
+        command
+            .stdin(Stdio::null())
+            .stdout(Stdio::null())
+            .stderr(Stdio::piped())
+            .kill_on_drop(true);
+        let mut child = command
+            .spawn()
+            .map_err(|_| anyhow::anyhow!("FFmpeg is unavailable on this host"))?;
+        let stderr = child
+            .stderr
+            .take()
+            .context("FFmpeg diagnostics unavailable")?;
+        let diagnostics = async {
+            let mut bytes = Vec::new();
+            stderr.take(65_537).read_to_end(&mut bytes).await?;
+            ensure!(bytes.len() <= 65_536, "FFmpeg diagnostics exceeded limit");
+            Ok::<_, anyhow::Error>(bytes)
+        };
+        let result =
+            tokio::time::timeout(Duration::from_secs(self.config.timeout_seconds), async {
+                let (diagnostics, status) = tokio::try_join!(diagnostics, async {
+                    Ok::<_, anyhow::Error>(child.wait().await?)
+                })?;
+                Ok::<_, anyhow::Error>((diagnostics, status))
+            })
+            .await
+            .with_context(|| format!("{action} timed out"))??;
+        if !result.1.success() {
+            tracing::warn!(category = "ffmpeg", "Media conversion failed");
+            anyhow::bail!("{action} failed for this media");
+        }
+        Ok(())
     }
 
     async fn download_inner(
@@ -290,6 +441,69 @@ impl DownloadService {
         )
         .await
         .is_ok_and(|result| result.is_ok_and(|status| status.success()))
+    }
+}
+
+fn describe_probe(value: &serde_json::Value) -> Result<String> {
+    let format = value.get("format").and_then(serde_json::Value::as_object);
+    let duration = format
+        .and_then(|format| format.get("duration"))
+        .and_then(serde_json::Value::as_str)
+        .and_then(|value| value.parse::<f64>().ok())
+        .map(|value| format!("{value:.1}s"))
+        .unwrap_or_else(|| "unknown".to_owned());
+    let size = format
+        .and_then(|format| format.get("size"))
+        .and_then(serde_json::Value::as_str)
+        .and_then(|value| value.parse::<u64>().ok())
+        .map(human_size)
+        .unwrap_or_else(|| "unknown".to_owned());
+    let container = format
+        .and_then(|format| format.get("format_name"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("unknown");
+    let streams = value
+        .get("streams")
+        .and_then(serde_json::Value::as_array)
+        .context("Media information was incomplete")?;
+    let video = streams
+        .iter()
+        .find(|stream| stream["codec_type"] == "video");
+    let audio = streams
+        .iter()
+        .find(|stream| stream["codec_type"] == "audio");
+    let video = video.map_or_else(
+        || "none".to_owned(),
+        |stream| {
+            format!(
+                "{} ({}×{})",
+                stream["codec_name"].as_str().unwrap_or("unknown"),
+                stream["width"].as_u64().unwrap_or(0),
+                stream["height"].as_u64().unwrap_or(0)
+            )
+        },
+    );
+    let audio = audio.map_or_else(
+        || "none".to_owned(),
+        |stream| {
+            format!(
+                "{} ({} channels, {} Hz)",
+                stream["codec_name"].as_str().unwrap_or("unknown"),
+                stream["channels"].as_u64().unwrap_or(0),
+                stream["sample_rate"].as_str().unwrap_or("unknown")
+            )
+        },
+    );
+    Ok(format!(
+        "Container: `{container}`\nDuration: `{duration}`\nSize: `{size}`\nVideo: `{video}`\nAudio: `{audio}`"
+    ))
+}
+
+fn human_size(bytes: u64) -> String {
+    if bytes >= 1024 * 1024 {
+        format!("{:.1} MiB", bytes as f64 / (1024.0 * 1024.0))
+    } else {
+        format!("{} KiB", bytes / 1024)
     }
 }
 
@@ -465,5 +679,20 @@ mod tests {
             classify_download_failure("login attempt failed").1,
             "provider"
         );
+    }
+
+    #[test]
+    fn formats_bounded_probe_metadata() {
+        let description = describe_probe(&serde_json::json!({
+            "format": {"format_name": "mov,mp4", "duration": "12.5", "size": "2097152"},
+            "streams": [
+                {"codec_type": "video", "codec_name": "h264", "width": 1280, "height": 720},
+                {"codec_type": "audio", "codec_name": "aac", "channels": 2, "sample_rate": "48000"}
+            ]
+        }))
+        .unwrap();
+        assert!(description.contains("12.5s"));
+        assert!(description.contains("h264 (1280×720)"));
+        assert!(description.contains("aac (2 channels, 48000 Hz)"));
     }
 }
