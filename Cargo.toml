@@ -22,7 +22,7 @@ tokio = { version = "1", features = ["full", "test-util"] }
 tokio-util = { version = "0.7", features = ["rt"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
-toml = "0.9"
+toml = "1.1"
 poise = { version = "0.7", default-features = false, features = ["cache", "chrono", "handle_panics"] }
 serenity = { version = "0.12.5", default-features = false, features = ["client", "gateway", "model", "cache", "native_tls_backend"] }
 songbird = { version = "0.6", default-features = false, features = ["driver", "gateway", "serenity", "native", "tungstenite"] }
