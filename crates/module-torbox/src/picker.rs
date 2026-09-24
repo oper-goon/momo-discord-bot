@@ -40,6 +40,7 @@ pub struct PickerPage {
     pub pages: usize,
     pub total: usize,
     pub omitted: usize,
+    pub download_all_available: bool,
     pub entries: Vec<PickerEntry>,
 }
 
@@ -48,6 +49,11 @@ pub struct PickerSelection {
     pub action: PickerAction,
     pub torrent_id: u64,
     pub entry: PickerEntry,
+}
+
+#[derive(Clone, Debug)]
+pub struct PickerDownloadAll {
+    pub torrent_id: u64,
 }
 
 #[derive(Debug)]
@@ -69,6 +75,7 @@ struct PickerSession {
     action: PickerAction,
     page: usize,
     omitted: usize,
+    download_all_available: bool,
     entries: Vec<PickerEntry>,
     created: Instant,
 }
@@ -86,6 +93,7 @@ impl PickerStore {
         torrent_id: u64,
         mut entries: Vec<PickerEntry>,
         action: PickerAction,
+        download_all_available: bool,
     ) -> Result<PickerPage> {
         ensure!(!entries.is_empty(), "No safe files are available to select");
         let omitted = entries.len().saturating_sub(MAX_PICKER_FILES);
@@ -109,6 +117,7 @@ impl PickerStore {
                 action,
                 page: 0,
                 omitted,
+                download_all_available: action == PickerAction::Download && download_all_available,
                 entries,
                 created: Instant::now(),
             },
@@ -174,6 +183,30 @@ impl PickerStore {
         Ok(PickerAccess::Ready(selection))
     }
 
+    pub fn select_all(
+        &self,
+        session_id: u64,
+        user_id: u64,
+    ) -> Result<PickerAccess<PickerDownloadAll>> {
+        let mut sessions = self.lock()?;
+        Self::remove_expired(&mut sessions);
+        let Some(session) = sessions.get(&session_id) else {
+            return Ok(PickerAccess::Expired);
+        };
+        if session.owner_id != user_id {
+            return Ok(PickerAccess::NotOwner);
+        }
+        ensure!(
+            session.action == PickerAction::Download && session.download_all_available,
+            "Download all is unavailable for this picker"
+        );
+        let selection = PickerDownloadAll {
+            torrent_id: session.torrent_id,
+        };
+        sessions.remove(&session_id);
+        Ok(PickerAccess::Ready(selection))
+    }
+
     fn page(session_id: u64, session: &PickerSession) -> PickerPage {
         let pages = session.entries.len().div_ceil(PICKER_PAGE_SIZE);
         let start = session.page * PICKER_PAGE_SIZE;
@@ -185,6 +218,7 @@ impl PickerStore {
             pages,
             total: session.entries.len(),
             omitted: session.omitted,
+            download_all_available: session.download_all_available,
             entries: session.entries[start..end].to_vec(),
         }
     }
@@ -224,7 +258,7 @@ mod tests {
     fn paginates_and_restricts_sessions_to_the_owner() {
         let store = PickerStore::default();
         let first = store
-            .register(10, 20, 30, entries(26), PickerAction::Download)
+            .register(10, 20, 30, entries(26), PickerAction::Download, true)
             .unwrap();
         assert_eq!(first.entries.len(), 25);
         assert_eq!(first.pages, 2);
@@ -245,7 +279,7 @@ mod tests {
     fn selection_must_come_from_the_current_page_and_consumes_the_session() {
         let store = PickerStore::default();
         store
-            .register(10, 20, 30, entries(26), PickerAction::Stream)
+            .register(10, 20, 30, entries(26), PickerAction::Stream, false)
             .unwrap();
         assert!(store.select(10, 20, 26).is_err());
         store.navigate(10, 20, PageDirection::Next).unwrap();
@@ -258,5 +292,34 @@ mod tests {
             store.select(10, 20, 26).unwrap(),
             PickerAccess::Expired
         ));
+    }
+
+    #[test]
+    fn download_all_is_owner_scoped_and_consumes_the_session() {
+        let store = PickerStore::default();
+        store
+            .register(10, 20, 30, entries(2), PickerAction::Download, true)
+            .unwrap();
+        assert!(matches!(
+            store.select_all(10, 99).unwrap(),
+            PickerAccess::NotOwner
+        ));
+        let PickerAccess::Ready(selection) = store.select_all(10, 20).unwrap() else {
+            panic!("expected a bulk download selection");
+        };
+        assert_eq!(selection.torrent_id, 30);
+        assert!(matches!(
+            store.select_all(10, 20).unwrap(),
+            PickerAccess::Expired
+        ));
+    }
+
+    #[test]
+    fn download_all_is_rejected_when_disabled() {
+        let store = PickerStore::default();
+        store
+            .register(10, 20, 30, entries(2), PickerAction::Download, false)
+            .unwrap();
+        assert!(store.select_all(10, 20).is_err());
     }
 }

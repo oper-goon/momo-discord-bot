@@ -162,12 +162,13 @@ Disabled by default and slash-only. It requires the operator's
 
 | Command | Description |
 | --- | --- |
-| `/torbox download <magnet> [file-number]` | Choose a safe cached file from a private, paginated picker and generate its temporary download link. Supply a one-based file number to bypass the picker. |
+| `/torbox download <magnet> [file-number]` | Choose a safe cached file from a private, paginated picker, or download the complete torrent as a ZIP. Supply a one-based file number to bypass the picker. |
 | `/torbox stream <magnet> [file-number]` | Choose a safe video from a private, paginated picker and generate its stream. Supply a one-based file number to bypass the picker. |
 
 Pickers accept up to 250 eligible files, show 25 per page, work only for the
 person who ran the command, and expire after five minutes. Files TorBox marks
 as potentially infected are never offered.
+The ZIP download is available only when TorBox reports every file as safe.
 
 ## Social Embeds (`social-embeds`)
 

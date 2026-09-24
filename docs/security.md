@@ -103,6 +103,8 @@ owner-bound, limited to five minutes and 250 eligible files, and capped at 64
 concurrent sessions. The magnet is not retained in picker state, infected files
 are excluded, and temporary URLs are generated only after the user selects a
 file.
+The bulk-download control requests TorBox's on-the-fly ZIP only when every file
+in the torrent is uninfected; it is omitted if any file is flagged.
 
 Image Search uses fixed HTTPS DuckDuckGo and Bing search origins. DuckDuckGo
 does not publish a supported image-search API; a 403 or 429 falls back to

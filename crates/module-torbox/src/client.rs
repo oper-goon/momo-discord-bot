@@ -189,16 +189,34 @@ impl TorBoxService {
     }
 
     pub async fn download_link(&self, torrent_id: u64, file_id: u64) -> Result<String> {
+        self.request_download_link(torrent_id, Some(file_id), false)
+            .await
+    }
+
+    pub async fn download_all_link(&self, torrent_id: u64) -> Result<String> {
+        self.request_download_link(torrent_id, None, true).await
+    }
+
+    async fn request_download_link(
+        &self,
+        torrent_id: u64,
+        file_id: Option<u64>,
+        zip_link: bool,
+    ) -> Result<String> {
+        let mut query = vec![
+            ("token", self.key()?.to_owned()),
+            ("torrent_id", torrent_id.to_string()),
+            ("zip_link", zip_link.to_string()),
+            ("redirect", "false".to_owned()),
+            ("append_name", "true".to_owned()),
+        ];
+        if let Some(file_id) = file_id {
+            query.push(("file_id", file_id.to_string()));
+        }
         let response = self
             .client
             .get(format!("{}/torrents/requestdl", self.base_url))
-            .query(&[
-                ("token", self.key()?.to_owned()),
-                ("torrent_id", torrent_id.to_string()),
-                ("file_id", file_id.to_string()),
-                ("redirect", "false".to_owned()),
-                ("append_name", "true".to_owned()),
-            ])
+            .query(&query)
             .send()
             .await
             .map_err(|_| anyhow!("TorBox download-link request failed"))?;

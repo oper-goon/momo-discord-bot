@@ -60,6 +60,7 @@ async fn download(
         .await;
     }
 
+    let download_all_available = files.iter().all(|file| !file.infected);
     let entries = picker_entries(&files, |_| true);
     if entries.len() == 1 {
         let selected = &entries[0].file;
@@ -80,6 +81,7 @@ async fn download(
         torrent_id,
         entries,
         PickerAction::Download,
+        download_all_available,
     )?;
     send_picker(ctx, &page).await
 }
@@ -122,6 +124,7 @@ async fn stream(
                 torrent_id,
                 entries,
                 PickerAction::Stream,
+                false,
             )?;
             return send_picker(ctx, &page).await;
         }
@@ -216,6 +219,38 @@ pub async fn component(
                 PickerAccess::Expired => respond_expired(ctx, interaction).await,
             }
         }
+        "all" => match service
+            .pickers
+            .select_all(session_id, interaction.user.id.get())?
+        {
+            PickerAccess::Ready(selection) => {
+                interaction.defer(&ctx.http).await?;
+                let outcome = service.download_all_link(selection.torrent_id).await;
+                let (content, buttons) = match outcome {
+                    Ok(url) => (
+                        "Bulk download ready. TorBox will package the torrent as a ZIP; the temporary link expires in approximately 3 hours.".to_owned(),
+                        vec![serenity::CreateButton::new_link(url)
+                            .label("Download all as ZIP")],
+                    ),
+                    Err(_) => (
+                        "TorBox could not create the ZIP download. Run the command again and retry.".to_owned(),
+                        Vec::new(),
+                    ),
+                };
+                interaction
+                    .edit_response(
+                        &ctx.http,
+                        serenity::EditInteractionResponse::new()
+                            .content(content)
+                            .components(button_rows(buttons))
+                            .allowed_mentions(serenity::CreateAllowedMentions::new()),
+                    )
+                    .await?;
+                Ok(())
+            }
+            PickerAccess::NotOwner => respond_not_owner(ctx, interaction).await,
+            PickerAccess::Expired => respond_expired(ctx, interaction).await,
+        },
         _ => anyhow::bail!("Invalid TorBox picker control"),
     }
 }
@@ -326,8 +361,13 @@ fn picker_content(page: &PickerPage) -> String {
             page.omitted
         )
     };
+    let bulk_note = if page.action == PickerAction::Download && !page.download_all_available {
+        " Download all is unavailable because TorBox marked at least one file as potentially infected."
+    } else {
+        ""
+    };
     format!(
-        "Choose a file to {}. Page {} of {} • {} available. This picker expires in 5 minutes.{omitted}",
+        "Choose a file to {}. Page {} of {} • {} available. This picker expires in 5 minutes.{omitted}{bulk_note}",
         page.action.label(),
         page.page + 1,
         page.pages,
@@ -358,8 +398,17 @@ fn picker_components(page: &PickerPage) -> Vec<serenity::CreateActionRow> {
     .min_values(1)
     .max_values(1);
     let mut rows = vec![serenity::CreateActionRow::SelectMenu(select)];
+    let mut buttons = Vec::new();
+    if page.download_all_available {
+        buttons.push(
+            serenity::CreateButton::new(format!("torbox:{}:all", page.session_id))
+                .label("Download all as ZIP")
+                .emoji('📦')
+                .style(serenity::ButtonStyle::Primary),
+        );
+    }
     if page.pages > 1 {
-        rows.push(serenity::CreateActionRow::Buttons(vec![
+        buttons.extend([
             serenity::CreateButton::new(format!("torbox:{}:previous", page.session_id))
                 .label("Previous")
                 .emoji('◀')
@@ -372,7 +421,10 @@ fn picker_components(page: &PickerPage) -> Vec<serenity::CreateActionRow> {
                 .label("Next")
                 .emoji('▶')
                 .style(serenity::ButtonStyle::Secondary),
-        ]));
+        ]);
+    }
+    if !buttons.is_empty() {
+        rows.push(serenity::CreateActionRow::Buttons(buttons));
     }
     rows
 }
