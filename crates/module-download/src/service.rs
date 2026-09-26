@@ -308,8 +308,12 @@ impl DownloadService {
         ensure!(self.accepts(url), "Unsupported media website");
         let output = path.join("media.%(ext)s");
         let format = format_selector(limit);
+        // Some extractors (notably Instagram) omit duration and size metadata
+        // until after their separate video/audio streams have been merged. Let
+        // those entries reach the bounded download, then verify the actual
+        // artifact with ffprobe below.
         let filter = format!(
-            "!is_live & duration <= {}",
+            "!is_live & duration <=? {}",
             self.config.max_duration_seconds
         );
         let mut child = Command::new(&self.config.yt_dlp_path)
@@ -374,7 +378,50 @@ impl DownloadService {
             tracing::warn!(category, "Media provider rejected a download request");
             anyhow::bail!(reason);
         }
-        single_output(path).await
+        let output = single_output(path).await?;
+        self.validate_download_duration(&output).await?;
+        Ok(output)
+    }
+
+    async fn validate_download_duration(&self, path: &Path) -> Result<()> {
+        let output = tokio::time::timeout(
+            Duration::from_secs(self.config.timeout_seconds),
+            Command::new("ffprobe")
+                .args([
+                    "-v",
+                    "error",
+                    "-show_entries",
+                    "format=duration",
+                    "-of",
+                    "default=noprint_wrappers=1:nokey=1",
+                ])
+                .arg(path)
+                .stdin(Stdio::null())
+                .stderr(Stdio::null())
+                .kill_on_drop(true)
+                .output(),
+        )
+        .await
+        .context("Media duration check timed out")?
+        .map_err(|_| anyhow::anyhow!("FFprobe is unavailable on this host"))?;
+        ensure!(output.status.success(), "Could not verify media duration");
+        ensure!(
+            output.stdout.len() <= 128,
+            "Media duration information was too large"
+        );
+        let duration = String::from_utf8_lossy(&output.stdout)
+            .trim()
+            .parse::<f64>()
+            .context("Could not verify media duration")?;
+        ensure!(
+            duration.is_finite() && duration >= 0.0,
+            "Could not verify media duration"
+        );
+        ensure!(
+            duration <= self.config.max_duration_seconds as f64,
+            "The video exceeds the duration limit"
+        );
+        Ok(())
     }
 
     async fn download_attachment(
@@ -550,7 +597,8 @@ fn format_selector(limit: u64) -> String {
     format!(
         "bv[filesize<={video_limit}][vcodec!=none]+ba[filesize<={audio_limit}]/\
 bv[filesize_approx<={video_limit}][vcodec!=none]+ba[filesize_approx<={audio_limit}]/\
-b[filesize<={limit}][vcodec!=none]/b[filesize_approx<={limit}][vcodec!=none]/b[vcodec!=none]"
+b[filesize<={limit}][vcodec!=none]/b[filesize_approx<={limit}][vcodec!=none]/\
+bv[vcodec!=none]+ba/b[vcodec!=none]"
     )
 }
 
@@ -663,6 +711,7 @@ mod tests {
         assert!(selector.contains("bv[filesize<=83886080]"));
         assert!(selector.contains("+ba[filesize<=20971520]"));
         assert!(selector.contains("b[filesize<=104857600]"));
+        assert!(selector.contains("bv[vcodec!=none]+ba/b[vcodec!=none]"));
     }
 
     #[test]

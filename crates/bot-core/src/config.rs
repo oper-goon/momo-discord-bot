@@ -130,9 +130,9 @@ impl Default for SocialEmbedsConfig {
         Self {
             probe_timeout_seconds: 6,
             instagram_providers: vec![
+                "kkinstagram.com".into(),
                 "oginstagram.com".into(),
                 "vxinstagram.com".into(),
-                "instagram7.com".into(),
             ],
         }
     }

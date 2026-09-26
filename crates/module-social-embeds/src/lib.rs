@@ -6,7 +6,7 @@ use bot_core::{
     AppConfig, BotData, Context as BotContext, EventHandler, RegisteredModule,
     effective_permissions, serenity,
 };
-use reqwest::header::{ACCEPT, CONTENT_TYPE, USER_AGENT};
+use reqwest::header::{ACCEPT, CONTENT_TYPE, LOCATION, USER_AGENT};
 use std::{collections::HashMap, sync::Arc, time::Duration};
 use tokio::sync::{Mutex, Semaphore};
 use url::Url;
@@ -216,6 +216,20 @@ impl SocialEmbedService {
         else {
             return None;
         };
+        if response.status().is_redirection()
+            && url.host_str() == Some("kkinstagram.com")
+            && response
+                .headers()
+                .get(LOCATION)
+                .and_then(|value| value.to_str().ok())
+                .and_then(|value| Url::parse(value).ok())
+                .is_some_and(|location| instagram_media_redirect(&location))
+        {
+            return Some(ProviderMetadata {
+                has_embed: true,
+                ..ProviderMetadata::default()
+            });
+        }
         if !response.status().is_success()
             || response
                 .headers()
@@ -698,6 +712,19 @@ fn instagram_path(path: &str) -> bool {
         || path.contains("/reels/")
 }
 
+fn instagram_media_redirect(url: &Url) -> bool {
+    url.scheme() == "https"
+        && url.username().is_empty()
+        && url.password().is_none()
+        && url.port().is_none_or(|port| port == 443)
+        && url.host_str().is_some_and(|host| {
+            let host = host.to_ascii_lowercase();
+            ["fbcdn.net", "cdninstagram.com"]
+                .iter()
+                .any(|domain| host == *domain || host.ends_with(&format!(".{domain}")))
+        })
+}
+
 fn clean_tracking(url: &mut Url) {
     url.set_fragment(None);
     let pairs: Vec<(String, String)> = url
@@ -735,6 +762,22 @@ mod tests {
         assert!(instagram_path("/p/abc/"));
         assert!(instagram_path("/someone/reel/abc/"));
         assert!(!instagram_path("/someone/"));
+    }
+
+    #[test]
+    fn accepts_only_https_instagram_media_redirects() {
+        assert!(instagram_media_redirect(
+            &Url::parse("https://instagram.example.fbcdn.net/video.mp4?token=secret").unwrap()
+        ));
+        assert!(instagram_media_redirect(
+            &Url::parse("https://scontent.cdninstagram.com/video.mp4").unwrap()
+        ));
+        assert!(!instagram_media_redirect(
+            &Url::parse("https://fbcdn.net.example.test/video.mp4").unwrap()
+        ));
+        assert!(!instagram_media_redirect(
+            &Url::parse("http://instagram.example.fbcdn.net/video.mp4").unwrap()
+        ));
     }
 
     #[test]

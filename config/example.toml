@@ -41,7 +41,7 @@ allowed_domains = [
 [social_embeds]
 probe_timeout_seconds = 6
 # Momo verifies Instagram Open Graph metadata in order and uses the first healthy provider.
-instagram_providers = ["oginstagram.com", "vxinstagram.com", "instagram7.com"]
+instagram_providers = ["kkinstagram.com", "oginstagram.com", "vxinstagram.com"]
 
 [logging]
 format = "pretty"
