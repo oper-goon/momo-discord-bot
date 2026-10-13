@@ -132,6 +132,7 @@ impl Default for SocialEmbedsConfig {
             instagram_providers: vec![
                 "kkinstagram.com".into(),
                 "oginstagram.com".into(),
+                "d.oginstagram.com".into(),
                 "vxinstagram.com".into(),
             ],
         }
@@ -236,6 +237,7 @@ impl AppConfig {
                 && self.social_embeds.instagram_providers.iter().all(|domain| {
                     [
                         "oginstagram.com",
+                        "d.oginstagram.com",
                         "vxinstagram.com",
                         "kkinstagram.com",
                         "instagram7.com",

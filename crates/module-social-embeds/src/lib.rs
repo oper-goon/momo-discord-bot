@@ -35,9 +35,15 @@ struct RewrittenLink {
     creator: Option<Creator>,
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum EmbedMedia {
+    Image,
+    Video,
+}
+
 #[derive(Default)]
 struct ProviderMetadata {
-    has_embed: bool,
+    media: Option<EmbedMedia>,
     article_author: Option<String>,
     twitter_creator: Option<String>,
     title: Option<String>,
@@ -168,7 +174,9 @@ impl SocialEmbedService {
                         .context("Invalid Instagram provider")?;
                     clean_tracking(&mut candidate);
                     if let Some(metadata) = self.fetch_metadata(&candidate).await
-                        && metadata.has_embed
+                        && metadata
+                            .media
+                            .is_some_and(|media| instagram_media_matches(&path, media))
                     {
                         let creator = creator_from_url(Platform::Instagram, &url)
                             .or_else(|| creator_from_metadata(Platform::Instagram, &metadata));
@@ -217,16 +225,19 @@ impl SocialEmbedService {
             return None;
         };
         if response.status().is_redirection()
-            && url.host_str() == Some("kkinstagram.com")
-            && response
+            && matches!(
+                url.host_str(),
+                Some("kkinstagram.com" | "d.oginstagram.com")
+            )
+            && let Some(media) = response
                 .headers()
                 .get(LOCATION)
                 .and_then(|value| value.to_str().ok())
                 .and_then(|value| Url::parse(value).ok())
-                .is_some_and(|location| instagram_media_redirect(&location))
+                .and_then(|location| instagram_media_redirect(&location))
         {
             return Some(ProviderMetadata {
-                has_embed: true,
+                media: Some(media),
                 ..ProviderMetadata::default()
             });
         }
@@ -254,12 +265,7 @@ impl SocialEmbedService {
         let body = String::from_utf8_lossy(&body);
         let lower = body.to_ascii_lowercase();
         Some(ProviderMetadata {
-            has_embed: lower.contains("property=\"og:image")
-                || lower.contains("property='og:image")
-                || lower.contains("property=\"og:video")
-                || lower.contains("property='og:video")
-                || lower.contains("name=\"twitter:card")
-                || lower.contains("name='twitter:card"),
+            media: metadata_media(&lower),
             article_author: meta_content(&body, "property", "article:author"),
             twitter_creator: meta_content(&body, "name", "twitter:creator"),
             title: meta_content(&body, "property", "og:title"),
@@ -712,8 +718,34 @@ fn instagram_path(path: &str) -> bool {
         || path.contains("/reels/")
 }
 
-fn instagram_media_redirect(url: &Url) -> bool {
-    url.scheme() == "https"
+fn instagram_media_matches(path: &str, media: EmbedMedia) -> bool {
+    let video_required = path.starts_with("/reel/")
+        || path.starts_with("/reels/")
+        || path.contains("/reel/")
+        || path.contains("/reels/");
+    !video_required || media == EmbedMedia::Video
+}
+
+fn metadata_media(lower_html: &str) -> Option<EmbedMedia> {
+    if lower_html.contains("property=\"og:video")
+        || lower_html.contains("property='og:video")
+        || lower_html.contains("name=\"twitter:player")
+        || lower_html.contains("name='twitter:player")
+    {
+        Some(EmbedMedia::Video)
+    } else if lower_html.contains("property=\"og:image")
+        || lower_html.contains("property='og:image")
+        || lower_html.contains("name=\"twitter:image")
+        || lower_html.contains("name='twitter:image")
+    {
+        Some(EmbedMedia::Image)
+    } else {
+        None
+    }
+}
+
+fn instagram_media_redirect(url: &Url) -> Option<EmbedMedia> {
+    let trusted = url.scheme() == "https"
         && url.username().is_empty()
         && url.password().is_none()
         && url.port().is_none_or(|port| port == 443)
@@ -722,7 +754,20 @@ fn instagram_media_redirect(url: &Url) -> bool {
             ["fbcdn.net", "cdninstagram.com"]
                 .iter()
                 .any(|domain| host == *domain || host.ends_with(&format!(".{domain}")))
-        })
+        });
+    if !trusted {
+        return None;
+    }
+    match url
+        .path()
+        .rsplit_once('.')
+        .map(|(_, extension)| extension.to_ascii_lowercase())
+        .as_deref()
+    {
+        Some("mp4" | "m4v" | "mov" | "webm") => Some(EmbedMedia::Video),
+        Some("jpg" | "jpeg" | "png" | "webp" | "gif") => Some(EmbedMedia::Image),
+        _ => None,
+    }
 }
 
 fn clean_tracking(url: &mut Url) {
@@ -765,19 +810,57 @@ mod tests {
     }
 
     #[test]
-    fn accepts_only_https_instagram_media_redirects() {
-        assert!(instagram_media_redirect(
-            &Url::parse("https://instagram.example.fbcdn.net/video.mp4?token=secret").unwrap()
-        ));
-        assert!(instagram_media_redirect(
-            &Url::parse("https://scontent.cdninstagram.com/video.mp4").unwrap()
-        ));
-        assert!(!instagram_media_redirect(
-            &Url::parse("https://fbcdn.net.example.test/video.mp4").unwrap()
-        ));
-        assert!(!instagram_media_redirect(
-            &Url::parse("http://instagram.example.fbcdn.net/video.mp4").unwrap()
-        ));
+    fn classifies_only_https_instagram_media_redirects() {
+        assert_eq!(
+            instagram_media_redirect(
+                &Url::parse("https://instagram.example.fbcdn.net/video.mp4?token=secret").unwrap()
+            ),
+            Some(EmbedMedia::Video)
+        );
+        assert_eq!(
+            instagram_media_redirect(
+                &Url::parse("https://scontent.cdninstagram.com/post.jpg").unwrap()
+            ),
+            Some(EmbedMedia::Image)
+        );
+        assert_eq!(
+            instagram_media_redirect(
+                &Url::parse("https://fbcdn.net.example.test/video.mp4").unwrap()
+            ),
+            None
+        );
+        assert_eq!(
+            instagram_media_redirect(
+                &Url::parse("http://instagram.example.fbcdn.net/video.mp4").unwrap()
+            ),
+            None
+        );
+        assert_eq!(
+            instagram_media_redirect(
+                &Url::parse("https://instagram.example.fbcdn.net/media.bin").unwrap()
+            ),
+            None
+        );
+    }
+
+    #[test]
+    fn reel_paths_require_video_while_posts_accept_images() {
+        assert!(instagram_media_matches("/reel/abc/", EmbedMedia::Video));
+        assert!(!instagram_media_matches("/reel/abc/", EmbedMedia::Image));
+        assert!(instagram_media_matches("/p/abc/", EmbedMedia::Image));
+        assert!(instagram_media_matches("/p/abc/", EmbedMedia::Video));
+    }
+
+    #[test]
+    fn html_metadata_prefers_video_over_its_poster_image() {
+        assert_eq!(
+            metadata_media(r#"<meta property="og:image"><meta property="og:video">"#),
+            Some(EmbedMedia::Video)
+        );
+        assert_eq!(
+            metadata_media(r#"<meta property="og:image">"#),
+            Some(EmbedMedia::Image)
+        );
     }
 
     #[test]
@@ -830,7 +913,7 @@ mod tests {
     #[test]
     fn reads_creator_metadata_and_builds_platform_profile() {
         let metadata = ProviderMetadata {
-            has_embed: true,
+            media: Some(EmbedMedia::Image),
             article_author: meta_content(
                 r#"<meta content="https://www.instagram.com/julianohodges/" property="article:author">"#,
                 "property",
@@ -851,7 +934,7 @@ mod tests {
     #[test]
     fn reads_reddit_creator_from_provider_site_name() {
         let metadata = ProviderMetadata {
-            has_embed: true,
+            media: Some(EmbedMedia::Image),
             article_author: None,
             twitter_creator: None,
             title: Some("A post title".to_owned()),

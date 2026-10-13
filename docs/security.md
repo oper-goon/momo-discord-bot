@@ -123,6 +123,10 @@ metadata are fetched with a Discord crawler user agent, strict time and
 response-size bounds, no proxy, and no redirects; only fixed, code-reviewed
 hosts or operator-selected Instagram hosts are accepted. Each provider receives
 the source post path, so operators should trust every configured provider.
+Redirect responses from approved direct-media Instagram providers are not
+followed by Momo. They qualify only when the target is HTTPS on an approved
+Instagram CDN, has a recognized image or video extension, and matches the
+source path's required media kind (for example, reels require video).
 The manual Repair Social Embed message action may delete and replace the
 selected message only when invoked by its author or a member with Manage
 Messages. Normal module permission policy and current Discord permissions are
