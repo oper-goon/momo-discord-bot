@@ -33,7 +33,7 @@ uuid = { version = "1", features = ["v4"] }
 rand = "0.9"
 sha2 = "0.10"
 futures-util = "0.3"
-symphonia = { version = "0.5", features = ["all"] }
+symphonia = { version = "0.6", features = ["all"] }
 bot-module-api = { version = "0.9.0", path = "crates/bot-module-api" }
 bot-database = { version = "0.9.0", path = "crates/bot-database" }
 bot-core = { version = "0.9.0", path = "crates/bot-core" }
