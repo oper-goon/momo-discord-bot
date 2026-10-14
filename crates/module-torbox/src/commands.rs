@@ -225,12 +225,21 @@ pub async fn component(
         {
             PickerAccess::Ready(selection) => {
                 interaction.defer(&ctx.http).await?;
+                interaction
+                    .edit_response(
+                        &ctx.http,
+                        serenity::EditInteractionResponse::new()
+                            .content("Preparing your ZIP download link with TorBox…")
+                            .components(vec![])
+                            .allowed_mentions(serenity::CreateAllowedMentions::new()),
+                    )
+                    .await?;
                 let outcome = service.download_all_link(selection.torrent_id).await;
                 let (content, buttons) = match outcome {
                     Ok(url) => (
-                        "Bulk download ready. TorBox will package the torrent as a ZIP; the temporary link expires in approximately 3 hours.".to_owned(),
+                        "ZIP link ready. Click **Open ZIP download** below to download all files. Discord cannot automatically open the download for you. The link expires in approximately 3 hours.".to_owned(),
                         vec![serenity::CreateButton::new_link(url)
-                            .label("Download all as ZIP")],
+                            .label("Open ZIP download")],
                     ),
                     Err(_) => (
                         "TorBox could not create the ZIP download. Run the command again and retry.".to_owned(),
@@ -264,8 +273,8 @@ fn stream_response(result: StreamResult) -> (String, Vec<serenity::CreateButton>
     match result {
         StreamResult::Ready(url) => {
             (
-                "TorBox stream ready. The stream link is temporary and may stop working after the session expires.".to_owned(),
-                vec![serenity::CreateButton::new_link(url).label("Watch in TorBox")],
+                "TorBox media stream ready. Open this link in an HLS-compatible player. This is a temporary media link; TorBox's signed-in webplayer is available through its dashboard.".to_owned(),
+                vec![serenity::CreateButton::new_link(url).label("Open media stream")],
             )
         }
         StreamResult::PlanUnavailable => (
@@ -402,7 +411,7 @@ fn picker_components(page: &PickerPage) -> Vec<serenity::CreateActionRow> {
     if page.download_all_available {
         buttons.push(
             serenity::CreateButton::new(format!("torbox:{}:all", page.session_id))
-                .label("Download all as ZIP")
+                .label("Prepare ZIP download")
                 .emoji('📦')
                 .style(serenity::ButtonStyle::Primary),
         );

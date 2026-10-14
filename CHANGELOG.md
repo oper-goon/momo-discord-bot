@@ -5,10 +5,14 @@ Versioning and Keep a Changelog conventions.
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-10-14
+
 ### Security
 
 - Backported the upstream `libcrux-chacha20poly1305` overlong-output-buffer
   panic fix required by Songbird's pinned HPKE dependency chain.
+- Updated Rustls to `0.23.46` to resolve the newly reported TLS advisories.
+- Replaced the yanked `yoke-derive` release with compatible version `0.8.4`.
 
 ### Added
 
@@ -25,6 +29,26 @@ Versioning and Keep a Changelog conventions.
 - Private, owner-bound TorBox file pickers with pagination, expiry, infected-file
   filtering, safe whole-torrent ZIP downloads, and direct file-number fallback
   for cached downloads and streams.
+- Ghost Silver startup banner with bot identity, version, server/module/command
+  counts, startup duration, and bounded GitHub release availability checks.
+- On-disk persistence and snapshot restoration tests, plus a live persistence
+  acceptance guide. Deployment bookmark restart, overdue-reminder recovery, and
+  isolated backup restoration have been verified.
+
+### Changed
+
+- TorBox ZIP downloads now show preparation progress and an explicit button to
+  open the generated archive link.
+- TorBox streams expose temporary HLS media links with clearer player guidance.
+
+### Fixed
+
+- Media uploads now complete the original deferred slash response instead of
+  sending a follow-up and deleting the original response.
+- TorBox stream selection prefers supported media fields rather than unrelated
+  metadata URLs, and generated links normalize spaces for Discord buttons.
+- Instagram download and social-embed fallback handling, including validation
+  of redirected media types.
 
 ## [0.2.0] - 2026-09-21
 
@@ -73,6 +97,7 @@ Versioning and Keep a Changelog conventions.
 - Docker image, Compose service, CI, Dependabot, cargo-deny policy, security
   backport regression guard, and committed lockfile.
 
-[Unreleased]: https://github.com/oper-goon/momo-discord-bot/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/oper-goon/momo-discord-bot/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/oper-goon/momo-discord-bot/compare/v0.2.0...v0.9.0
 [0.2.0]: https://github.com/oper-goon/momo-discord-bot/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/oper-goon/momo-discord-bot/releases/tag/v0.1.0

@@ -169,6 +169,18 @@ Pickers accept up to 250 eligible files, show 25 per page, work only for the
 person who ran the command, and expire after five minutes. Files TorBox marks
 as potentially infected are never offered.
 The ZIP download is available only when TorBox reports every file as safe.
+Click **Prepare ZIP download** to generate the archive link, then click
+**Open ZIP download** in the updated response to start the browser download.
+Discord cannot automatically open a download from a bot interaction.
+
+`/torbox stream` returns a temporary HLS media link for an HLS-compatible
+player, using the API's `hls_url`. It does not open TorBox's dashboard
+webplayer. TorBox documents the stream-creation API as Pro-only; subscription
+restrictions are reported without exposing credentials. The dashboard also
+offers raw playback of browser-compatible files for non-Pro users, but its
+player uses signed-in session state rather than a documented shareable URL.
+See the [stream API](https://www.postman.com/torbox/torbox-api/folder/dvhq6l3/stream)
+and [web streaming guide](https://support.torbox.app/en/articles/12662996-torbox-web-streaming).
 
 ## Social Embeds (`social-embeds`)
 

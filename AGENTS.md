@@ -79,6 +79,16 @@ duplicate or bypass these checks in a command. Keep command names, paths,
 permissions, and guild restrictions stable unless the task explicitly changes
 them; command-tree changes trigger hash-based Discord synchronization.
 
+New commands should support both `slash_command` and `prefix_command` when the
+same behavior is safe and practical in both interaction modes. Keep a command
+slash-only when its arguments are sensitive, its response must be ephemeral,
+or its interaction design does not translate safely to message commands.
+Examples include TorBox magnet inputs, secrets, and similar private material
+that should not be posted into channel history. Document intentional slash-only
+exceptions in the command's module or user documentation. Prefix support also
+depends on prefix configuration and Discord's Message Content intent; do not
+assume declaring `prefix_command` alone enables it in production.
+
 Use existing helpers such as `reply`, `guild_id`, `effective_permissions`,
 `require_channel_permissions`, and `require_hierarchy`. Responses are normally
 ephemeral and must suppress allowed mentions unless intentional. Optional

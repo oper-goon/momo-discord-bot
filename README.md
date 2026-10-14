@@ -5,7 +5,7 @@ per-server module activation, deterministic command policy, moderation audit
 cases, persistent reminders, utility commands, and isolated music players with
 saved playlists.
 
-This repository currently identifies as `0.2.0`. The implementation follows
+This repository currently identifies as `0.9.0`. The implementation follows
 the checked-in [technical specification](docs/specification.md). Live Discord
 acceptance testing is still required before calling it a production `1.0.0`
 release; see [release status](docs/release-status.md).
@@ -44,6 +44,25 @@ docker compose up --build -d
 
 The TOML configuration contains no secrets. Docker Compose reads `.env`
 automatically; do not commit that file.
+
+With text logging, startup displays the Ghost Silver Momo logo, version,
+creator credit, bot name, server count reported by Discord at startup, loaded
+module count, top-level command count, command registration mode, prefix command
+status, startup duration, update availability, and ready status in a bordered
+panel. Terminal output uses the logo's silver shading;
+redirected output is plain text. Set `NO_COLOR` to disable terminal colors.
+JSON logging omits the banner to keep output machine-readable; the ready log
+includes startup duration and update status. Duration measures time from process
+initialization through Discord readiness, command synchronization, and the release
+check. The release check runs alongside synchronization and has a three-second
+total timeout. It checks the latest public stable GitHub release of
+`oper-goon/momo-discord-bot`, using numeric `vMAJOR.MINOR.PATCH` or
+`MAJOR.MINOR.PATCH` tags. Offline, rate-limited, malformed, or inaccessible release
+responses show `Unavailable`; a 404 shows `Unavailable (no public release)`.
+The offline `--check` command does not contact GitHub. Update checks only report
+availability and do not install anything.
+Private repository releases are inaccessible to this unauthenticated check;
+they show `Unavailable (no public release)` until releases are publicly readable.
 
 For local Windows development, `scripts/dev.ps1` uses the workspace-local Rust,
 LLVM, CMake, and Ninja tools installed during project creation:

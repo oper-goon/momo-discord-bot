@@ -417,6 +417,200 @@ impl Database {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    struct TestFile(std::path::PathBuf);
+
+    impl TestFile {
+        fn new() -> Self {
+            Self(std::env::temp_dir().join(format!("momo-persistence-{}.db", uuid::Uuid::new_v4())))
+        }
+
+        fn url(&self) -> String {
+            format!("sqlite://{}", self.0.display()).replace('\\', "/")
+        }
+    }
+
+    impl Drop for TestFile {
+        fn drop(&mut self) {
+            let _ = std::fs::remove_file(&self.0);
+            for suffix in ["-wal", "-shm"] {
+                let mut path = self.0.as_os_str().to_owned();
+                path.push(suffix);
+                let _ = std::fs::remove_file(std::path::PathBuf::from(path));
+            }
+        }
+    }
+
+    async fn assert_saved_state(db: &Database, reminder: i64, bookmark: i64) -> Result<()> {
+        let guild = u64::MAX;
+        assert_eq!(db.health().await?, 2);
+        assert_eq!(db.module_enabled(guild, "music").await?, Some(true));
+        assert_eq!(db.module_enabled(guild, "utility").await?, Some(false));
+        assert_eq!(db.prefix(guild).await?, Some(("?".into(), true)));
+        let rules = db.rules(guild).await?;
+        assert_eq!(rules.len(), 1);
+        assert_eq!(rules[0].target, "music");
+        assert_eq!(rules[0].subject_kind, "user");
+        assert_eq!(rules[0].subject_id.as_deref(), Some("3"));
+        assert_eq!(rules[0].channel_id.as_deref(), Some("2"));
+        assert_eq!(rules[0].effect, Effect::Deny);
+        let settings = db
+            .music_settings(guild)
+            .await?
+            .expect("saved music settings");
+        assert_eq!(settings.default_volume_percent, 65);
+        assert_eq!(settings.dj_role_id.as_deref(), Some("4"));
+        assert_eq!(settings.max_queue_length, 500);
+        assert_eq!(settings.idle_disconnect_seconds, 300);
+        assert_eq!(settings.empty_channel_disconnect_seconds, 120);
+        assert!(settings.announce_now_playing);
+        let tracks = db.playlist(guild, 3, "restart-test").await?;
+        assert_eq!(tracks.len(), 2);
+        assert_eq!(tracks[0].title, "second");
+        assert_eq!(tracks[1].title, "first");
+        assert_eq!(
+            tracks[0].canonical_url,
+            "https://www.youtube.com/watch?v=second"
+        );
+        assert_eq!(tracks[0].requested_by, "3");
+        assert_eq!(tracks[0].provider, "yt-dlp");
+        assert_eq!(tracks[0].duration_ms, Some(123_000));
+        let reminders = db.reminders(Some(3), Some(now_ms())).await?;
+        assert_eq!(reminders.len(), 2);
+        let recurring = reminders
+            .iter()
+            .find(|r| r.id == reminder)
+            .expect("recurring reminder");
+        assert_eq!(recurring.message, "survives restart");
+        assert_eq!(
+            recurring.guild_id.as_deref(),
+            Some(guild.to_string().as_str())
+        );
+        assert_eq!(recurring.channel_id.as_deref(), Some("2"));
+        assert_eq!(recurring.interval_seconds, Some(60));
+        let bookmarks = db.bookmarks(3, Some("saved note")).await?;
+        assert_eq!(bookmarks.len(), 1);
+        assert_eq!(bookmarks[0].id, bookmark);
+        assert_eq!(bookmarks[0].excerpt, "saved message");
+        assert_eq!(bookmarks[0].note.as_deref(), Some("saved note"));
+        assert_eq!(bookmarks[0].message_id, "5");
+        let cases = db.cases(guild, Some(5), None).await?;
+        assert_eq!(cases.len(), 2);
+        assert_eq!(cases[0].status, "pending");
+        assert_eq!(cases[1].status, "succeeded");
+        assert_eq!(cases[1].reason.as_deref(), Some("test warning"));
+        assert_eq!(cases[1].moderator, "3");
+        assert_eq!(
+            db.sync_hash("test:global").await?.as_deref(),
+            Some("saved-hash")
+        );
+        let integrity: String = sqlx::query_scalar("PRAGMA integrity_check")
+            .fetch_one(&db.pool)
+            .await?;
+        assert_eq!(integrity, "ok");
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn disk_persistence_and_snapshot_restore() -> Result<()> {
+        let original = TestFile::new();
+        let snapshot = TestFile::new();
+        let db = Database::open(&original.url(), 2).await?;
+        let guild = u64::MAX;
+        db.set_module(guild, "music", true, 3).await?;
+        db.set_module(guild, "utility", false, 3).await?;
+        db.set_prefix(guild, "?", true).await?;
+        db.set_rule(
+            guild,
+            &PermissionRule {
+                id: 0,
+                target: "music".into(),
+                subject_kind: "user".into(),
+                subject_id: Some("3".into()),
+                channel_id: Some("2".into()),
+                effect: Effect::Deny,
+            },
+            3,
+            false,
+        )
+        .await?;
+        db.save_music_settings(
+            guild,
+            &MusicSettings {
+                dj_role_id: Some("4".into()),
+                default_volume_percent: 65,
+                ..MusicSettings::default()
+            },
+            500,
+        )
+        .await?;
+        let tracks: Vec<_> = ["first", "second"]
+            .into_iter()
+            .map(|title| TrackRef {
+                provider: "yt-dlp".into(),
+                canonical_url: format!("https://www.youtube.com/watch?v={title}"),
+                title: title.into(),
+                duration_ms: Some(123_000),
+                requested_by: "3".into(),
+            })
+            .collect();
+        db.save_playlist(guild, 3, "restart-test", &tracks, 10)
+            .await?;
+        db.edit_playlist(guild, 3, "restart-test", 1, Some(0))
+            .await?;
+        let reminder = db
+            .add_reminder(Some(guild), 2, 3, "survives restart", 0, Some(60))
+            .await?;
+        let one_shot = db
+            .add_reminder(Some(guild), 2, 3, "one shot", 0, None)
+            .await?;
+        let bookmark = db
+            .add_bookmark(3, Some(guild), 2, 5, 6, "saved message")
+            .await?;
+        db.note_bookmark(bookmark, 3, "saved note").await?;
+        let case = db
+            .begin_case(guild, "warn", 5, 3, Some("test warning"))
+            .await?;
+        db.finish_case(guild, case, true).await?;
+        assert_eq!(db.begin_case(guild, "warn", 5, 3, None).await?, 2);
+        db.set_sync_hash("test:global", "saved-hash").await?;
+        // SQLite creates a consistent standalone snapshot, including WAL writes.
+        sqlx::query("VACUUM INTO ?")
+            .bind(snapshot.0.to_string_lossy().as_ref())
+            .execute(&db.pool)
+            .await?;
+        db.close().await;
+
+        let reopened = Database::open(&original.url(), 2).await?;
+        assert_saved_state(&reopened, reminder, bookmark).await?;
+        assert_eq!(reopened.begin_case(guild, "warn", 5, 3, None).await?, 3);
+        reopened.reminder_result(one_shot, true).await?;
+        reopened.reminder_result(reminder, false).await?;
+        let retry_due = reopened.reminders(Some(3), None).await?[0].due_at_ms;
+        reopened.close().await;
+
+        let reopened = Database::open(&original.url(), 2).await?;
+        let pending = reopened.reminders(Some(3), None).await?;
+        assert_eq!(pending.len(), 1);
+        assert_eq!(pending[0].id, reminder);
+        assert_eq!(pending[0].due_at_ms, retry_due);
+        reopened.reminder_result(reminder, true).await?;
+        let recurring_due = reopened.reminders(Some(3), None).await?[0].due_at_ms;
+        reopened.close().await;
+
+        let reopened = Database::open(&original.url(), 2).await?;
+        let recurring = reopened.reminders(Some(3), None).await?;
+        assert_eq!(recurring.len(), 1);
+        assert_eq!(recurring[0].due_at_ms, recurring_due);
+        assert_eq!(recurring[0].interval_seconds, Some(60));
+        reopened.close().await;
+
+        // Restore validation uses the separate snapshot file, never live data.
+        let restored = Database::open(&snapshot.url(), 2).await?;
+        assert_saved_state(&restored, reminder, bookmark).await?;
+        restored.close().await;
+        Ok(())
+    }
     #[tokio::test]
     async fn migrations_repositories_and_transactions() -> Result<()> {
         let db = Database::open("sqlite::memory:", 1).await?;

@@ -1,6 +1,6 @@
 # Dependency and media security policy
 
-Review date: 2026-09-20. Next required exception review: 2026-12-20.
+Review date: 2026-10-14. Next required exception review: 2026-12-20.
 Every dependency change must re-evaluate these conclusions. CI blocks new
 vulnerabilities, yanked dependencies, unmaintained packages, and unapproved
 licenses unless a specific reviewed exception is in `deny.toml`.
@@ -9,7 +9,10 @@ licenses unless a specific reviewed exception is in `deny.toml`.
 
 - Serenity and Songbird use native TLS, removing Serenity 0.12.5's old
   rustls-webpki 0.102 chain. Linux deployments must keep system OpenSSL updated.
-  Direct media HTTP uses the current rustls chain through reqwest.
+  Direct media HTTP uses the current rustls chain through reqwest. The 0.9.0
+  release updates Rustls from 0.23.45 to the advisory-patched 0.23.46; existing
+  vendored backports and reviewed exceptions remain unchanged. The yanked
+  yoke-derive 0.8.3 is replaced with compatible 0.8.4.
 - `libcrux-chacha20poly1305` 0.0.7 is vendored with the upstream 0.0.8
   overlong-output-buffer panic fix for RUSTSEC-2026-0124 because Songbird 0.6's
   HPKE chain pins the older API. See `vendor/README.md`. The public API and
@@ -40,6 +43,12 @@ licenses unless a specific reviewed exception is in `deny.toml`.
 - CDLA-Permissive-2.0 is allowed for Mozilla trust-root data in webpki-roots.
 
 ## Media boundaries
+
+Startup update checks use a fixed HTTPS GitHub release API endpoint, with no
+authentication, proxies, or redirects. The entire check is limited to three
+seconds and 64 KiB of response data. Only canonical numeric stable version tags
+are rendered; remote release bodies and error payloads are never logged. Failures
+are nonfatal, and the offline `--check` path makes no release request.
 
 Direct HTTP resolves and validates all DNS addresses, pins the checked result,
 disables proxies and redirects, rejects credentials and nonstandard ports,

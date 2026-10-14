@@ -311,8 +311,8 @@ async fn upload(ctx: Context<'_>, path: &Path, filename: &str, limit: u64) -> Re
         .read_timeout(Duration::from_secs(600))
         .build()?;
     let request = match ctx {
-        poise::Context::Application(application) => client.post(format!(
-            "https://discord.com/api/v10/webhooks/{}/{}?wait=true",
+        poise::Context::Application(application) => client.patch(format!(
+            "https://discord.com/api/v10/webhooks/{}/{}/messages/@original",
             application.interaction.application_id, application.interaction.token
         )),
         poise::Context::Prefix(_) => client
@@ -338,9 +338,6 @@ async fn upload(ctx: Context<'_>, path: &Path, filename: &str, limit: u64) -> Re
             _ => "Discord rejected the media upload",
         };
         anyhow::bail!(message);
-    }
-    if let poise::Context::Application(application) = ctx {
-        let _ = application.interaction.delete_response(ctx.http()).await;
     }
     Ok(())
 }

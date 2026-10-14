@@ -1,4 +1,6 @@
 #![forbid(unsafe_code)]
+mod banner;
+mod update_check;
 use anyhow::{Context, Result};
 use bot_core::{serenity, *};
 use sha2::{Digest, Sha256};
@@ -100,6 +102,7 @@ async fn synchronize(
 }
 #[tokio::main]
 async fn main() -> Result<()> {
+    let startup_started = std::time::Instant::now();
     let args: Vec<_> = std::env::args().collect();
     let config_path = args
         .windows(2)
@@ -220,11 +223,27 @@ async fn main() -> Result<()> {
             },
             ..Default::default()
         })
-        .setup(move |ctx, _ready, framework| {
+        .setup(move |ctx, ready, framework| {
             Box::pin(async move {
-                synchronize(ctx, framework, &startup_data).await?;
+                let (synchronized, updates) = tokio::join!(
+                    synchronize(ctx, framework, &startup_data),
+                    update_check::status()
+                );
+                synchronized?;
                 module_utility::start_reminders(startup_data.clone(), ctx.http.clone());
-                tracing::info!("Bot ready");
+                if startup_data.config.logging.format != "json" {
+                    banner::print(banner::StartupInfo {
+                        bot: &ready.user.name,
+                        servers: ready.guilds.len(),
+                        modules: startup_data.modules.modules.len(),
+                        commands: framework.options().commands.len(),
+                        command_mode: &startup_data.config.commands.mode,
+                        prefix_commands: startup_data.config.discord.prefix_commands,
+                        duration: startup_started.elapsed(),
+                        updates: &updates,
+                    });
+                }
+                tracing::info!(startup_seconds = startup_started.elapsed().as_secs_f64(), updates = %updates, "Bot ready");
                 Ok(startup_data)
             })
         })

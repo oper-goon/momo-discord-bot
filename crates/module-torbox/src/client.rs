@@ -347,7 +347,7 @@ fn api_error(text: &str) -> anyhow::Error {
 fn validate_generated_url(value: String) -> Result<String> {
     let url = Url::parse(&value).map_err(|_| anyhow!("TorBox returned an invalid link"))?;
     ensure!(url.scheme() == "https", "TorBox returned an unsafe link");
-    Ok(value)
+    Ok(url.into())
 }
 
 fn find_url(value: &Value) -> Option<String> {
@@ -355,6 +355,7 @@ fn find_url(value: &Value) -> Option<String> {
         Value::String(value) if value.starts_with("https://") => Some(value.clone()),
         Value::Object(values) => {
             for key in [
+                "hls_url",
                 "stream_url",
                 "playlist_url",
                 "url",
@@ -365,7 +366,7 @@ fn find_url(value: &Value) -> Option<String> {
                     return Some(url);
                 }
             }
-            values.values().find_map(find_url)
+            None
         }
         Value::Array(values) => values.iter().find_map(find_url),
         _ => None,
@@ -409,6 +410,22 @@ mod tests {
     #[test]
     fn extracts_supported_stream_response_shapes() {
         assert_eq!(
+            find_url(&serde_json::json!({
+                "domain": "https://stream.example",
+                "hls_url": "https://stream.example/video.m3u8",
+                "search_metadata": {"image": "https://images.example/poster.jpg"}
+            })),
+            Some("https://stream.example/video.m3u8".into())
+        );
+        assert_eq!(
+            find_url(&serde_json::json!({
+                "domain": "https://stream.example",
+                "webdav_url": "https://files.example/video.mkv",
+                "search_metadata": {"image": "https://images.example/poster.jpg"}
+            })),
+            None
+        );
+        assert_eq!(
             find_url(&serde_json::json!({"stream_url": "https://stream.example/video.m3u8"})),
             Some("https://stream.example/video.m3u8".into())
         );
@@ -429,5 +446,13 @@ mod tests {
     fn generated_links_must_use_https() {
         assert!(validate_generated_url("https://cdn.example/file".into()).is_ok());
         assert!(validate_generated_url("http://cdn.example/file".into()).is_err());
+    }
+
+    #[test]
+    fn generated_links_are_normalized_for_discord() {
+        assert_eq!(
+            validate_generated_url("https://cdn.example/a file.mkv".into()).unwrap(),
+            "https://cdn.example/a%20file.mkv"
+        );
     }
 }

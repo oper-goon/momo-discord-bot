@@ -15,6 +15,7 @@ serenity.workspace = true
 songbird.workspace = true
 sha2.workspace = true
 serde_json.workspace = true
+reqwest.workspace = true
 bot-core.workspace = true
 bot-database.workspace = true
 module-general.workspace = true

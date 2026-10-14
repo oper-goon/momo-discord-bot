@@ -167,7 +167,7 @@ dependencies = [
 
 [[package]]
 name = "bot-app"
-version = "0.2.0"
+version = "0.9.0"
 dependencies = [
  "anyhow",
  "bot-core",
@@ -182,6 +182,7 @@ dependencies = [
  "module-torbox",
  "module-utility",
  "poise",
+ "reqwest",
  "serde_json",
  "serenity",
  "sha2 0.10.9",
@@ -194,7 +195,7 @@ dependencies = [
 
 [[package]]
 name = "bot-core"
-version = "0.2.0"
+version = "0.9.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -214,7 +215,7 @@ dependencies = [
 
 [[package]]
 name = "bot-database"
-version = "0.2.0"
+version = "0.9.0"
 dependencies = [
  "anyhow",
  "bot-module-api",
@@ -227,7 +228,7 @@ dependencies = [
 
 [[package]]
 name = "bot-module-api"
-version = "0.2.0"
+version = "0.9.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2253,7 +2254,7 @@ dependencies = [
 
 [[package]]
 name = "module-admin"
-version = "0.2.0"
+version = "0.9.0"
 dependencies = [
  "anyhow",
  "bot-core",
@@ -2263,7 +2264,7 @@ dependencies = [
 
 [[package]]
 name = "module-download"
-version = "0.2.0"
+version = "0.9.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2281,7 +2282,7 @@ dependencies = [
 
 [[package]]
 name = "module-general"
-version = "0.2.0"
+version = "0.9.0"
 dependencies = [
  "anyhow",
  "bot-core",
@@ -2291,7 +2292,7 @@ dependencies = [
 
 [[package]]
 name = "module-image"
-version = "0.2.0"
+version = "0.9.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2306,7 +2307,7 @@ dependencies = [
 
 [[package]]
 name = "module-moderation"
-version = "0.2.0"
+version = "0.9.0"
 dependencies = [
  "anyhow",
  "bot-core",
@@ -2318,7 +2319,7 @@ dependencies = [
 
 [[package]]
 name = "module-music"
-version = "0.2.0"
+version = "0.9.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2342,7 +2343,7 @@ dependencies = [
 
 [[package]]
 name = "module-social-embeds"
-version = "0.2.0"
+version = "0.9.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2355,7 +2356,7 @@ dependencies = [
 
 [[package]]
 name = "module-torbox"
-version = "0.2.0"
+version = "0.9.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2369,7 +2370,7 @@ dependencies = [
 
 [[package]]
 name = "module-utility"
-version = "0.2.0"
+version = "0.9.0"
 dependencies = [
  "anyhow",
  "bot-core",
@@ -3406,9 +3407,9 @@ dependencies = [
 
 [[package]]
 name = "rustls"
-version = "0.23.45"
+version = "0.23.46"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0d41d731c7d2f962d1ccc364cec258de3c0e93b38c2fb3ba97ac74513048d634"
+checksum = "48e13bd8c0e9365c43cfa5c9e8f9ad49d3c8444926c9aac819e0e4dc503c8fdf"
 dependencies = [
  "once_cell",
  "ring",
@@ -5608,9 +5609,9 @@ dependencies = [
 
 [[package]]
 name = "yoke-derive"
-version = "0.8.3"
+version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "33811428bee40dbceb6d545e95754741d17a6aef9a4849f0fd62e2ba4f412a78"
+checksum = "ec8ebde2db3681e8c9980cc27822030e68752690ddfa9473e739aeb4dbde6d71"
 dependencies = [
  "proc-macro2",
  "quote",

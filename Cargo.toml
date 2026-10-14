@@ -8,7 +8,7 @@ exclude = [
 ]
 
 [workspace.package]
-version = "0.2.0"
+version = "0.9.0"
 edition = "2024"
 rust-version = "1.88"
 license = "MIT"
@@ -34,18 +34,18 @@ rand = "0.9"
 sha2 = "0.10"
 futures-util = "0.3"
 symphonia = { version = "0.5", features = ["all"] }
-bot-module-api = { version = "0.2.0", path = "crates/bot-module-api" }
-bot-database = { version = "0.2.0", path = "crates/bot-database" }
-bot-core = { version = "0.2.0", path = "crates/bot-core" }
-module-general = { version = "0.2.0", path = "crates/module-general" }
-module-admin = { version = "0.2.0", path = "crates/module-admin" }
-module-moderation = { version = "0.2.0", path = "crates/module-moderation" }
-module-utility = { version = "0.2.0", path = "crates/module-utility" }
-module-music = { version = "0.2.0", path = "crates/module-music" }
-module-torbox = { version = "0.2.0", path = "crates/module-torbox" }
-module-download = { version = "0.2.0", path = "crates/module-download" }
-module-image = { version = "0.2.0", path = "crates/module-image" }
-module-social-embeds = { version = "0.2.0", path = "crates/module-social-embeds" }
+bot-module-api = { version = "0.9.0", path = "crates/bot-module-api" }
+bot-database = { version = "0.9.0", path = "crates/bot-database" }
+bot-core = { version = "0.9.0", path = "crates/bot-core" }
+module-general = { version = "0.9.0", path = "crates/module-general" }
+module-admin = { version = "0.9.0", path = "crates/module-admin" }
+module-moderation = { version = "0.9.0", path = "crates/module-moderation" }
+module-utility = { version = "0.9.0", path = "crates/module-utility" }
+module-music = { version = "0.9.0", path = "crates/module-music" }
+module-torbox = { version = "0.9.0", path = "crates/module-torbox" }
+module-download = { version = "0.9.0", path = "crates/module-download" }
+module-image = { version = "0.9.0", path = "crates/module-image" }
+module-social-embeds = { version = "0.9.0", path = "crates/module-social-embeds" }
 
 [profile.dev]
 debug = 0
