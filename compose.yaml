@@ -15,7 +15,7 @@ services:
       - ./config/config.toml:/app/config/config.toml:ro
     stop_grace_period: 20s
   pot-provider:
-    image: brainicism/bgutil-ytdlp-pot-provider:2.0.0-deno
+    image: brainicism/bgutil-ytdlp-pot-provider:2.0.2-deno
     init: true
     logging:
       driver: none
