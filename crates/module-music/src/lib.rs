@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 mod commands;
+pub mod matching;
 pub mod player;
 pub mod source;
 use anyhow::Result;

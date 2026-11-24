@@ -46,6 +46,7 @@ fn classify_resolver_diagnostics(diagnostics: &[u8]) -> &'static str {
 
 pub struct PlayableTrack {
     pub input: songbird::input::Input,
+    pub provider: Option<String>,
 }
 #[async_trait]
 pub trait AudioSourceProvider: Send + Sync {
@@ -54,6 +55,10 @@ pub trait AudioSourceProvider: Send + Sync {
     async fn inspect(&self, input: &str, user: u64) -> Result<Vec<TrackRef>>;
     async fn resolve(&self, track: &TrackRef) -> Result<PlayableTrack>;
     async fn health(&self) -> bool;
+    /// Normalized individual-track search; explicit website/playlist inspection stays separate.
+    async fn search(&self, query: &crate::matching::Metadata, user: u64) -> Result<Vec<TrackRef>> {
+        self.inspect(&query.query(), user).await
+    }
 }
 
 pub fn public_ip(ip: IpAddr) -> bool {
@@ -311,7 +316,7 @@ async fn stream(url: &str) -> Result<PlayableTrack> {
         )
         .await
         .map_err(|_| anyhow::anyhow!("Media stream could not start"))?;
-    Ok(PlayableTrack { input })
+    Ok(PlayableTrack { input, provider: None })
 }
 pub struct DirectHttpSource;
 #[async_trait]
