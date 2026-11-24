@@ -577,39 +577,160 @@ impl AudioSourceProvider for YtDlpSource {
 }
 pub struct Sources {
     limit: Semaphore,
-    providers: Vec<Arc<dyn AudioSourceProvider>>,
+    providers: Vec<ProviderSlot>,
+    config: MusicConfig,
+}
+struct ProviderSlot {
+    provider: Arc<dyn AudioSourceProvider>,
+    state: tokio::sync::Mutex<ProviderState>,
+    search_gate: tokio::sync::Mutex<()>,
+}
+#[derive(Default)]
+struct ProviderState {
+    open_until: Option<tokio::time::Instant>,
+    last_error: Option<ProviderError>,
+    search: Option<(String, tokio::time::Instant, Vec<TrackRef>)>,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ProviderError { Authentication, RateLimited, Blocked, Timeout, Unavailable }
+impl ProviderError {
+    fn classify(error: &anyhow::Error) -> Self {
+        let text = error.to_string().to_ascii_lowercase();
+        if text.contains("authentication") || text.contains("credentials") { Self::Authentication }
+        else if text.contains("rate limit") || text.contains("429") { Self::RateLimited }
+        else if text.contains("challenge") || text.contains("blocked") { Self::Blocked }
+        else if text.contains("timed out") || text.contains("timeout") { Self::Timeout }
+        else { Self::Unavailable }
+    }
+}
+impl ProviderSlot {
+    fn new(provider: Arc<dyn AudioSourceProvider>) -> Self {
+        Self { provider, state: tokio::sync::Mutex::new(ProviderState::default()), search_gate: tokio::sync::Mutex::new(()) }
+    }
 }
 impl Sources {
     pub fn new(config: MusicConfig) -> Self {
+        let mut providers: Vec<Arc<dyn AudioSourceProvider>> = Vec::new();
+        for id in &config.provider_priority {
+            match id.as_str() {
+                "youtube" => providers.push(Arc::new(YtDlpSource::new(config.clone()))),
+                "easynews" if config.easynews_enabled => providers.push(Arc::new(crate::providers::easynews::Easynews::new(config.match_min_confidence))),
+                "torbox" if config.torbox_enabled && config.torbox_cached_only => providers.push(Arc::new(crate::providers::torbox::Torbox::new(config.match_min_confidence))),
+                _ => (),
+            }
+        }
+        providers.push(Arc::new(DirectHttpSource));
         Self {
             limit: Semaphore::new(4),
-            providers: vec![
-                Arc::new(YtDlpSource::new(config)),
-                Arc::new(DirectHttpSource),
-            ],
+            providers: providers.into_iter().map(ProviderSlot::new).collect(),
+            config,
         }
     }
+    async fn attempt<T>(&self, slot: &ProviderSlot, work: impl std::future::Future<Output=Result<T>>) -> Result<T> {
+        // Serializing each provider also gives an open circuit exactly one recovery probe.
+        let mut state = tokio::time::timeout(Duration::from_secs(5), slot.state.lock()).await
+            .context("Provider busy")?;
+        ensure!(!state.open_until.is_some_and(|until| until > tokio::time::Instant::now()), "Provider cooling down");
+        let result = tokio::time::timeout(Duration::from_secs(self.config.provider_timeout_seconds), work).await
+            .unwrap_or_else(|_| Err(anyhow::anyhow!("Provider timed out")));
+        match &result {
+            Ok(_) => { state.open_until = None; state.last_error = None; }
+            Err(error) => {
+                state.last_error = Some(ProviderError::classify(error));
+                state.open_until = Some(tokio::time::Instant::now() + Duration::from_secs(self.config.provider_cooldown_seconds));
+                state.search = None;
+            }
+        }
+        result
+    }
+    async fn search(&self, slot: &ProviderSlot, wanted: &crate::matching::Metadata, user: u64) -> Result<Vec<TrackRef>> {
+        let _gate = tokio::time::timeout(Duration::from_secs(5), slot.search_gate.lock()).await.context("Provider search busy")?;
+        let key = format!("{}:{:?}", wanted.query(), wanted.duration_ms);
+        // Bounded one-entry metadata cache per provider; no audio cache exists.
+        let work = async {
+            slot.provider.search(wanted, user).await
+        };
+        {
+            let state = tokio::time::timeout(Duration::from_secs(5), slot.state.lock()).await.context("Provider busy")?;
+            if !state.open_until.is_some_and(|until| until > tokio::time::Instant::now())
+                && let Some((cached_key, at, tracks)) = &state.search
+                && cached_key == &key && at.elapsed() < Duration::from_secs(30)
+            {
+                let mut tracks = tracks.clone();
+                for track in &mut tracks { track.requested_by = user.to_string(); }
+                return Ok(tracks);
+            }
+        }
+        let mut tracks = self.attempt(slot, work).await?;
+        tracks.retain(|track| crate::matching::confidence(wanted, &crate::matching::Metadata::from_title(&track.title, track.duration_ms)) >= self.config.match_min_confidence);
+        slot.state.lock().await.search = Some((key, tokio::time::Instant::now(), tracks.clone()));
+        Ok(tracks)
+    }
     pub async fn inspect(&self, input: &str, user: u64) -> Result<Vec<TrackRef>> {
-        self.providers
-            .iter()
-            .find(|p| p.accepts(input))
-            .context("Unsupported source; local files are disabled")?
-            .inspect(input, user)
-            .await
+        ensure!(!input.trim().is_empty() && input.len() <= 2000, "Search must be 1–2000 bytes");
+        let _permit = tokio::time::timeout(Duration::from_secs(5), self.limit.acquire()).await.context("Music providers busy")??;
+        if input.contains("://") {
+            let slot = self.providers.iter().find(|p| p.provider.accepts(input))
+                .context("Unsupported source; local files are disabled")?;
+            return self.attempt(slot, slot.provider.inspect(input, user)).await;
+        }
+        let wanted = crate::matching::Metadata::from_title(input, None);
+        for slot in self.providers.iter().filter(|p| p.provider.id() != "http") {
+            if let Ok(tracks) = self.search(slot, &wanted, user).await
+                && let Some(track) = tracks.first() { return Ok(vec![track.clone()]); }
+        }
+        anyhow::bail!("No enabled music provider found a sufficiently accurate available track")
     }
     pub async fn resolve(&self, track: &TrackRef) -> Result<PlayableTrack> {
+        self.resolve_excluding(track, &[]).await
+    }
+    pub async fn resolve_excluding(&self, track: &TrackRef, excluded: &[String]) -> Result<PlayableTrack> {
         let _permit = tokio::time::timeout(Duration::from_secs(5), self.limit.acquire())
             .await
             .context("Media resolver busy")??;
-        self.providers
-            .iter()
-            .find(|p| p.id() == track.provider)
-            .context("Unknown source provider")?
-            .resolve(track)
-            .await
+        let wanted = crate::matching::Metadata::from_title(&track.title, track.duration_ms);
+        let user = track.requested_by.parse().unwrap_or(0);
+        let mut ordered: Vec<_> = self.providers.iter().filter(|p| p.provider.id() == track.provider).collect();
+        if track.provider != "http" {
+            ordered.extend(self.providers.iter().filter(|p| p.provider.id() != track.provider && p.provider.id() != "http"));
+        }
+        for slot in ordered {
+            let id = slot.provider.id();
+            if excluded.iter().any(|p| p == id) { continue; }
+            let work = async {
+                let candidate;
+                let target = if id == track.provider { track } else {
+                    let results = slot.provider.search(&wanted, user).await?;
+                    candidate = results.into_iter().find(|result| crate::matching::confidence(&wanted, &crate::matching::Metadata::from_title(&result.title, result.duration_ms)) >= self.config.match_min_confidence)
+                        .context("No accurate fallback result")?;
+                    &candidate
+                };
+                slot.provider.resolve(target).await
+            };
+            if let Ok(mut playable) = self.attempt(slot, work).await {
+                playable.provider = Some(id.into());
+                return Ok(playable);
+            }
+        }
+        anyhow::bail!("All enabled music providers are unavailable or cooling down")
     }
     pub async fn health(&self) -> bool {
-        self.providers[0].health().await
+        for slot in self.providers.iter().filter(|p| p.provider.id() != "http") {
+            if slot.provider.health().await && !slot.state.lock().await.open_until.is_some_and(|until| until > tokio::time::Instant::now()) { return true; }
+        }
+        false
+    }
+    pub async fn status(&self) -> String {
+        let mut lines = Vec::new();
+        for slot in &self.providers {
+            let configured = slot.provider.health().await;
+            let state = slot.state.lock().await;
+            let status = if !configured { "not configured / unavailable" }
+                else if state.open_until.is_some_and(|until| until > tokio::time::Instant::now()) { "cooling down" }
+                else { "ready" };
+            lines.push(format!("{}: {status}{}", slot.provider.id(), state.last_error.map(|e| format!(" ({e:?})")).unwrap_or_default()));
+        }
+        lines.join("\n")
     }
 }
 

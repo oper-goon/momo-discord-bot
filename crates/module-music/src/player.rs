@@ -20,6 +20,7 @@ pub enum RepeatMode {
 }
 #[derive(Clone, Debug)]
 pub struct Snapshot {
+    pub active_provider: Option<String>,
     pub channel: Option<u64>,
     pub current: Option<TrackRef>,
     pub queue: Vec<TrackRef>,
@@ -106,15 +107,23 @@ pub trait VoiceBackend: Send + Sync {
 #[async_trait]
 pub trait Resolver: Send + Sync {
     async fn resolve(&self, track: &TrackRef) -> Result<PlayableTrack>;
+    async fn resolve_excluding(&self, track: &TrackRef, excluded: &[String]) -> Result<PlayableTrack> {
+        anyhow::ensure!(excluded.is_empty(), "No alternative provider available");
+        self.resolve(track).await
+    }
 }
 #[async_trait]
 impl Resolver for Sources {
     async fn resolve(&self, track: &TrackRef) -> Result<PlayableTrack> {
         self.resolve(track).await
     }
+    async fn resolve_excluding(&self, track: &TrackRef, excluded: &[String]) -> Result<PlayableTrack> {
+        self.resolve_excluding(track, excluded).await
+    }
 }
 
 pub struct PlayerState {
+    pub active_provider: Option<String>,
     pub current: Option<TrackRef>,
     pub queue: VecDeque<TrackRef>,
     pub generation: u64,
@@ -128,6 +137,7 @@ pub struct PlayerState {
 impl PlayerState {
     pub fn new(volume: u16) -> Self {
         Self {
+            active_provider: None,
             current: None,
             queue: VecDeque::new(),
             generation: 0,
@@ -141,6 +151,7 @@ impl PlayerState {
     }
     pub fn snapshot(&self) -> Snapshot {
         Snapshot {
+            active_provider: self.active_provider.clone(),
             current: self.current.clone(),
             queue: self.queue.iter().cloned().collect(),
             generation: self.generation,
@@ -152,6 +163,7 @@ impl PlayerState {
         }
     }
     fn invalidate(&mut self) {
+        self.active_provider = None;
         self.generation = self.generation.wrapping_add(1);
         self.paused = false;
     }
@@ -196,6 +208,8 @@ impl PlayerState {
 }
 
 pub struct Player {
+    attempted: Vec<String>,
+    started: bool,
     id: uuid::Uuid,
     pub state: PlayerState,
     settings: MusicSettings,
@@ -227,6 +241,8 @@ impl Player {
         };
         (
             Self {
+                attempted: vec![],
+                started: false,
                 id: handle.id,
                 state: PlayerState::new(settings.default_volume_percent),
                 settings,
@@ -245,13 +261,20 @@ impl Player {
         )
     }
     fn resolve_current(&mut self) {
+        self.attempted.clear();
+        self.started = false;
+        self.state.active_provider = None;
+        self.resolve_next_provider();
+    }
+    fn resolve_next_provider(&mut self) {
         self.resolvers.abort_all();
         if let Some(track) = self.state.current.clone() {
             let resolver = self.resolver.clone();
             let generation = self.state.generation;
+            let excluded = self.attempted.clone();
             self.idle_since = None;
             self.resolvers
-                .spawn(async move { (generation, resolver.resolve(&track).await) });
+                .spawn(async move { (generation, resolver.resolve_excluding(&track, &excluded).await) });
         } else {
             self.idle_since.get_or_insert_with(Instant::now);
         }
@@ -271,6 +294,15 @@ impl Player {
         }
     }
     async fn failed(&mut self, generation: u64, stage: &'static str, error: Option<&Error>) {
+        if generation != self.state.generation { return; }
+        if stage != "resolve" && !self.started && !self.attempted.is_empty() && self.attempted.len() < 4 {
+            self.backend.stop();
+            self.state.active_provider = None;
+            // Invalidate pending voice events from the failed initialization.
+            self.state.generation = self.state.generation.wrapping_add(1);
+            self.resolve_next_provider();
+            return;
+        }
         let reason = error
             .map(ToString::to_string)
             .filter(|text| !text.contains("http") && !text.contains("token") && text.len() <= 250)
@@ -407,8 +439,8 @@ impl Player {
                 biased;
                 _=self.cancel.cancelled()=>break,
                 request=self.rx.recv()=>{let Some(request)=request else{break};let result=self.command(request.action).await;let done=result.as_ref().is_ok_and(|done|*done);let _=request.reply.send(result.map(|_|self.state.snapshot()));if done{break;}},
-                Some(result)=self.resolvers.join_next(),if !self.resolvers.is_empty()=>{match result{Ok((generation,result)) if generation==self.state.generation&&self.state.current.is_some()=>{match result{Ok(input)=>{if let Err(error)=self.backend.play(input,generation,self.events_tx.clone(),self.state.volume).await{self.failed(generation,"backend_play",Some(&error)).await;}},Err(error)=>self.failed(generation,"resolve",Some(&error)).await}},_=>{}}},
-                Some(event)=self.events.recv()=>{match event{PlayerEvent::Started(g)if g==self.state.generation=>{self.state.failures=0;if self.settings.announce_now_playing&& let Some(track)=&self.state.current{self.notify(&format!("Now playing: {}",track.title)).await;}},PlayerEvent::Ended(g)if g==self.state.generation&&self.state.current.is_some()=>{self.state.advance(true);self.resolve_current();},PlayerEvent::Failed(g)=>self.failed(g,"track_event",None).await,_=>{}}},
+                Some(result)=self.resolvers.join_next(),if !self.resolvers.is_empty()=>{match result{Ok((generation,result)) if generation==self.state.generation&&self.state.current.is_some()=>{match result{Ok(input)=>{self.state.active_provider=input.provider.clone();if let Some(id)=&input.provider{self.attempted.push(id.clone());}if let Err(error)=self.backend.play(input,generation,self.events_tx.clone(),self.state.volume).await{self.failed(generation,"backend_play",Some(&error)).await;}},Err(error)=>self.failed(generation,"resolve",Some(&error)).await}},_=>{}}},
+                Some(event)=self.events.recv()=>{match event{PlayerEvent::Started(g)if g==self.state.generation=>{self.started=true;self.state.failures=0;if self.settings.announce_now_playing&& let Some(track)=&self.state.current{self.notify(&format!("Now playing: {}",track.title)).await;}},PlayerEvent::Ended(g)if g==self.state.generation&&self.state.current.is_some()=>{self.state.advance(true);self.resolve_current();},PlayerEvent::Failed(g)=>self.failed(g,"track_event",None).await,_=>{}}},
                 _=timer.tick()=>{if self.idle_since.is_some_and(|t|t.elapsed()>=Duration::from_secs(self.settings.idle_disconnect_seconds))||self.empty_since.is_some_and(|t|t.elapsed()>=Duration::from_secs(self.settings.empty_channel_disconnect_seconds)){break;}}
             }
         }
