@@ -1,0 +1,13 @@
+# Optional override: docker compose -f compose.yaml -f compose.music-providers.yaml up -d --build bot
+services:
+  bot:
+    environment:
+      EASYNEWS_ENABLED: ${EASYNEWS_ENABLED:-false}
+      EASYNEWS_USERNAME: ${EASYNEWS_USERNAME:-}
+      EASYNEWS_PASSWORD: ${EASYNEWS_PASSWORD:-}
+      TORBOX_ENABLED: ${TORBOX_ENABLED:-false}
+      TORBOX_CACHED_ONLY: "true"
+      MUSIC_PROVIDER_PRIORITY: ${MUSIC_PROVIDER_PRIORITY:-youtube,easynews,torbox}
+      MUSIC_PROVIDER_TIMEOUT: ${MUSIC_PROVIDER_TIMEOUT:-30}
+      MUSIC_PROVIDER_COOLDOWN: ${MUSIC_PROVIDER_COOLDOWN:-120}
+      MUSIC_MATCH_MIN_CONFIDENCE: ${MUSIC_MATCH_MIN_CONFIDENCE:-0.85}

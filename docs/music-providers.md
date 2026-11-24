@@ -46,3 +46,140 @@ Implementation stages, committed separately:
 
 Only use accounts and content the operator is authorized to access and stream.
 Live service and Discord acceptance remain necessary after mocked checks.
+
+## Configuration and operation
+
+Existing `/play <query>` and all queue/playlist commands remain supported.
+Use `Artist - Track Title` for the strongest matching, including `live`,
+`remix` or other version words only when wanted. `/music providers` and
+`/music status` show enabled providers in priority order, configuration
+availability and safe failure categories. They do not contact account-auth
+endpoints; "ready" indicates configured/local readiness, not verified account
+validity. `/nowplaying` displays the actual active provider in an embed.
+No per-play provider selector is added; priority is operator-controlled.
+
+Set `[music]` options in `config/example.toml` or these environment overrides:
+
+| Environment | TOML / purpose | Default |
+| --- | --- | --- |
+| `EASYNEWS_ENABLED` | `easynews_enabled` | `false` |
+| `EASYNEWS_USERNAME` | Environment only | unset |
+| `EASYNEWS_PASSWORD` | Environment only | unset |
+| `TORBOX_ENABLED` | `torbox_enabled` | `false` |
+| `TORBOX_API_KEY` | Environment only; shared with existing TorBox module | unset |
+| `TORBOX_CACHED_ONLY` | `torbox_cached_only`; false fails startup | `true` |
+| `MUSIC_PROVIDER_PRIORITY` | `provider_priority`; comma-separated unique IDs | `youtube,easynews,torbox` |
+| `MUSIC_PROVIDER_TIMEOUT` | `provider_timeout_seconds`; 1–120 seconds | `30` |
+| `MUSIC_PROVIDER_COOLDOWN` | `provider_cooldown_seconds`; 1–3600 seconds | `120` |
+| `MUSIC_MATCH_MIN_CONFIDENCE` | `match_min_confidence`; 0.5–1.0 | `0.85` |
+
+YouTube retains the stored provider ID `yt-dlp` for existing saved playlists.
+SoundCloud, Bandcamp and explicit public HTTP audio remain supported. Provider
+priority controls text discovery; resolution tries the queued provider first,
+then the remaining providers in configured order. Omitting a provider removes
+it from music discovery/resolution. Other feature modules are unaffected.
+
+For Docker, put credentials in the host's private `.env` and use:
+
+```sh
+docker compose -f compose.yaml -f compose.music-providers.yaml up -d --build bot
+docker compose -f compose.yaml -f compose.music-providers.yaml ps
+docker compose -f compose.yaml -f compose.music-providers.yaml logs --tail=50 bot
+```
+
+The optional override forwards provider settings without changing the existing
+Compose file. It inherits the existing `TORBOX_API_KEY`, volume, network and
+restart settings. Verify `Bot ready` and restart counts; never recreate the
+data volume. Provider enablement is global configuration; the Music module
+still requires per-guild enablement and existing command permissions.
+
+## Reliability and security decisions
+
+Each provider is serialized behind a bounded wait, inside the global four-job
+resolver limit. Search metadata has a bounded one-entry, 30-second cache per
+provider; repeated searches share that cached metadata. No audio cache exists
+and none is introduced. Independent guilds require independent audio streams.
+An attempt has a configured deadline; an error opens its circuit immediately
+for the configured cooldown. Numeric HTTP `Retry-After` extends that cooldown.
+After cooldown, serialization permits one recovery probe. Search misses do not
+open the circuit, while resolution failures do. Each provider is attempted at
+most once per fallback pass. Backend initialization failures exclude the failed
+provider without re-enqueuing the track; stale voice events are invalidated.
+Failures after playback has started retain the existing queue-advance behavior.
+
+Easynews uses `https://members.easynews.com/3.0/api/search`, Basic auth and
+`fty[]=AUDIO`. The unofficial schema and direct file URL layout were checked
+against [AIOStreams's client](https://github.com/Viren070/AIOStreams/blob/main/packages/core/src/builtins/easynews-search/api.ts).
+Only standalone audio extensions are accepted: MP3, FLAC, M4A, AAC, OGG, Opus,
+WAV, AIFF and ALAC. Archives are never requested or unpacked. Download origins
+must be HTTPS under `easynews.com`; DNS pinning, redirect rejection and public
+address checks still apply. Credentials are sent only as a sensitive HTTP
+header, retained for range resumption on that origin. Queues/playlists contain
+an Easynews search marker, never the private download URL. Playback searches
+again to avoid persisting expiring URLs. If the unofficial schema changes,
+malformed results fail closed.
+
+TorBox searches eligible individual files in at most 1000 existing account
+torrents and 1000 files per torrent. It checks an exact hash through
+`checkcached`, requires returned file metadata, then refreshes `mylist` and
+requires `cached`, `download_present` and `download_finished`. Infected or
+unknown-infection-state files are rejected. Only the chosen file is passed to
+`requestdl` with `zip_link=false`. The implementation has no create, control,
+metadata-from-peers, NZB import, torrent import or polling operation. A cache
+miss or ambiguous response skips the result. This deliberately does not add
+cached torrents from an external index to the account. Generated links remain
+memory-only and undergo the existing pinned public HTTP validation.
+
+Provider responses are capped at 2 MiB. HTTP error payloads, authentication
+headers and private links are never returned or logged. Playback retains the
+64 MiB stream ceiling and bounded probing. Invalid/corrupt headers fail during
+playback initialization; corruption later in a stream can only be discovered
+when the decoder reaches it. No full-file integrity download is performed.
+
+## Matching and limitations
+
+Matching requires all requested title/artist tokens, ignores presentation tags
+such as "official audio", rejects unrequested version markers, compares
+duration when both sources provide it, and penalizes extra title words and
+album differences. Accuracy sorts before bitrate. The matching model accepts
+optional album, format and bitrate metadata, but existing persisted `TrackRef`
+does not carry album or separate artist fields. These are inferred conservatively
+from `Artist - Title`; account filenames with insufficient identity are skipped.
+Missing duration/album tags cannot prove recording identity. This is metadata
+matching, not audio fingerprint verification.
+
+YouTube URLs whose metadata cannot be inspected cannot be converted to an
+artist/title fallback reliably; use a text query in that case. Playlists retain
+existing inspection/import behavior and fall back per track at playback time.
+The Easynews interface, audio availability and TorBox account restrictions need
+live operator-account acceptance. No credentials or live media were used by
+automated tests. Voice rendering, permissions and command synchronization need
+a live Discord acceptance run. Linux Docker validation remains a CI/deployment
+gate.
+
+## Validation record
+
+- Full workspace tests passed (including the pre-existing command registry,
+  database and media tests); two existing live image-search tests are ignored.
+- Music tests use local mock HTTP servers and fake voice backends. They cover
+  YouTube success, both fallback orders, persistent block cooldowns and timeout
+  recovery, invalid credentials, expired links, corrupt headers, valid WAV
+  probing, cache rejection and single-file TorBox retrieval, and queue
+  continuity during initialization fallback.
+- Workspace Clippy with all targets/features and warnings denied passed.
+- Offline `bot-app --check` passed with `DATABASE_URL=sqlite::memory:`. The
+  existing local database check failed because migration 2 has a stored checksum
+  mismatch. No migration or local database was edited to work around it.
+- Cargo-deny fails against the existing dependency set: chrono
+  RUSTSEC-2026-0543, crypto-bigint RUSTSEC-2026-0387, libsqlite3-sys
+  RUSTSEC-2026-0459, pin-utils RUSTSEC-2026-0441, rustls-webpki
+  RUSTSEC-2026-0382, tokio RUSTSEC-2026-0386, url RUSTSEC-2026-0592 and
+  webpki-roots RUSTSEC-2026-0381. Bans, licenses and sources pass. This feature
+  adds no dependencies or advisory exceptions. Resolve the dependency gate
+  before release.
+- Live account/Discord checks and a Linux Docker build have not been performed.
+
+Modified files are the music module's `source.rs`, `player.rs`, `commands.rs`,
+`lib.rs`, new `matching.rs` and `providers/{mod,easynews,torbox}.rs`, core
+`config.rs`, `config/example.toml`, `compose.music-providers.yaml`, and this
+document. Existing unrelated worktree changes are excluded from feature commits.

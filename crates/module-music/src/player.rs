@@ -106,18 +106,30 @@ pub trait VoiceBackend: Send + Sync {
 }
 #[async_trait]
 pub trait Resolver: Send + Sync {
+    async fn initialization_failed(&self, _provider: &str) {}
     async fn resolve(&self, track: &TrackRef) -> Result<PlayableTrack>;
-    async fn resolve_excluding(&self, track: &TrackRef, excluded: &[String]) -> Result<PlayableTrack> {
+    async fn resolve_excluding(
+        &self,
+        track: &TrackRef,
+        excluded: &[String],
+    ) -> Result<PlayableTrack> {
         anyhow::ensure!(excluded.is_empty(), "No alternative provider available");
         self.resolve(track).await
     }
 }
 #[async_trait]
 impl Resolver for Sources {
+    async fn initialization_failed(&self, provider: &str) {
+        self.initialization_failed(provider).await;
+    }
     async fn resolve(&self, track: &TrackRef) -> Result<PlayableTrack> {
         self.resolve(track).await
     }
-    async fn resolve_excluding(&self, track: &TrackRef, excluded: &[String]) -> Result<PlayableTrack> {
+    async fn resolve_excluding(
+        &self,
+        track: &TrackRef,
+        excluded: &[String],
+    ) -> Result<PlayableTrack> {
         self.resolve_excluding(track, excluded).await
     }
 }
@@ -273,8 +285,12 @@ impl Player {
             let generation = self.state.generation;
             let excluded = self.attempted.clone();
             self.idle_since = None;
-            self.resolvers
-                .spawn(async move { (generation, resolver.resolve_excluding(&track, &excluded).await) });
+            self.resolvers.spawn(async move {
+                (
+                    generation,
+                    resolver.resolve_excluding(&track, &excluded).await,
+                )
+            });
         } else {
             self.idle_since.get_or_insert_with(Instant::now);
         }
@@ -294,8 +310,17 @@ impl Player {
         }
     }
     async fn failed(&mut self, generation: u64, stage: &'static str, error: Option<&Error>) {
-        if generation != self.state.generation { return; }
-        if stage != "resolve" && !self.started && !self.attempted.is_empty() && self.attempted.len() < 4 {
+        if generation != self.state.generation {
+            return;
+        }
+        if stage != "resolve"
+            && !self.started
+            && !self.attempted.is_empty()
+            && self.attempted.len() < 4
+        {
+            if let Some(id) = self.attempted.last() {
+                self.resolver.initialization_failed(id).await;
+            }
             self.backend.stop();
             self.state.active_provider = None;
             // Invalidate pending voice events from the failed initialization.
@@ -439,7 +464,8 @@ impl Player {
                 biased;
                 _=self.cancel.cancelled()=>break,
                 request=self.rx.recv()=>{let Some(request)=request else{break};let result=self.command(request.action).await;let done=result.as_ref().is_ok_and(|done|*done);let _=request.reply.send(result.map(|_|self.state.snapshot()));if done{break;}},
-                Some(result)=self.resolvers.join_next(),if !self.resolvers.is_empty()=>{match result{Ok((generation,result)) if generation==self.state.generation&&self.state.current.is_some()=>{match result{Ok(input)=>{self.state.active_provider=input.provider.clone();if let Some(id)=&input.provider{self.attempted.push(id.clone());}if let Err(error)=self.backend.play(input,generation,self.events_tx.clone(),self.state.volume).await{self.failed(generation,"backend_play",Some(&error)).await;}},Err(error)=>self.failed(generation,"resolve",Some(&error)).await}},_=>{}}},
+                Some(result)=self.resolvers.join_next(),if !self.resolvers.is_empty()=>{match result{Ok((generation,result)) if generation==self.state.generation&&self.state.current.is_some()=>{match result{Ok(input)=>{self.state.active_provider=input.provider.clone();if let Some(id)=&input.provider{self.attempted.push(id.clone());}
+                            if let Err(error)=self.backend.play(input,generation,self.events_tx.clone(),self.state.volume).await{self.failed(generation,"backend_play",Some(&error)).await;}},Err(error)=>self.failed(generation,"resolve",Some(&error)).await}},_=>{}}},
                 Some(event)=self.events.recv()=>{match event{PlayerEvent::Started(g)if g==self.state.generation=>{self.started=true;self.state.failures=0;if self.settings.announce_now_playing&& let Some(track)=&self.state.current{self.notify(&format!("Now playing: {}",track.title)).await;}},PlayerEvent::Ended(g)if g==self.state.generation&&self.state.current.is_some()=>{self.state.advance(true);self.resolve_current();},PlayerEvent::Failed(g)=>self.failed(g,"track_event",None).await,_=>{}}},
                 _=timer.tick()=>{if self.idle_since.is_some_and(|t|t.elapsed()>=Duration::from_secs(self.settings.idle_disconnect_seconds))||self.empty_since.is_some_and(|t|t.elapsed()>=Duration::from_secs(self.settings.empty_channel_disconnect_seconds)){break;}}
             }
@@ -625,6 +651,102 @@ mod tests {
         }
     }
     struct SlowResolver;
+    struct FallbackResolver;
+    #[async_trait]
+    impl Resolver for FallbackResolver {
+        async fn resolve(&self, _: &TrackRef) -> Result<PlayableTrack> {
+            let mut input = crate::source::mock_playable();
+            input.provider = Some("yt-dlp".into());
+            Ok(input)
+        }
+        async fn resolve_excluding(
+            &self,
+            track: &TrackRef,
+            excluded: &[String],
+        ) -> Result<PlayableTrack> {
+            if excluded.is_empty() {
+                return self.resolve(track).await;
+            }
+            let mut input = crate::source::mock_playable();
+            input.provider = Some("easynews".into());
+            Ok(input)
+        }
+    }
+    struct InitializationBackend;
+    #[async_trait]
+    impl VoiceBackend for InitializationBackend {
+        async fn join(&mut self, _: u64) -> Result<()> {
+            Ok(())
+        }
+        async fn play(
+            &mut self,
+            input: PlayableTrack,
+            generation: u64,
+            events: mpsc::Sender<PlayerEvent>,
+            _: u16,
+        ) -> Result<()> {
+            if input.provider.as_deref() == Some("yt-dlp") {
+                anyhow::bail!("Playback initialization failed");
+            }
+            events.send(PlayerEvent::Started(generation)).await.unwrap();
+            Ok(())
+        }
+        fn pause(&mut self) -> Result<()> {
+            Ok(())
+        }
+        fn resume(&mut self) -> Result<()> {
+            Ok(())
+        }
+        fn stop(&mut self) {}
+        fn volume(&mut self, _: u16) -> Result<()> {
+            Ok(())
+        }
+        async fn seek(&mut self, _: u64) -> Result<()> {
+            Ok(())
+        }
+        async fn disconnect(&mut self) -> Result<()> {
+            Ok(())
+        }
+    }
+    #[tokio::test]
+    async fn initialization_fallback_keeps_current_and_queue_without_duplicates() {
+        let cancel = CancellationToken::new();
+        let (player, handle) = Player::new(
+            MusicSettings::default(),
+            Box::new(InitializationBackend),
+            Arc::new(FallbackResolver),
+            cancel.clone(),
+            None,
+        );
+        let task = tokio::spawn(player.run());
+        handle
+            .send(Action::Join {
+                channel: 1,
+                allow_move: false,
+            })
+            .await
+            .unwrap();
+        handle
+            .send(Action::Enqueue(vec![track("a"), track("b")]))
+            .await
+            .unwrap();
+        tokio::time::timeout(Duration::from_secs(3), async {
+            loop {
+                let snapshot = handle.send(Action::Snapshot).await.unwrap();
+                if snapshot.active_provider.as_deref() == Some("easynews") {
+                    assert_eq!(snapshot.current.unwrap().title, "a");
+                    assert_eq!(snapshot.queue.len(), 1);
+                    assert_eq!(snapshot.queue[0].title, "b");
+                    break;
+                }
+                tokio::task::yield_now().await;
+            }
+        })
+        .await
+        .unwrap();
+        cancel.cancel();
+        task.await.unwrap().unwrap();
+    }
     #[async_trait]
     impl Resolver for SlowResolver {
         async fn resolve(&self, _: &TrackRef) -> Result<PlayableTrack> {

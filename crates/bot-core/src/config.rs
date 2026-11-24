@@ -104,33 +104,68 @@ impl MusicConfig {
             ("TORBOX_CACHED_ONLY", &mut self.torbox_cached_only),
         ] {
             if let Ok(value) = std::env::var(name) {
-                *field = value.parse().map_err(|_| anyhow::anyhow!("Invalid {name}"))?;
+                *field = value
+                    .parse()
+                    .map_err(|_| anyhow::anyhow!("Invalid {name}"))?;
             }
         }
         for (name, field) in [
             ("MUSIC_PROVIDER_TIMEOUT", &mut self.provider_timeout_seconds),
-            ("MUSIC_PROVIDER_COOLDOWN", &mut self.provider_cooldown_seconds),
+            (
+                "MUSIC_PROVIDER_COOLDOWN",
+                &mut self.provider_cooldown_seconds,
+            ),
         ] {
             if let Ok(value) = std::env::var(name) {
-                *field = value.parse().map_err(|_| anyhow::anyhow!("Invalid {name}"))?;
+                *field = value
+                    .parse()
+                    .map_err(|_| anyhow::anyhow!("Invalid {name}"))?;
             }
         }
         if let Ok(value) = std::env::var("MUSIC_MATCH_MIN_CONFIDENCE") {
-            self.match_min_confidence = value.parse().map_err(|_| anyhow::anyhow!("Invalid MUSIC_MATCH_MIN_CONFIDENCE"))?;
+            self.match_min_confidence = value
+                .parse()
+                .map_err(|_| anyhow::anyhow!("Invalid MUSIC_MATCH_MIN_CONFIDENCE"))?;
         }
         if let Ok(value) = std::env::var("MUSIC_PROVIDER_PRIORITY") {
-            self.provider_priority = value.split(',').map(|s| s.trim().to_ascii_lowercase()).collect();
+            self.provider_priority = value
+                .split(',')
+                .map(|s| s.trim().to_ascii_lowercase())
+                .collect();
         }
         Ok(())
     }
 
     fn validate_providers(&self) -> Result<()> {
-        ensure!(self.torbox_cached_only, "Music TorBox cached-only mode cannot be disabled");
-        ensure!((1..=120).contains(&self.provider_timeout_seconds), "Music provider timeout must be 1–120 seconds");
-        ensure!((1..=3600).contains(&self.provider_cooldown_seconds), "Music provider cooldown must be 1–3600 seconds");
-        ensure!(self.match_min_confidence.is_finite() && (0.5..=1.0).contains(&self.match_min_confidence), "Music match confidence must be 0.5–1.0");
+        ensure!(
+            self.torbox_cached_only,
+            "Music TorBox cached-only mode cannot be disabled"
+        );
+        ensure!(
+            (1..=120).contains(&self.provider_timeout_seconds),
+            "Music provider timeout must be 1–120 seconds"
+        );
+        ensure!(
+            (1..=3600).contains(&self.provider_cooldown_seconds),
+            "Music provider cooldown must be 1–3600 seconds"
+        );
+        ensure!(
+            self.match_min_confidence.is_finite()
+                && (0.5..=1.0).contains(&self.match_min_confidence),
+            "Music match confidence must be 0.5–1.0"
+        );
         let mut seen = std::collections::HashSet::new();
-        ensure!(!self.provider_priority.is_empty() && self.provider_priority.iter().all(|id| ["youtube", "easynews", "torbox"].contains(&id.as_str()) && seen.insert(id)), "Music provider priority must contain unique known providers");
+        ensure!(
+            !self.provider_priority.is_empty()
+                && self
+                    .provider_priority
+                    .iter()
+                    .all(
+                        |id| ["youtube", "easynews", "torbox"].contains(&id.as_str())
+                            && seen.insert(id)
+                    ),
+            "Music provider priority must contain unique known providers"
+        );
         Ok(())
     }
 }
@@ -323,6 +358,24 @@ impl AppConfig {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn provider_configuration_is_bounded_and_cached_only() {
+        let mut c = AppConfig::default();
+        assert!(c.validate().is_ok());
+        c.music.torbox_cached_only = false;
+        assert!(c.validate().is_err());
+        c.music.torbox_cached_only = true;
+        c.music.provider_priority = vec!["youtube".into(), "youtube".into()];
+        assert!(c.validate().is_err());
+        c.music.provider_priority = vec!["unknown".into()];
+        assert!(c.validate().is_err());
+        c.music.provider_priority = vec!["youtube".into()];
+        c.music.match_min_confidence = f64::NAN;
+        assert!(c.validate().is_err());
+        c.music.match_min_confidence = 0.85;
+        c.music.provider_timeout_seconds = 0;
+        assert!(c.validate().is_err());
+    }
     #[test]
     fn validates_complete_configuration() {
         let mut c: AppConfig = toml::from_str("[discord]\ndefault_prefix='?'\n").unwrap();

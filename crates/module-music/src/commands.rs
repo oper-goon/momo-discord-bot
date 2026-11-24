@@ -227,7 +227,9 @@ fn describe(snapshot: &Snapshot) -> String {
             ""
         }
     )];
-    if let Some(provider) = &snapshot.active_provider { lines.push(format!("Provider: {provider}")); }
+    if let Some(provider) = &snapshot.active_provider {
+        lines.push(format!("Provider: {provider}"));
+    }
     for (i, t) in snapshot.queue.iter().take(15).enumerate() {
         lines.push(format!("{}. {}", i + 1, t.title));
     }
@@ -340,8 +342,11 @@ async fn nowplaying(ctx: Context<'_>) -> Result<()> {
     .collect();
     ctx.send(
         poise::CreateReply::default()
-            .embed(serenity::CreateEmbed::new().title("Now Playing")
-                .description(describe(&snapshot).chars().take(1900).collect::<String>()))
+            .embed(
+                serenity::CreateEmbed::new()
+                    .title("Now Playing")
+                    .description(describe(&snapshot).chars().take(1900).collect::<String>()),
+            )
             .ephemeral(true)
             .components(vec![serenity::CreateActionRow::Buttons(buttons)])
             .allowed_mentions(serenity::CreateAllowedMentions::new()),
@@ -350,7 +355,13 @@ async fn nowplaying(ctx: Context<'_>) -> Result<()> {
     Ok(())
 }
 /// Inspect enabled music providers and their circuit breakers.
-#[poise::command(slash_command, prefix_command, guild_only, subcommands("music_providers", "music_status"), subcommand_required)]
+#[poise::command(
+    slash_command,
+    prefix_command,
+    guild_only,
+    subcommands("music_providers", "music_status"),
+    subcommand_required
+)]
 async fn music(ctx: Context<'_>) -> Result<()> {
     reply(ctx, "Use /music providers or /music status.").await
 }

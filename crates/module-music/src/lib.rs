@@ -1,8 +1,8 @@
 #![forbid(unsafe_code)]
 mod commands;
 pub mod matching;
-mod providers;
 pub mod player;
+mod providers;
 pub mod source;
 use anyhow::Result;
 use async_trait::async_trait;
