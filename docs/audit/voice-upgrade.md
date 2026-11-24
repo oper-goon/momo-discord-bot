@@ -57,6 +57,21 @@ Triage verified all three contain only libcrux dependency-name strings, not
 credentials. No real credential was identified in this follow-up scope. Linux
 CI and Docker build results remain pending the branch push.
 
+Linux follow-up identified compiler drift: the prior check used Rust 1.100,
+while local validation used 1.98.1. Poise 0.7's generated optional rest-argument
+error conversion triggers `unreachable_code` under the newer compiler. Rather
+than change command behavior or suppress warnings globally, `rust-toolchain.toml`,
+CI, the Windows wrapper and Docker now consistently select 1.98.1. The wrapper
+reads the channel from the toolchain file. Upgrade this pin alongside the
+upstream parser fix and rerun the full gates.
+
+The CI container job now validates example-only Compose configuration, starts
+the image twice on a unique test volume without a token or network, backs up
+and restores SQLite into a separate file, checks integrity, and runs offline
+startup on the restored file. It cleans up only the CI-created volume. These
+checks have been implemented but require the new Linux run before being marked
+passed. No production storage is accessed.
+
 The owner reports months of live Discord testing and accepts that as the
 running bot's 1.0 acceptance. This new dependency build has not been deployed.
 Offline tests do not exercise Discord gateway negotiation, real RTP, decoded

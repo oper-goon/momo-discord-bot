@@ -16,6 +16,9 @@ Versioning and Keep a Changelog conventions.
 
 ### Changed
 
+- Pin tested Rust 1.98.1 consistently across tooling, CI and Docker; avoid
+  compiler drift triggering Poise's generated rest-argument lint on Rust 1.100.
+
 - Upgrade the DAVE P-256/HPKE backends through narrowly scoped, MIT-licensed
   adapters, preserving OpenMLS protocol/storage APIs. Replace vulnerable
   crypto-bigint with patched upstream 0.7.11 and remove obsolete SHA3 exceptions.
