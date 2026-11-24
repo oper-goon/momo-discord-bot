@@ -3,6 +3,14 @@
 Review date: 2026-11-24. Branch: `feature/public-release-docs`.
 Worktree: `work/public-release` inside the original repository.
 
+Current dependency status: the voice-backend adapters remove the last
+vulnerability without an advisory waiver. All four cargo-deny gates pass.
+Original/upgraded DAVE peers interoperate in both hosting directions, including
+member-add epoch rotation and twelve encrypted packet roundtrips. See
+[voice upgrade](voice-upgrade.md). Earlier findings/counts below describe the
+historical audit. Container/runtime distribution validation remains pending;
+no public release, merge or production deployment occurred.
+
 Follow-up: the owner approved the documentation and generated branding. The
 candidate was pushed privately as draft PR #10. Compatible dependency updates
 subsequently reduced the eight baseline advisory findings to four; see

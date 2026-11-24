@@ -16,6 +16,13 @@ Versioning and Keep a Changelog conventions.
 
 ### Changed
 
+- Upgrade the DAVE P-256/HPKE backends through narrowly scoped, MIT-licensed
+  adapters, preserving OpenMLS protocol/storage APIs. Replace vulnerable
+  crypto-bigint with patched upstream 0.7.11 and remove obsolete SHA3 exceptions.
+  Add offline handshake, epoch rotation, signature and mixed-version wire tests.
+- Correct the workspace's minimum Rust requirement to 1.94, matching SQLx 0.9.1;
+  the existing pinned toolchain and Docker builder already satisfy it.
+
 - Update bundled SQLite to 3.54.1 through compatible libsqlite3-sys 0.39.1,
   with a linked-runtime security-version regression check. Record two dated
   maintenance exceptions while preserving picker IDs; the active

@@ -32,6 +32,9 @@ COPY config/example.toml /app/config/example.toml
 COPY LICENSE THIRD_PARTY_NOTICES.md /usr/share/doc/momokun/
 COPY licenses/Apache-2.0.txt /usr/share/doc/momokun/licenses/Apache-2.0.txt
 COPY licenses/MIT-legacy.txt /usr/share/doc/momokun/licenses/MIT-legacy.txt
+COPY vendor/davey/LICENSE /usr/share/doc/momokun/licenses/davey-MIT.txt
+COPY vendor/openmls_basic_credential/LICENSE /usr/share/doc/momokun/licenses/openmls-basic-credential-MIT.txt
+COPY vendor/openmls_rust_crypto/LICENSE /usr/share/doc/momokun/licenses/openmls-rust-crypto-MIT.txt
 COPY vendor/ringbuf/LICENSE-MIT /usr/share/doc/momokun/licenses/ringbuf-LICENSE-MIT
 ENV PATH="/opt/ytdlp/bin:${PATH}" DATABASE_URL=sqlite:///data/bot.db DENO_NO_UPDATE_CHECK=1 DENO_NO_PROMPT=1
 USER bot

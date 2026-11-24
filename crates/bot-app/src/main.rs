@@ -344,6 +344,38 @@ mod tests {
         assert_eq!(definitions.len(), commands.len());
     }
     #[test]
+    fn voice_crypto_lockfile_uses_patched_upstream_arithmetic() {
+        let lockfile = include_str!("../../../Cargo.lock");
+        let packages: Vec<_> = lockfile
+            .split("[[package]]")
+            .filter(|package| {
+                package
+                    .lines()
+                    .any(|line| line == "name = \"crypto-bigint\"")
+            })
+            .collect();
+        assert!(
+            !packages.is_empty(),
+            "voice arithmetic must remain auditable"
+        );
+        for package in packages {
+            let version = package
+                .lines()
+                .find_map(|line| line.strip_prefix("version = \""))
+                .unwrap()
+                .trim_end_matches('"');
+            let parts: Vec<u32> = version
+                .split('.')
+                .map(|part| part.parse().unwrap())
+                .collect();
+            assert!(
+                parts.as_slice() >= [0, 7, 6].as_slice(),
+                "unpatched crypto-bigint {version}"
+            );
+        }
+    }
+
+    #[test]
     fn vendored_security_backport_remains_applied() {
         let source = include_str!("../../../vendor/libcrux-chacha20poly1305/src/impl_hacl.rs");
         assert!(!source.contains("let (ctxt_cpa, tag) = ctxt.split_at_mut"));

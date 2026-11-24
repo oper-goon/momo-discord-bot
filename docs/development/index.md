@@ -2,6 +2,9 @@
 
 Start with [architecture](architecture.md), `AGENTS.md`, and the relevant crate.
 Read `docs/security.md` before dependency, network, media, or credential changes.
+The DAVE/OpenMLS adapters have dedicated package tests and a mixed-version
+offline harness documented in `tests/voice-interop/README.md`. Run both when
+changing voice crypto dependencies; keep the legacy reference test-only.
 The technical specification is an engineering contract, not a list of completed
 features. The source registry and feature guides describe implemented behavior.
 

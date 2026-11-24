@@ -1,0 +1,25 @@
+# TEST ONLY: registry reference peer deliberately retains the original crypto
+# dependencies. Never include this package in the production workspace/image.
+[workspace]
+resolver = "3"
+
+[package]
+name = "dave-interop-old"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[[bin]]
+name = "dave-interop-old"
+path = "../shared/main.rs"
+
+[dependencies]
+anyhow = "1"
+serde_json = "1"
+davey = "=0.1.5"
+openmls = "=0.8.3"
+openmls_basic_credential = "=0.5.0"
+openmls_rust_crypto = "=0.5.1"
+
+[profile.dev]
+debug = 0

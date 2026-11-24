@@ -14,8 +14,9 @@ form_urlencoded 1.2.3). These remove RUSTSEC-2026-0386, -0382, -0381 and
 to 0.39.1 (SQLite 3.54.1), within SQLx 0.9.1's supported range. A database test
 checks the actual linked SQLite version against the 3.54.0 security floor.
 Poise's chrono feature is retained because existing picker sessions use its
-feature-gated `Context::id`. Two maintenance-only exceptions are reviewed below. The only remaining
-advisory gate failure is crypto-bigint 0.5.5; it is not waived.
+feature-gated `Context::id`. Two maintenance-only exceptions are reviewed below.
+The coordinated voice-backend upgrade replaces crypto-bigint 0.5.5 with patched
+0.7.11; the advisory gate passes without a vulnerability exception.
 See `docs/audit/dependency-remediation.md` for the full dependency record.
 
 - `chrono` 0.4.45 remains through Poise/Serenity timestamps and Songbird 0.6.1 →
@@ -32,13 +33,19 @@ See `docs/audit/dependency-remediation.md` for the full dependency record.
   its Fluvio lifetime import is wasm32-only. RUSTSEC-2026-0441 is accepted as
   maintenance debt for this native bot. Recheck on dependency/target changes
   and by 2026-12-20. This is not an approval of WebAssembly deployment.
-- `crypto-bigint` 0.5.5 is used by DAVE's active P-256 signing and key exchange.
-  RUSTSEC-2026-0387 requires 0.7.6 or later, outside the current elliptic-curve
-  0.13 API range. Even Davey's current upstream manifest retains this chain.
-  Do not mark this unreachable, disable voice encryption, or waive it to ship.
-  A maintained coordinated crypto-stack upgrade or upstream-reviewed compatible
-  backport is required. The upstream fix covers multiple arithmetic operations;
-  a hand-written partial patch is not sufficient evidence of constant-time safety.
+- Three MIT-licensed adapters (`vendor/davey`, `vendor/openmls_basic_credential`,
+  `vendor/openmls_rust_crypto`) retain the DAVE 1/OpenMLS 0.8 protocol, traits and
+  storage APIs while updating P-256 to 0.14 and HPKE to 0.8. Upstream
+  crypto-bigint 0.7.11 and ctutils 0.4.8 supply the arithmetic fixes for
+  RUSTSEC-2026-0387. No cryptographic arithmetic was patched locally. Keep
+  raw 32-byte private keys, uncompressed SEC1 public keys and DER signatures
+  compatible. Tests cover the prior RFC6979 vector, malformed inputs, HPKE
+  encryption/export, and DAVE handshakes/epoch rotation. Original and upgraded
+  peers interoperate in both hosting directions with encrypted packet exchange
+  and tamper rejection. These are offline protocol tests, not live Discord/RTP
+  or decoded Opus playback. See `vendor/README.md` for exact provenance and
+  `tests/voice-interop/README.md` for reproduction. Prefer upstream compatible
+  releases when available, then remove adapters and their patches together.
 
 - Serenity and Songbird use native TLS, removing Serenity 0.12.5's old
   rustls-webpki 0.102 chain. Linux deployments must keep system OpenSSL updated.
@@ -46,28 +53,25 @@ See `docs/audit/dependency-remediation.md` for the full dependency record.
   release updates Rustls from 0.23.45 to the advisory-patched 0.23.46; existing
   vendored backports and reviewed exceptions remain unchanged. The yanked
   yoke-derive 0.8.3 is replaced with compatible 0.8.4.
-- `libcrux-chacha20poly1305` 0.0.7 is vendored with the upstream 0.0.8
+- Historical `libcrux-chacha20poly1305` 0.0.7 was vendored with the upstream 0.0.8
   overlong-output-buffer panic fix for RUSTSEC-2026-0124 because Songbird 0.6's
   HPKE chain pins the older API. See `vendor/README.md`. The public API and
-  cryptographic output are unchanged. Cargo-deny cannot associate registry
-  advisories with path dependencies, so the regression guard remains required.
-- `libcrux-secrets` 0.0.5 is vendored with the upstream four-instruction fix for
+  cryptographic output are unchanged. HPKE 0.8 now resolves newer upstream
+  libcrux packages; this old patch is no longer active. Sources remain for provenance.
+- Historical `libcrux-secrets` 0.0.5 was vendored with the upstream four-instruction fix for
   RUSTSEC-2026-0212. See `vendor/README.md`. No affected instruction remains.
   Cargo-deny does not scan this path dependency as a registry package; review
   its provenance and the regression guard separately. Local tests do not
-  execute the ARM assembly.
+  execute the ARM assembly. This old patch is no longer active after the HPKE
+  upgrade; the historical source guard is retained as provenance protection.
 - `ringbuf` 0.4.8 is vendored with the upstream 0.5.2 panic-safe consumer
   removal guard for RUSTSEC-2026-0293 because Songbird 0.6 still requires the
   0.4 API. See `vendor/README.md`. Cargo-deny cannot associate registry
   advisories with path dependencies, so the source regression guard and
   provenance review are mandatory until Songbird supports 0.5.2 or later.
-- RUSTSEC-2026-0207 and RUSTSEC-2026-0208 in libcrux-sha3 0.0.8 have narrow
-  reachability exceptions: its only active consumer, hpke-rs 0.6.1
-  `src/kem.rs` lines 154 and 158, calls the one-shot `shake256::<32>` and
-  `shake256::<64>` functions. It does not use repeated incremental squeezes,
-  and both fixed output sizes are divisible by eight. The affected APIs and
-  output sizes cannot be requested by bot users. A dependency update or new
-  consumer invalidates this review; do not broaden these exceptions.
+- The prior RUSTSEC-2026-0207/0208 exceptions for libcrux-sha3 0.0.8 are
+  removed: HPKE 0.8 resolves libcrux-sha3 0.0.12. Do not restore those old
+  reachability exceptions for a different package graph.
 - Unmaintained `derivative` and `proc-macro-error2` are transitive build-time
   macros. `instant` is required through OpenMLS/parking_lot and uses native
   time on supported deployments. These are maintenance risks, not claims

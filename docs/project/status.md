@@ -7,16 +7,18 @@ require acceptance testing. Preparation is not a claim of production readiness.
 ## Security gate
 
 A refreshed cargo-deny run on 2026-11-24 identified eight findings. Compatible
-lockfile updates cleared five. Two maintenance-only findings have dated,
-documented exceptions; the remaining vulnerability below still fails the gate.
+updates cleared all six vulnerability/unsoundness findings. Two maintenance-only
+findings have dated, documented exceptions. The advisory, license, source and
+ban gates now pass for the candidate dependency graph.
 Dependency bans, licenses and sources passed.
 
 | Package | Advisory |
 | --- | --- |
-| crypto-bigint | RUSTSEC-2026-0387 |
+| chrono | Maintenance exception; review by 2026-12-20 |
+| pin-utils | Native-target maintenance exception; review by 2026-12-20 |
 
-This remains a release blocker: the affected arithmetic is used by voice
-encryption. Chrono and pin-utils remain unmaintained; their narrowly scoped
+The DAVE/OpenMLS adapters now use patched upstream arithmetic and preserve
+existing protocol/key formats. Chrono and pin-utils remain unmaintained; their narrowly scoped
 maintenance exceptions expire for review on 2026-12-20. See the
 [dependency security policy](../security.md) for rationale and removal conditions.
 Existing [vendored backports and exceptions](../security.md) remain separate

@@ -9,9 +9,20 @@ notice. Third-party components retain their own licenses.
 
 | Component | Version | Declared license | Local evidence |
 | --- | --- | --- | --- |
+| Davey | 0.1.5 with backend API adapter | MIT | vendor/davey/LICENSE, .cargo_vcs_info.json and vendor/README.md |
+| OpenMLS basic credential | 0.5.0 with P-256 API adapter | MIT | vendor/openmls_basic_credential/LICENSE and vendor/README.md |
+| OpenMLS RustCrypto provider | 0.5.1 with P-256/HPKE API adapter | MIT | vendor/openmls_rust_crypto/LICENSE and vendor/README.md |
 | libcrux-chacha20poly1305 | 0.0.7 with security backport | Apache-2.0 | vendor/libcrux-chacha20poly1305/Cargo.toml and vendor/README.md |
 | libcrux-secrets | 0.0.5 with security backport | Apache-2.0 | vendor/libcrux-secrets/Cargo.toml and vendor/README.md |
 | ringbuf | 0.4.8 with security backport | MIT OR Apache-2.0 | vendor/ringbuf/LICENSE-MIT and LICENSE-APACHE |
+
+The two historical libcrux copies above are retained for provenance but no longer
+patch the active graph after the HPKE upgrade. The three voice adapters preserve
+their original MIT terms; they are not relicensed under the project's PolyForm
+license. Their upstream notices are copied into the runtime image notice bundle.
+`tests/voice-interop/legacy` is a separate, unpublished test reference with known
+advisories. It is excluded from the container build context and is not a runtime
+dependency or a distributable bot executable.
 
 Preserve upstream source copyright headers, provenance files, license texts,
 and the backport descriptions. The two libcrux directories do not include their

@@ -17,6 +17,15 @@ jobs:
       - run: cargo fmt --check
       - run: cargo clippy --locked --workspace --all-targets --all-features -- -D warnings
       - run: cargo test --locked --workspace
+      - name: Test adapted voice backends and offline DAVE handshake
+        run: cargo test --locked -p davey -p openmls_rust_crypto -p openmls_basic_credential
+      - name: Check original and upgraded DAVE wire interoperability
+        env:
+          CARGO_TARGET_DIR: ${{ github.workspace }}/target
+        run: |
+          cargo build --locked --manifest-path tests/voice-interop/new/Cargo.toml
+          cargo build --locked --manifest-path tests/voice-interop/legacy/Cargo.toml
+          python3 tests/voice-interop/check_interop.py --new target/debug/dave-interop-new --old target/debug/dave-interop-old
       - run: cargo run --locked -p bot-app -- --check
       - uses: EmbarkStudios/cargo-deny-action@v2
   container:

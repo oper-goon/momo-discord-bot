@@ -4,6 +4,9 @@ Native operation is supported for development, but requires you to maintain exte
 
 Use the Rust version pinned in `rust-toolchain.toml`. On Debian/Ubuntu, install build dependencies `cmake`, `pkg-config`, `libopus-dev`, and `libssl-dev`; the runtime needs CA certificates, OpenSSL, libopus, Python, FFmpeg/FFprobe, yt-dlp and Deno for media features. Consult the checked-in Dockerfile for the exact pinned media-tool versions. YouTube download resolution uses a PO-token provider at the internal hostname `pot-provider:4416`; a standalone native host does not automatically provide that service. Prefer Compose when using that path.
 
+The dependency graph requires Rust 1.94 or newer (including SQLx 0.9.1).
+The repository's pinned toolchain and Docker builder satisfy this requirement.
+
 ```sh
 cp config/example.toml config/config.toml
 # Edit command registration mode and guild IDs before continuing.

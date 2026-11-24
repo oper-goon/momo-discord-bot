@@ -81,6 +81,60 @@
     ]
   },
   {
+    "name": "aead",
+    "version": "0.6.1",
+    "license": "MIT OR Apache-2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "arrayvec",
+        "req": "^0.7",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "blobby",
+        "req": "^0.4",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "bytes",
+        "req": "^1.11.1",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "crypto-common",
+        "req": "^0.2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "inout",
+        "req": "^0.2.2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      }
+    ]
+  },
+  {
     "name": "aes",
     "version": "0.8.4",
     "license": "MIT OR Apache-2.0",
@@ -153,6 +207,71 @@
         "features": [],
         "kind": null,
         "target": "cfg(not(all(aes_armv8, target_arch = \"aarch64\")))"
+      }
+    ]
+  },
+  {
+    "name": "aes",
+    "version": "0.9.4",
+    "license": "MIT OR Apache-2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "cipher",
+        "req": "^0.5",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "cpubits",
+        "req": "^0.1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "zeroize",
+        "req": "^1.9",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "cipher",
+        "req": "^0.5",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "dev"
+        ],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "hex-literal",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "cpufeatures",
+        "req": "^0.3",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": "cfg(any(target_arch = \"aarch64\", target_arch = \"x86_64\", target_arch = \"x86\"))"
       }
     ]
   },
@@ -240,6 +359,99 @@
       {
         "name": "hex-literal",
         "req": "^0.3",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      }
+    ]
+  },
+  {
+    "name": "aes-gcm",
+    "version": "0.11.1",
+    "license": "Apache-2.0 OR MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "aead",
+        "req": "^0.6",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "aes",
+        "req": "^0.9",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "cipher",
+        "req": "^0.5",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "ctr",
+        "req": "^0.10",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "ctutils",
+        "req": "^0.4",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "ghash",
+        "req": "^0.6",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "zeroize",
+        "req": "^1",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "aead",
+        "req": "^0.6",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "alloc",
+          "dev"
+        ],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "hex-literal",
+        "req": "^1",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -615,7 +827,7 @@
   },
   {
     "name": "base16ct",
-    "version": "0.2.0",
+    "version": "1.0.0",
     "license": "Apache-2.0 OR MIT",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
@@ -724,6 +936,154 @@
           "std"
         ],
         "kind": "dev",
+        "target": null
+      }
+    ]
+  },
+  {
+    "name": "bindgen",
+    "version": "0.73.2",
+    "license": "BSD-3-Clause",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "annotate-snippets",
+        "req": "^0.11.4",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "bitflags",
+        "req": "^2.2.1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "cexpr",
+        "req": "^0.6",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "clang-sys",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "clang_11_0"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "clap",
+        "req": "^4",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [
+          "derive"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "clap_complete",
+        "req": "^4",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "log",
+        "req": "^0.4",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "prettyplease",
+        "req": ">=0.2.7, <0.4",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [
+          "verbatim"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "proc-macro2",
+        "req": "^1.0.80",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "quote",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "regex",
+        "req": "^1.5.3",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "std",
+          "unicode-perl"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "rustc-hash",
+        "req": "^2.1.0",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "shlex",
+        "req": "^2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "syn",
+        "req": ">=2, <4",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "full",
+          "extra-traits",
+          "visit-mut"
+        ],
+        "kind": null,
         "target": null
       }
     ]
@@ -1939,6 +2299,35 @@
     ]
   },
   {
+    "name": "cexpr",
+    "version": "0.6.0",
+    "license": "Apache-2.0/MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "nom",
+        "req": "^7",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "std"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "clang-sys",
+        "req": ">=0.13.0, <0.29.0",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      }
+    ]
+  },
+  {
     "name": "cfg-if",
     "version": "1.0.5",
     "license": "MIT OR Apache-2.0",
@@ -2164,6 +2553,73 @@
     ]
   },
   {
+    "name": "chacha20poly1305",
+    "version": "0.11.0",
+    "license": "Apache-2.0 OR MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "aead",
+        "req": "^0.6",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "chacha20",
+        "req": "^0.10",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "xchacha"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "cipher",
+        "req": "^0.5",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "poly1305",
+        "req": "^0.9",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "zeroize",
+        "req": "^1.8",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "aead",
+        "req": "^0.6",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "dev"
+        ],
+        "kind": "dev",
+        "target": null
+      }
+    ]
+  },
+  {
     "name": "chrono",
     "version": "0.4.45",
     "license": "MIT OR Apache-2.0",
@@ -2366,6 +2822,141 @@
     ]
   },
   {
+    "name": "cipher",
+    "version": "0.5.2",
+    "license": "MIT OR Apache-2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "blobby",
+        "req": "^0.4",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "block-buffer",
+        "req": "^0.12",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "crypto-common",
+        "req": "^0.2.2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "inout",
+        "req": "^0.2.2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "zeroize",
+        "req": "^1.8",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "hex-literal",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      }
+    ]
+  },
+  {
+    "name": "clang-sys",
+    "version": "1.9.1",
+    "license": "Apache-2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "glob",
+        "req": "^0.3",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "libc",
+        "req": "^0.2.39",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "libloading",
+        "req": "^0.8",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "glob",
+        "req": "^0.3",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "lazy_static",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "tempfile",
+        "req": ">=3.0.0, <3.7.0",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "glob",
+        "req": "^0.3",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "build",
+        "target": null
+      }
+    ]
+  },
+  {
     "name": "cmake",
     "version": "0.1.58",
     "license": "MIT OR Apache-2.0",
@@ -2398,6 +2989,53 @@
         "features": [],
         "kind": "dev",
         "target": "cfg(any(unix, windows))"
+      }
+    ]
+  },
+  {
+    "name": "const-oid",
+    "version": "0.10.3",
+    "license": "Apache-2.0 OR MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "arbitrary",
+        "req": "^1.4",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [
+          "derive"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "hex-literal",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "proptest",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "regex",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
       }
     ]
   },
@@ -2512,14 +3150,14 @@
   },
   {
     "name": "core-models",
-    "version": "0.0.5",
+    "version": "0.0.7",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "hax-lib",
-        "req": "=0.3.6",
+        "req": "^0.3.7",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -2537,7 +3175,7 @@
       },
       {
         "name": "rand",
-        "req": "^0.9",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -2563,6 +3201,14 @@
         "target": null
       }
     ]
+  },
+  {
+    "name": "cpubits",
+    "version": "0.1.1",
+    "license": "MIT OR Apache-2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": []
   },
   {
     "name": "cpufeatures",
@@ -2651,6 +3297,78 @@
         "features": [],
         "kind": null,
         "target": "cfg(all(target_arch = \"loongarch64\", target_os = \"linux\"))"
+      }
+    ]
+  },
+  {
+    "name": "crabgrind",
+    "version": "0.4.0",
+    "license": "MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "lazy_static",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "libc",
+        "req": "^0.2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "regex",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "bindgen",
+        "req": "^0.73",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "build",
+        "target": null
+      },
+      {
+        "name": "cc",
+        "req": "^1",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "build",
+        "target": null
+      },
+      {
+        "name": "pkg-config",
+        "req": "^0.3",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "build",
+        "target": null
+      },
+      {
+        "name": "rustversion",
+        "req": "^1.0",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "build",
+        "target": null
       }
     ]
   },
@@ -2907,14 +3625,32 @@
   },
   {
     "name": "crypto-bigint",
-    "version": "0.5.5",
+    "version": "0.7.11",
     "license": "Apache-2.0 OR MIT",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
+        "name": "cpubits",
+        "req": "^0.1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "ctutils",
+        "req": "^0.4.8",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
         "name": "der",
-        "req": "^0.7",
+        "req": "^0.8",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -2922,26 +3658,46 @@
         "target": null
       },
       {
-        "name": "generic-array",
-        "req": "^0.14",
+        "name": "getrandom",
+        "req": "^0.4",
         "optional": true,
         "uses_default_features": true,
+        "features": [
+          "sys_rng"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "hybrid-array",
+        "req": "^0.4.12",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "num-traits",
+        "req": "^0.2.19",
+        "optional": false,
+        "uses_default_features": false,
         "features": [],
         "kind": null,
         "target": null
       },
       {
         "name": "rand_core",
-        "req": "^0.6.4",
+        "req": "^0.10",
         "optional": true,
-        "uses_default_features": true,
+        "uses_default_features": false,
         "features": [],
         "kind": null,
         "target": null
       },
       {
         "name": "rlp",
-        "req": "^0.5",
+        "req": "^0.6",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -2950,7 +3706,7 @@
       },
       {
         "name": "serdect",
-        "req": "^0.2",
+        "req": "^0.4",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -2959,8 +3715,8 @@
       },
       {
         "name": "subtle",
-        "req": "^2.4",
-        "optional": false,
+        "req": "^2.6",
+        "optional": true,
         "uses_default_features": false,
         "features": [],
         "kind": null,
@@ -2976,7 +3732,18 @@
         "target": null
       },
       {
-        "name": "bincode",
+        "name": "chacha20",
+        "req": "^0.10",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "rng"
+        ],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "hex-literal",
         "req": "^1",
         "optional": false,
         "uses_default_features": true,
@@ -2985,28 +3752,8 @@
         "target": null
       },
       {
-        "name": "criterion",
-        "req": "^0.5",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [
-          "html_reports"
-        ],
-        "kind": "dev",
-        "target": null
-      },
-      {
-        "name": "hex-literal",
-        "req": "^0.4",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": "dev",
-        "target": null
-      },
-      {
         "name": "num-bigint",
-        "req": "^0.4",
+        "req": "^0.5",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -3023,42 +3770,45 @@
         "target": null
       },
       {
-        "name": "num-traits",
-        "req": "^0.2",
+        "name": "num-modular",
+        "req": "^0.7",
         "optional": false,
         "uses_default_features": true,
-        "features": [],
-        "kind": "dev",
-        "target": null
-      },
-      {
-        "name": "proptest",
-        "req": "^1",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": "dev",
-        "target": null
-      },
-      {
-        "name": "rand_chacha",
-        "req": "^0.3",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
+        "features": [
+          "num-bigint",
+          "num-traits"
+        ],
         "kind": "dev",
         "target": null
       },
       {
         "name": "rand_core",
-        "req": "^0.6",
+        "req": "^0.10",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "criterion",
+        "req": "^0.7",
         "optional": false,
         "uses_default_features": true,
         "features": [
-          "std"
+          "html_reports"
         ],
         "kind": "dev",
-        "target": null
+        "target": "cfg(any(unix, windows))"
+      },
+      {
+        "name": "proptest",
+        "req": "^1.11",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": "cfg(any(unix, windows))"
       }
     ]
   },
@@ -3140,6 +3890,73 @@
   },
   {
     "name": "ctr",
+    "version": "0.10.1",
+    "license": "MIT OR Apache-2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "cipher",
+        "req": "^0.5.2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "stream-wrapper"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "aes",
+        "req": "^0.9",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "cipher",
+        "req": "^0.5.2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "dev"
+        ],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "hex-literal",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "kuznyechik",
+        "req": "^0.9",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "magma",
+        "req": "^0.10",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      }
+    ]
+  },
+  {
+    "name": "ctr",
     "version": "0.9.2",
     "license": "MIT OR Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -3205,14 +4022,14 @@
   },
   {
     "name": "ctutils",
-    "version": "0.4.2",
+    "version": "0.4.8",
     "license": "Apache-2.0 OR MIT",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "cmov",
-        "req": "^0.5.3",
+        "req": "^0.5.4",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -3221,7 +4038,7 @@
       },
       {
         "name": "subtle",
-        "req": "^2",
+        "req": "^2.6",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -3408,6 +4225,189 @@
       {
         "name": "cpufeatures",
         "req": "^0.2.6",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": "cfg(target_arch = \"x86_64\")"
+      }
+    ]
+  },
+  {
+    "name": "curve25519-dalek",
+    "version": "5.0.0",
+    "license": "BSD-3-Clause",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "cfg-if",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "digest",
+        "req": "^0.11",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [
+          "block-api"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "ff",
+        "req": "^0.14",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "group",
+        "req": "^0.14",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "rand_core",
+        "req": "^0.10",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "serde",
+        "req": "^1.0",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [
+          "derive"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "subtle",
+        "req": "^2.6.0",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "const-generics"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "zeroize",
+        "req": "^1",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "criterion",
+        "req": "^0.5",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "html_reports"
+        ],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "getrandom",
+        "req": "^0.4",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "sys_rng"
+        ],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "hex",
+        "req": "^0.4.2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "postcard",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "alloc"
+        ],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "proptest",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "sha2",
+        "req": "^0.11",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "rustc_version",
+        "req": "^0.4.0",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "build",
+        "target": null
+      },
+      {
+        "name": "curve25519-dalek-derive",
+        "req": "^0.1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": "cfg(all(not(curve25519_dalek_backend = \"fiat\"), not(curve25519_dalek_backend = \"serial\"), target_arch = \"x86_64\"))"
+      },
+      {
+        "name": "fiat-crypto",
+        "req": "^0.3.0",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": "cfg(curve25519_dalek_backend = \"fiat\")"
+      },
+      {
+        "name": "cpufeatures",
+        "req": "^0.3",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -3982,7 +4982,7 @@
     "name": "davey",
     "version": "0.1.5",
     "license": "MIT",
-    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "source": null,
     "workspace": false,
     "dependencies": [
       {
@@ -4018,6 +5018,17 @@
         "optional": false,
         "uses_default_features": true,
         "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "getrandom",
+        "req": "^0.4",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "sys_rng"
+        ],
         "kind": null,
         "target": null
       },
@@ -4115,7 +5126,7 @@
       },
       {
         "name": "p256",
-        "req": "^0.13",
+        "req": "^0.14",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -4134,6 +5145,15 @@
       {
         "name": "rand",
         "req": "^0.8",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "rand_core",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -4287,6 +5307,127 @@
         "features": [],
         "kind": "dev",
         "target": null
+      }
+    ]
+  },
+  {
+    "name": "der",
+    "version": "0.8.3",
+    "license": "Apache-2.0 OR MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "arbitrary",
+        "req": "^1.4.2",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [
+          "derive"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "bytes",
+        "req": "^1",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "const-oid",
+        "req": "^0.10",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "der_derive",
+        "req": "^0.8",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "derive_arbitrary",
+        "req": "^1.4.2",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "flagset",
+        "req": "^0.4.7",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "heapless",
+        "req": "^0.9",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "pem-rfc7468",
+        "req": "^1",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [
+          "alloc"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "time",
+        "req": "^0.3.4",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "zeroize",
+        "req": "^1.8",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "hex-literal",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "proptest",
+        "req": "^1.10",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": "cfg(any(unix, windows))"
       }
     ]
   },
@@ -5095,14 +6236,14 @@
   },
   {
     "name": "ecdsa",
-    "version": "0.16.9",
+    "version": "0.17.0",
     "license": "Apache-2.0 OR MIT",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "der",
-        "req": "^0.7",
+        "req": "^0.8",
         "optional": true,
         "uses_default_features": true,
         "features": [],
@@ -5111,7 +6252,7 @@
       },
       {
         "name": "digest",
-        "req": "^0.10.7",
+        "req": "^0.11",
         "optional": true,
         "uses_default_features": false,
         "features": [
@@ -5122,11 +6263,10 @@
       },
       {
         "name": "elliptic-curve",
-        "req": "^0.13.6",
+        "req": "^0.14",
         "optional": false,
         "uses_default_features": false,
         "features": [
-          "digest",
           "sec1"
         ],
         "kind": null,
@@ -5134,7 +6274,7 @@
       },
       {
         "name": "rfc6979",
-        "req": "^0.4",
+        "req": "^0.6",
         "optional": true,
         "uses_default_features": true,
         "features": [],
@@ -5143,7 +6283,7 @@
       },
       {
         "name": "serdect",
-        "req": "^0.2",
+        "req": "^0.4",
         "optional": true,
         "uses_default_features": false,
         "features": [
@@ -5154,7 +6294,7 @@
       },
       {
         "name": "sha2",
-        "req": "^0.10",
+        "req": "^0.11",
         "optional": true,
         "uses_default_features": false,
         "features": [
@@ -5165,7 +6305,7 @@
       },
       {
         "name": "signature",
-        "req": "^2.0, <2.3",
+        "req": "^3",
         "optional": false,
         "uses_default_features": false,
         "features": [
@@ -5176,7 +6316,7 @@
       },
       {
         "name": "spki",
-        "req": "^0.7.2",
+        "req": "^0.8",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -5184,8 +6324,17 @@
         "target": null
       },
       {
+        "name": "zeroize",
+        "req": "^1.5",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
         "name": "elliptic-curve",
-        "req": "^0.13",
+        "req": "^0.14",
         "optional": false,
         "uses_default_features": false,
         "features": [
@@ -5195,17 +6344,8 @@
         "target": null
       },
       {
-        "name": "hex-literal",
-        "req": "^0.4",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": "dev",
-        "target": null
-      },
-      {
         "name": "sha2",
-        "req": "^0.10",
+        "req": "^0.11",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -5569,14 +6709,25 @@
   },
   {
     "name": "elliptic-curve",
-    "version": "0.13.8",
+    "version": "0.14.3",
     "license": "Apache-2.0 OR MIT",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
+        "name": "hybrid-array",
+        "req": "^0.4.13",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "zeroize"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
         "name": "base16ct",
-        "req": "^0.2",
+        "req": "^1",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -5584,32 +6735,33 @@
         "target": null
       },
       {
-        "name": "base64ct",
-        "req": "^1",
-        "optional": true,
-        "uses_default_features": false,
-        "features": [
-          "alloc"
-        ],
-        "kind": null,
-        "target": null
-      },
-      {
         "name": "crypto-bigint",
-        "req": "^0.5",
+        "req": "^0.7.8",
         "optional": false,
         "uses_default_features": false,
         "features": [
+          "hybrid-array",
           "rand_core",
-          "generic-array",
+          "subtle",
           "zeroize"
         ],
         "kind": null,
         "target": null
       },
       {
+        "name": "crypto-common",
+        "req": "^0.2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "rand_core"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
         "name": "digest",
-        "req": "^0.10",
+        "req": "^0.11",
         "optional": true,
         "uses_default_features": true,
         "features": [],
@@ -5618,7 +6770,7 @@
       },
       {
         "name": "ff",
-        "req": "^0.13",
+        "req": "^0.14",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -5626,19 +6778,8 @@
         "target": null
       },
       {
-        "name": "generic-array",
-        "req": "^0.14.6",
-        "optional": false,
-        "uses_default_features": false,
-        "features": [
-          "zeroize"
-        ],
-        "kind": null,
-        "target": null
-      },
-      {
         "name": "group",
-        "req": "^0.13",
+        "req": "^0.14",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -5647,7 +6788,7 @@
       },
       {
         "name": "hex-literal",
-        "req": "^0.4",
+        "req": "^1",
         "optional": true,
         "uses_default_features": true,
         "features": [],
@@ -5656,7 +6797,7 @@
       },
       {
         "name": "hkdf",
-        "req": "^0.12.1",
+        "req": "^0.13",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -5665,7 +6806,7 @@
       },
       {
         "name": "pem-rfc7468",
-        "req": "^0.7",
+        "req": "^1",
         "optional": true,
         "uses_default_features": true,
         "features": [
@@ -5676,7 +6817,7 @@
       },
       {
         "name": "pkcs8",
-        "req": "^0.10.2",
+        "req": "^0.11",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -5685,7 +6826,7 @@
       },
       {
         "name": "rand_core",
-        "req": "^0.6.4",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -5694,10 +6835,11 @@
       },
       {
         "name": "sec1",
-        "req": "^0.7.1",
+        "req": "^0.8",
         "optional": true,
         "uses_default_features": true,
         "features": [
+          "ctutils",
           "subtle",
           "zeroize"
         ],
@@ -5705,19 +6847,8 @@
         "target": null
       },
       {
-        "name": "serde_json",
-        "req": "^1.0.47",
-        "optional": true,
-        "uses_default_features": false,
-        "features": [
-          "alloc"
-        ],
-        "kind": null,
-        "target": null
-      },
-      {
         "name": "serdect",
-        "req": "^0.2",
+        "req": "^0.4",
         "optional": true,
         "uses_default_features": false,
         "features": [
@@ -5728,17 +6859,8 @@
       },
       {
         "name": "subtle",
-        "req": "^2",
+        "req": "^2.6",
         "optional": false,
-        "uses_default_features": false,
-        "features": [],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "tap",
-        "req": "^1.0.1",
-        "optional": true,
         "uses_default_features": false,
         "features": [],
         "kind": null,
@@ -5755,25 +6877,7 @@
       },
       {
         "name": "hex-literal",
-        "req": "^0.4",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": "dev",
-        "target": null
-      },
-      {
-        "name": "sha2",
-        "req": "^0.10",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": "dev",
-        "target": null
-      },
-      {
-        "name": "sha3",
-        "req": "^0.10",
+        "req": "^1",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -6340,7 +7444,7 @@
   },
   {
     "name": "ff",
-    "version": "0.13.1",
+    "version": "0.14.0",
     "license": "MIT/Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
@@ -6365,7 +7469,7 @@
       },
       {
         "name": "ff_derive",
-        "req": "^0.13.1",
+        "req": "^0.14",
         "optional": true,
         "uses_default_features": true,
         "features": [],
@@ -6374,7 +7478,7 @@
       },
       {
         "name": "rand_core",
-        "req": "^0.6",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -6402,11 +7506,13 @@
         "target": null
       },
       {
-        "name": "rand",
-        "req": "^0.8",
+        "name": "getrandom",
+        "req": "^0.4",
         "optional": false,
         "uses_default_features": true,
-        "features": [],
+        "features": [
+          "sys_rng"
+        ],
         "kind": "dev",
         "target": null
       }
@@ -6415,6 +7521,14 @@
   {
     "name": "fiat-crypto",
     "version": "0.2.9",
+    "license": "MIT OR Apache-2.0 OR BSD-1-Clause",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": []
+  },
+  {
+    "name": "fiat-crypto",
+    "version": "0.3.0",
     "license": "MIT OR Apache-2.0 OR BSD-1-Clause",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
@@ -8112,6 +9226,44 @@
     ]
   },
   {
+    "name": "ghash",
+    "version": "0.6.0",
+    "license": "Apache-2.0 OR MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "polyval",
+        "req": "^0.7",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "hazmat"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "zeroize",
+        "req": "^1",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "hex-literal",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      }
+    ]
+  },
+  {
     "name": "glob",
     "version": "0.3.4",
     "license": "MIT OR Apache-2.0",
@@ -8140,14 +9292,14 @@
   },
   {
     "name": "group",
-    "version": "0.13.0",
+    "version": "0.14.0",
     "license": "MIT/Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "ff",
-        "req": "^0.13",
+        "req": "^0.14",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -8165,7 +9317,7 @@
       },
       {
         "name": "rand",
-        "req": "^0.8",
+        "req": "^0.10",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -8174,7 +9326,7 @@
       },
       {
         "name": "rand_core",
-        "req": "^0.6",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -8183,7 +9335,7 @@
       },
       {
         "name": "rand_xorshift",
-        "req": "^0.3",
+        "req": "^0.5",
         "optional": true,
         "uses_default_features": true,
         "features": [],
@@ -8760,14 +9912,50 @@
   },
   {
     "name": "hax-lib",
-    "version": "0.3.6",
+    "version": "0.3.7",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "hax-lib-macros",
-        "req": "=0.3.6",
+        "req": "=0.3.7",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "num-bigint",
+        "req": "^0.4",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": "cfg(hax)"
+      },
+      {
+        "name": "num-traits",
+        "req": "^0.2",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": "cfg(hax)"
+      }
+    ]
+  },
+  {
+    "name": "hax-lib",
+    "version": "0.4.2",
+    "license": "Apache-2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "hax-lib-macros",
+        "req": "=0.4.2",
         "optional": true,
         "uses_default_features": true,
         "features": [],
@@ -8796,7 +9984,7 @@
   },
   {
     "name": "hax-lib-macros",
-    "version": "0.3.6",
+    "version": "0.3.7",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
@@ -8834,7 +10022,7 @@
       },
       {
         "name": "hax-lib-macros-types",
-        "req": "=0.3.6",
+        "req": "=0.3.7",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -8866,8 +10054,138 @@
     ]
   },
   {
+    "name": "hax-lib-macros",
+    "version": "0.4.2",
+    "license": "Apache-2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "proc-macro2",
+        "req": "^1.0.66",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "quote",
+        "req": "^1.0.32",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "syn",
+        "req": "^2.0",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "full",
+          "visit",
+          "visit-mut"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "hax-lib-macros-types",
+        "req": "=0.4.2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": "cfg(hax)"
+      },
+      {
+        "name": "syn",
+        "req": "^2.0",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "full",
+          "visit-mut",
+          "visit"
+        ],
+        "kind": null,
+        "target": "cfg(hax)"
+      }
+    ]
+  },
+  {
     "name": "hax-lib-macros-types",
-    "version": "0.3.6",
+    "version": "0.3.7",
+    "license": "Apache-2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "proc-macro2",
+        "req": "^1.0.66",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "quote",
+        "req": "^1.0.32",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "schemars",
+        "req": "^0.8",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "serde",
+        "req": "^1.0",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "derive",
+          "rc"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "serde_json",
+        "req": "^1.0",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "uuid",
+        "req": "^1.5",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "v4"
+        ],
+        "kind": null,
+        "target": null
+      }
+    ]
+  },
+  {
+    "name": "hax-lib-macros-types",
+    "version": "0.4.2",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
@@ -9478,14 +10796,14 @@
   },
   {
     "name": "hpke-rs",
-    "version": "0.6.1",
+    "version": "0.8.1",
     "license": "MPL-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "hpke-rs-crypto",
-        "req": "^0.6.1",
+        "req": "=0.8.0",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -9494,7 +10812,7 @@
       },
       {
         "name": "hpke-rs-libcrux",
-        "req": "^0.6.1",
+        "req": "=0.8.1",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -9503,7 +10821,7 @@
       },
       {
         "name": "hpke-rs-rust-crypto",
-        "req": "^0.6.1",
+        "req": "=0.8.0",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -9512,7 +10830,7 @@
       },
       {
         "name": "libcrux-sha3",
-        "req": "^0.0.8",
+        "req": "=0.0.12",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -9524,15 +10842,6 @@
         "req": "^0.4",
         "optional": false,
         "uses_default_features": true,
-        "features": [],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "rand_core",
-        "req": "^0.9",
-        "optional": false,
-        "uses_default_features": false,
         "features": [],
         "kind": null,
         "target": null
@@ -9559,9 +10868,9 @@
       },
       {
         "name": "tls_codec",
-        "req": "^0.4.2",
+        "req": "^0.5.0",
         "optional": true,
-        "uses_default_features": true,
+        "uses_default_features": false,
         "features": [
           "derive"
         ],
@@ -9592,9 +10901,9 @@
       },
       {
         "name": "hpke-rs-crypto",
-        "req": "^0.6.1",
+        "req": "=0.8.0",
         "optional": false,
-        "uses_default_features": true,
+        "uses_default_features": false,
         "features": [
           "std"
         ],
@@ -9603,18 +10912,18 @@
       },
       {
         "name": "hpke-rs-libcrux",
-        "req": "^0.6.1",
+        "req": "=0.8.1",
         "optional": false,
-        "uses_default_features": true,
+        "uses_default_features": false,
         "features": [],
         "kind": "dev",
         "target": null
       },
       {
         "name": "hpke-rs-rust-crypto",
-        "req": "^0.6.1",
+        "req": "=0.8.0",
         "optional": false,
-        "uses_default_features": true,
+        "uses_default_features": false,
         "features": [],
         "kind": "dev",
         "target": null
@@ -9639,6 +10948,17 @@
       },
       {
         "name": "rand",
+        "req": "^0.10",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "sys_rng"
+        ],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "rand_chacha",
         "req": "^0.10",
         "optional": false,
         "uses_default_features": true,
@@ -9679,14 +10999,14 @@
   },
   {
     "name": "hpke-rs-crypto",
-    "version": "0.6.1",
+    "version": "0.8.0",
     "license": "MPL-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
-        "name": "rand_core",
-        "req": "^0.9",
+        "name": "rand",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -9717,23 +11037,23 @@
   },
   {
     "name": "hpke-rs-libcrux",
-    "version": "0.6.1",
+    "version": "0.8.1",
     "license": "MPL-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "hpke-rs-crypto",
-        "req": "^0.6.1",
+        "req": "=0.8.0",
         "optional": false,
-        "uses_default_features": true,
+        "uses_default_features": false,
         "features": [],
         "kind": null,
         "target": null
       },
       {
         "name": "libcrux-aead",
-        "req": "^0.0.7",
+        "req": "=0.0.11",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -9742,7 +11062,7 @@
       },
       {
         "name": "libcrux-ecdh",
-        "req": "^0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -9751,7 +11071,7 @@
       },
       {
         "name": "libcrux-hkdf",
-        "req": "^0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -9759,8 +11079,19 @@
         "target": null
       },
       {
+        "name": "libcrux-hmac-drbg",
+        "req": "=0.0.3",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "rand"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
         "name": "libcrux-kem",
-        "req": "^0.0.7",
+        "req": "=0.0.11",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -9768,11 +11099,167 @@
         "target": null
       },
       {
+        "name": "libcrux-p384",
+        "req": "=0.0.2",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "rand"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "libcrux-sha3",
+        "req": "=0.0.12",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
         "name": "libcrux-traits",
-        "req": "^0.0.6",
+        "req": "=0.0.10",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "p521",
+        "req": "^0.14.0",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [
+          "arithmetic",
+          "ecdh"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "rand",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": false,
         "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "criterion",
+        "req": "^0.8",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "html_reports"
+        ],
+        "kind": "dev",
+        "target": null
+      }
+    ]
+  },
+  {
+    "name": "hpke-rs-rust-crypto",
+    "version": "0.8.0",
+    "license": "MPL-2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "aes-gcm",
+        "req": "^0.11",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "aes",
+          "alloc"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "chacha20poly1305",
+        "req": "^0.11",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "alloc"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "elliptic-curve",
+        "req": "^0.14",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "hkdf",
+        "req": "^0.13",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "hpke-rs-crypto",
+        "req": "=0.8.0",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "k256",
+        "req": "^0.14",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "arithmetic",
+          "ecdh"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "ml-kem",
+        "req": "^0.3",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "p256",
+        "req": "^0.14",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "arithmetic",
+          "ecdh"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "p384",
+        "req": "^0.14",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "arithmetic",
+          "ecdh"
+        ],
         "kind": null,
         "target": null
       },
@@ -9800,155 +11287,6 @@
         "name": "rand_core",
         "req": "^0.10",
         "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "zeroize",
-        "req": "^1.8.2",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "criterion",
-        "req": "^0.8",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [
-          "html_reports"
-        ],
-        "kind": "dev",
-        "target": null
-      }
-    ]
-  },
-  {
-    "name": "hpke-rs-rust-crypto",
-    "version": "0.6.1",
-    "license": "MPL-2.0",
-    "source": "registry+https://github.com/rust-lang/crates.io-index",
-    "workspace": false,
-    "dependencies": [
-      {
-        "name": "aes-gcm",
-        "req": "^0.10",
-        "optional": false,
-        "uses_default_features": false,
-        "features": [
-          "aes"
-        ],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "chacha20poly1305",
-        "req": "^0.10",
-        "optional": false,
-        "uses_default_features": false,
-        "features": [
-          "alloc"
-        ],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "hkdf",
-        "req": "^0.12",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "hpke-rs-crypto",
-        "req": "^0.6.1",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "k256",
-        "req": "^0.13",
-        "optional": false,
-        "uses_default_features": false,
-        "features": [
-          "arithmetic",
-          "ecdh"
-        ],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "ml-kem",
-        "req": "^0.3.0-rc.0",
-        "optional": true,
-        "uses_default_features": false,
-        "features": [],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "p256",
-        "req": "^0.13",
-        "optional": false,
-        "uses_default_features": false,
-        "features": [
-          "arithmetic",
-          "ecdh"
-        ],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "p384",
-        "req": "^0.13",
-        "optional": false,
-        "uses_default_features": false,
-        "features": [],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "rand_chacha",
-        "req": "^0.3",
-        "optional": false,
-        "uses_default_features": false,
-        "features": [],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "rand_core",
-        "req": "^0.6",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [
-          "getrandom"
-        ],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "rand_core",
-        "req": "^0.10",
-        "optional": false,
-        "uses_default_features": false,
-        "features": [],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "rand",
-        "req": "^0.8",
-        "optional": false,
         "uses_default_features": false,
         "features": [],
         "kind": null,
@@ -9956,7 +11294,7 @@
       },
       {
         "name": "sha2",
-        "req": "^0.10",
+        "req": "^0.11",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -9974,7 +11312,7 @@
       },
       {
         "name": "x-wing",
-        "req": "^0.1.0-rc.0",
+        "req": "^0.1",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -9983,21 +11321,12 @@
       },
       {
         "name": "x25519-dalek",
-        "req": "^2",
+        "req": "^3",
         "optional": false,
         "uses_default_features": true,
         "features": [
           "static_secrets"
         ],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "zeroize",
-        "req": "^1.8.2",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
         "kind": null,
         "target": null
       },
@@ -10014,7 +11343,7 @@
       },
       {
         "name": "rand",
-        "req": "^0.9",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -12366,6 +13695,33 @@
     ]
   },
   {
+    "name": "inout",
+    "version": "0.2.6",
+    "license": "MIT OR Apache-2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "block-padding",
+        "req": "^0.4.2",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "hybrid-array",
+        "req": "^0.4",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      }
+    ]
+  },
+  {
     "name": "instant",
     "version": "0.1.13",
     "license": "BSD-3-Clause",
@@ -12669,14 +14025,14 @@
   },
   {
     "name": "k256",
-    "version": "0.13.4",
+    "version": "0.14.0",
     "license": "Apache-2.0 OR MIT",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
-        "name": "cfg-if",
-        "req": "^1.0",
+        "name": "cpubits",
+        "req": "^0.1",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -12685,7 +14041,7 @@
       },
       {
         "name": "ecdsa",
-        "req": "^0.16.8",
+        "req": "^0.17",
         "optional": true,
         "uses_default_features": false,
         "features": [
@@ -12696,19 +14052,18 @@
       },
       {
         "name": "elliptic-curve",
-        "req": "^0.13.8",
+        "req": "^0.14.1",
         "optional": false,
         "uses_default_features": false,
         "features": [
-          "hazmat",
           "sec1"
         ],
         "kind": null,
         "target": null
       },
       {
-        "name": "hex-literal",
-        "req": "^0.4",
+        "name": "hash2curve",
+        "req": "^0.14",
         "optional": true,
         "uses_default_features": true,
         "features": [],
@@ -12716,17 +14071,26 @@
         "target": null
       },
       {
-        "name": "once_cell",
-        "req": "^1.19",
+        "name": "hex-literal",
+        "req": "^1",
         "optional": true,
-        "uses_default_features": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "primeorder",
+        "req": "^0.14",
+        "optional": true,
+        "uses_default_features": true,
         "features": [],
         "kind": null,
         "target": null
       },
       {
         "name": "serdect",
-        "req": "^0.2",
+        "req": "^0.4",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -12735,7 +14099,7 @@
       },
       {
         "name": "sha2",
-        "req": "^0.10",
+        "req": "^0.11",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -12744,7 +14108,7 @@
       },
       {
         "name": "signature",
-        "req": "^2",
+        "req": "^3",
         "optional": true,
         "uses_default_features": true,
         "features": [],
@@ -12752,17 +14116,17 @@
         "target": null
       },
       {
-        "name": "blobby",
-        "req": "^0.3",
+        "name": "wnaf",
+        "req": "^0.14",
         "optional": false,
-        "uses_default_features": true,
+        "uses_default_features": false,
         "features": [],
-        "kind": "dev",
+        "kind": null,
         "target": null
       },
       {
         "name": "criterion",
-        "req": "^0.5",
+        "req": "^0.7",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -12771,7 +14135,7 @@
       },
       {
         "name": "ecdsa",
-        "req": "^0.16",
+        "req": "^0.17",
         "optional": false,
         "uses_default_features": false,
         "features": [
@@ -12781,8 +14145,17 @@
         "target": null
       },
       {
+        "name": "hex",
+        "req": "^0.4.3",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
         "name": "hex-literal",
-        "req": "^0.4",
+        "req": "^1",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -12791,7 +14164,7 @@
       },
       {
         "name": "num-bigint",
-        "req": "^0.4",
+        "req": "^0.5",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -12809,7 +14182,7 @@
       },
       {
         "name": "proptest",
-        "req": "^1.4",
+        "req": "^1.11",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -12817,19 +14190,8 @@
         "target": null
       },
       {
-        "name": "rand_core",
-        "req": "^0.6",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [
-          "getrandom"
-        ],
-        "kind": "dev",
-        "target": null
-      },
-      {
         "name": "sha3",
-        "req": "^0.10",
+        "req": "^0.12",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -12896,14 +14258,14 @@
   },
   {
     "name": "libcrux-aead",
-    "version": "0.0.7",
+    "version": "0.0.11",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
-        "name": "libcrux-aesgcm",
-        "req": "=0.0.7",
+        "name": "libcrux-aes",
+        "req": "=0.0.11",
         "optional": true,
         "uses_default_features": true,
         "features": [],
@@ -12912,7 +14274,7 @@
       },
       {
         "name": "libcrux-chacha20poly1305",
-        "req": "=0.0.7",
+        "req": "=0.0.11",
         "optional": true,
         "uses_default_features": true,
         "features": [],
@@ -12921,7 +14283,7 @@
       },
       {
         "name": "libcrux-secrets",
-        "req": "=0.0.5",
+        "req": "=0.0.8",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -12930,7 +14292,7 @@
       },
       {
         "name": "libcrux-traits",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": true,
         "uses_default_features": true,
         "features": [],
@@ -12940,15 +14302,15 @@
     ]
   },
   {
-    "name": "libcrux-aesgcm",
-    "version": "0.0.7",
+    "name": "libcrux-aes",
+    "version": "0.0.11",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "libcrux-intrinsics",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -12957,7 +14319,7 @@
       },
       {
         "name": "libcrux-platform",
-        "req": "=0.0.3",
+        "req": "=0.0.4",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -12966,7 +14328,7 @@
       },
       {
         "name": "libcrux-secrets",
-        "req": "=0.0.5",
+        "req": "=0.0.8",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -12975,17 +14337,8 @@
       },
       {
         "name": "libcrux-traits",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "rand",
-        "req": "^0.9",
-        "optional": true,
         "uses_default_features": true,
         "features": [],
         "kind": null,
@@ -12994,15 +14347,6 @@
       {
         "name": "aes-gcm",
         "req": "^0.10.3",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": "dev",
-        "target": null
-      },
-      {
-        "name": "cavp",
-        "req": "^0.0.2",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13038,16 +14382,7 @@
       },
       {
         "name": "rand",
-        "req": "^0.9",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": "dev",
-        "target": null
-      },
-      {
-        "name": "rand_core",
-        "req": "^0.9",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13056,7 +14391,7 @@
       },
       {
         "name": "wycheproof",
-        "req": "^0.6.0",
+        "req": "^0.7.0",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13067,14 +14402,14 @@
   },
   {
     "name": "libcrux-chacha20poly1305",
-    "version": "0.0.7",
+    "version": "0.0.11",
     "license": "Apache-2.0",
-    "source": null,
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "libcrux-hacl-rs",
-        "req": "=0.0.4",
+        "req": "=0.0.7",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13083,7 +14418,7 @@
       },
       {
         "name": "libcrux-macros",
-        "req": "=0.0.3",
+        "req": "=0.0.4",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13092,7 +14427,7 @@
       },
       {
         "name": "libcrux-poly1305",
-        "req": "=0.0.5",
+        "req": "=0.0.8",
         "optional": false,
         "uses_default_features": true,
         "features": [
@@ -13103,7 +14438,7 @@
       },
       {
         "name": "libcrux-secrets",
-        "req": "=0.0.5",
+        "req": "=0.0.8",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13112,7 +14447,7 @@
       },
       {
         "name": "libcrux-traits",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13124,37 +14459,24 @@
         "req": "^0.4.3",
         "optional": false,
         "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "rand",
+        "req": "^0.10",
+        "optional": false,
+        "uses_default_features": true,
         "features": [
-          "serde"
+          "sys_rng"
         ],
         "kind": "dev",
         "target": null
       },
       {
         "name": "rand_core",
-        "req": "^0.9",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [
-          "os_rng"
-        ],
-        "kind": "dev",
-        "target": null
-      },
-      {
-        "name": "serde",
-        "req": "^1.0.216",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [
-          "derive"
-        ],
-        "kind": "dev",
-        "target": null
-      },
-      {
-        "name": "serde_json",
-        "req": "^1.0.133",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13165,14 +14487,14 @@
   },
   {
     "name": "libcrux-curve25519",
-    "version": "0.0.6",
+    "version": "0.0.10",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "libcrux-hacl-rs",
-        "req": "=0.0.4",
+        "req": "=0.0.7",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13181,7 +14503,7 @@
       },
       {
         "name": "libcrux-macros",
-        "req": "=0.0.3",
+        "req": "=0.0.4",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13190,7 +14512,7 @@
       },
       {
         "name": "libcrux-secrets",
-        "req": "=0.0.5",
+        "req": "=0.0.8",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13199,7 +14521,7 @@
       },
       {
         "name": "libcrux-traits",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13208,7 +14530,7 @@
       },
       {
         "name": "libcrux-traits",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [
@@ -13221,14 +14543,14 @@
   },
   {
     "name": "libcrux-ecdh",
-    "version": "0.0.6",
+    "version": "0.0.10",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "libcrux-curve25519",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13237,7 +14559,7 @@
       },
       {
         "name": "libcrux-p256",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [
@@ -13248,7 +14570,7 @@
       },
       {
         "name": "rand",
-        "req": "^0.9",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -13257,9 +14579,9 @@
       },
       {
         "name": "tls_codec",
-        "req": "^0.4.2",
+        "req": "^0.5.0",
         "optional": true,
-        "uses_default_features": true,
+        "uses_default_features": false,
         "features": [
           "derive"
         ],
@@ -13287,13 +14609,22 @@
         "target": null
       },
       {
-        "name": "rand_core",
-        "req": "^0.9",
+        "name": "rand",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [
-          "os_rng"
+          "sys_rng"
         ],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "rand_core",
+        "req": "^0.10",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
         "kind": "dev",
         "target": null
       },
@@ -13321,14 +14652,14 @@
   },
   {
     "name": "libcrux-hacl-rs",
-    "version": "0.0.4",
+    "version": "0.0.7",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "libcrux-macros",
-        "req": "=0.0.3",
+        "req": "=0.0.4",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13339,23 +14670,25 @@
   },
   {
     "name": "libcrux-hkdf",
-    "version": "0.0.6",
+    "version": "0.0.10",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "libcrux-hacl-rs",
-        "req": "=0.0.4",
+        "req": "=0.0.7",
         "optional": false,
         "uses_default_features": true,
-        "features": [],
+        "features": [
+          "alloc"
+        ],
         "kind": null,
         "target": null
       },
       {
         "name": "libcrux-hmac",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [
@@ -13366,25 +14699,43 @@
       },
       {
         "name": "libcrux-secrets",
-        "req": "=0.0.5",
+        "req": "=0.0.8",
         "optional": false,
         "uses_default_features": true,
         "features": [],
         "kind": null,
+        "target": null
+      },
+      {
+        "name": "hkdf",
+        "req": "^0.13",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "sha3",
+        "req": "^0.11",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
         "target": null
       }
     ]
   },
   {
     "name": "libcrux-hmac",
-    "version": "0.0.6",
+    "version": "0.0.10",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "libcrux-hacl-rs",
-        "req": "=0.0.4",
+        "req": "=0.0.7",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13393,7 +14744,7 @@
       },
       {
         "name": "libcrux-macros",
-        "req": "=0.0.3",
+        "req": "=0.0.4",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13402,7 +14753,7 @@
       },
       {
         "name": "libcrux-sha2",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [
@@ -13410,19 +14761,10 @@
         ],
         "kind": null,
         "target": null
-      }
-    ]
-  },
-  {
-    "name": "libcrux-intrinsics",
-    "version": "0.0.6",
-    "license": "Apache-2.0",
-    "source": "registry+https://github.com/rust-lang/crates.io-index",
-    "workspace": false,
-    "dependencies": [
+      },
       {
-        "name": "hax-lib",
-        "req": "=0.3.6",
+        "name": "libcrux-sha3",
+        "req": "=0.0.12",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13430,8 +14772,73 @@
         "target": null
       },
       {
+        "name": "libcrux-traits",
+        "req": "=0.0.10",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      }
+    ]
+  },
+  {
+    "name": "libcrux-hmac-drbg",
+    "version": "0.0.3",
+    "license": "Apache-2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "libcrux-hmac",
+        "req": "=0.0.10",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "rand",
+        "req": "^0.10",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "rand",
+        "req": "^0.10",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "sys_rng"
+        ],
+        "kind": "dev",
+        "target": null
+      }
+    ]
+  },
+  {
+    "name": "libcrux-intrinsics",
+    "version": "0.0.10",
+    "license": "Apache-2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
         "name": "core-models",
-        "req": "^0.0.5",
+        "req": "^0.0.7",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": "cfg(hax)"
+      },
+      {
+        "name": "hax-lib",
+        "req": "^0.4.1",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13442,14 +14849,14 @@
   },
   {
     "name": "libcrux-kem",
-    "version": "0.0.7",
+    "version": "0.0.11",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "libcrux-curve25519",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -13458,7 +14865,7 @@
       },
       {
         "name": "libcrux-ecdh",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -13467,7 +14874,7 @@
       },
       {
         "name": "libcrux-ml-kem",
-        "req": "=0.0.8",
+        "req": "=0.0.12",
         "optional": false,
         "uses_default_features": false,
         "features": [
@@ -13478,7 +14885,7 @@
       },
       {
         "name": "libcrux-p256",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -13487,7 +14894,7 @@
       },
       {
         "name": "libcrux-sha3",
-        "req": "=0.0.8",
+        "req": "=0.0.12",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13496,7 +14903,7 @@
       },
       {
         "name": "libcrux-traits",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13505,7 +14912,7 @@
       },
       {
         "name": "rand",
-        "req": "^0.9",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -13514,9 +14921,9 @@
       },
       {
         "name": "tls_codec",
-        "req": "^0.4.2",
+        "req": "^0.5.0",
         "optional": true,
-        "uses_default_features": true,
+        "uses_default_features": false,
         "features": [
           "derive"
         ],
@@ -13536,7 +14943,7 @@
       },
       {
         "name": "libcrux-traits",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [
@@ -13547,12 +14954,21 @@
       },
       {
         "name": "rand",
-        "req": "^0.9",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [
-          "os_rng"
+          "sys_rng"
         ],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "rand_core",
+        "req": "^0.10",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
         "kind": "dev",
         "target": null
       }
@@ -13560,7 +14976,7 @@
   },
   {
     "name": "libcrux-macros",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
@@ -13576,7 +14992,7 @@
       },
       {
         "name": "syn",
-        "req": "^2.0.89",
+        "req": "^3.0.3",
         "optional": false,
         "uses_default_features": true,
         "features": [
@@ -13589,23 +15005,14 @@
   },
   {
     "name": "libcrux-ml-kem",
-    "version": "0.0.8",
+    "version": "0.0.12",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
-        "name": "hax-lib",
-        "req": "=0.3.6",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": null,
-        "target": null
-      },
-      {
         "name": "libcrux-intrinsics",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13614,7 +15021,7 @@
       },
       {
         "name": "libcrux-platform",
-        "req": "=0.0.3",
+        "req": "=0.0.4",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13623,15 +15030,6 @@
       },
       {
         "name": "libcrux-secrets",
-        "req": "=0.0.5",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "libcrux-sha3",
         "req": "=0.0.8",
         "optional": false,
         "uses_default_features": true,
@@ -13640,8 +15038,17 @@
         "target": null
       },
       {
+        "name": "libcrux-sha3",
+        "req": "=0.0.12",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
         "name": "libcrux-traits",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13650,7 +15057,7 @@
       },
       {
         "name": "rand",
-        "req": "^0.9",
+        "req": "^0.10",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -13659,7 +15066,7 @@
       },
       {
         "name": "tls_codec",
-        "req": "^0.4.2",
+        "req": "^0.5.0",
         "optional": true,
         "uses_default_features": false,
         "features": [
@@ -13690,7 +15097,7 @@
       },
       {
         "name": "libcrux-traits",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [
@@ -13701,7 +15108,7 @@
       },
       {
         "name": "rand",
-        "req": "^0.9",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [
@@ -13729,19 +15136,28 @@
         "features": [],
         "kind": "dev",
         "target": null
+      },
+      {
+        "name": "hax-lib",
+        "req": "^0.4.1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": "cfg(hax)"
       }
     ]
   },
   {
     "name": "libcrux-p256",
-    "version": "0.0.6",
+    "version": "0.0.10",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "libcrux-hacl-rs",
-        "req": "=0.0.4",
+        "req": "=0.0.7",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13750,7 +15166,7 @@
       },
       {
         "name": "libcrux-macros",
-        "req": "=0.0.3",
+        "req": "=0.0.4",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13759,7 +15175,7 @@
       },
       {
         "name": "libcrux-secrets",
-        "req": "=0.0.5",
+        "req": "=0.0.8",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13768,7 +15184,7 @@
       },
       {
         "name": "libcrux-sha2",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [
@@ -13779,7 +15195,7 @@
       },
       {
         "name": "libcrux-traits",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13788,7 +15204,7 @@
       },
       {
         "name": "libcrux-traits",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [
@@ -13800,8 +15216,64 @@
     ]
   },
   {
+    "name": "libcrux-p384",
+    "version": "0.0.2",
+    "license": "Apache-2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "libcrux-secrets",
+        "req": "=0.0.8",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "rand",
+        "req": "^0.10",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "criterion",
+        "req": "^0.8.0",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "hex",
+        "req": "^0.4.3",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "rand",
+        "req": "^0.10",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "thread_rng"
+        ],
+        "kind": "dev",
+        "target": null
+      }
+    ]
+  },
+  {
     "name": "libcrux-platform",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
@@ -13819,14 +15291,14 @@
   },
   {
     "name": "libcrux-poly1305",
-    "version": "0.0.5",
+    "version": "0.0.8",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "libcrux-hacl-rs",
-        "req": "=0.0.4",
+        "req": "=0.0.7",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13835,7 +15307,7 @@
       },
       {
         "name": "libcrux-macros",
-        "req": "=0.0.3",
+        "req": "=0.0.4",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13846,20 +15318,11 @@
   },
   {
     "name": "libcrux-secrets",
-    "version": "0.0.5",
+    "version": "0.0.8",
     "license": "Apache-2.0",
-    "source": null,
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
-      {
-        "name": "hax-lib",
-        "req": "=0.3.6",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": null,
-        "target": null
-      },
       {
         "name": "criterion",
         "req": "^0.8.0",
@@ -13871,25 +15334,43 @@
       },
       {
         "name": "rand",
-        "req": "^0.9",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
         "kind": "dev",
         "target": null
+      },
+      {
+        "name": "hax-lib",
+        "req": "^0.4.1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": "cfg(hax)"
+      },
+      {
+        "name": "crabgrind",
+        "req": "^0.4.0",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": "cfg(valgrind_ct_test)"
       }
     ]
   },
   {
     "name": "libcrux-sha2",
-    "version": "0.0.6",
+    "version": "0.0.10",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "libcrux-hacl-rs",
-        "req": "=0.0.4",
+        "req": "=0.0.7",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13898,7 +15379,7 @@
       },
       {
         "name": "libcrux-macros",
-        "req": "=0.0.3",
+        "req": "=0.0.4",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13907,7 +15388,7 @@
       },
       {
         "name": "libcrux-traits",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13925,7 +15406,7 @@
       },
       {
         "name": "libcrux-traits",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [
@@ -13938,23 +15419,14 @@
   },
   {
     "name": "libcrux-sha3",
-    "version": "0.0.8",
+    "version": "0.0.12",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
-        "name": "hax-lib",
-        "req": "=0.3.6",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": null,
-        "target": null
-      },
-      {
         "name": "libcrux-intrinsics",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13963,7 +15435,7 @@
       },
       {
         "name": "libcrux-platform",
-        "req": "^0.0.3",
+        "req": "=0.0.4",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -13972,7 +15444,7 @@
       },
       {
         "name": "libcrux-traits",
-        "req": "=0.0.6",
+        "req": "=0.0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -14019,25 +15491,34 @@
       },
       {
         "name": "rand",
-        "req": "^0.9",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
         "kind": "dev",
         "target": null
+      },
+      {
+        "name": "hax-lib",
+        "req": "^0.4.1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": "cfg(hax)"
       }
     ]
   },
   {
     "name": "libcrux-traits",
-    "version": "0.0.6",
+    "version": "0.0.10",
     "license": "Apache-2.0",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "libcrux-secrets",
-        "req": "=0.0.5",
+        "req": "=0.0.8",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -14046,12 +15527,68 @@
       },
       {
         "name": "rand",
-        "req": "^0.9",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": false,
         "features": [],
         "kind": null,
         "target": null
+      }
+    ]
+  },
+  {
+    "name": "libloading",
+    "version": "0.8.9",
+    "license": "ISC",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "libc",
+        "req": "^0.2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "static_assertions",
+        "req": "^1.1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "cfg-if",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": "cfg(unix)"
+      },
+      {
+        "name": "windows-link",
+        "req": "^0.2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": "cfg(windows)"
+      },
+      {
+        "name": "windows-sys",
+        "req": "^0.61",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "Win32_Foundation"
+        ],
+        "kind": "dev",
+        "target": "cfg(windows)"
       }
     ]
   },
@@ -14919,6 +16456,14 @@
         "target": "cfg(trybuild)"
       }
     ]
+  },
+  {
+    "name": "minimal-lexical",
+    "version": "0.2.1",
+    "license": "MIT/Apache-2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": []
   },
   {
     "name": "miniz_oxide",
@@ -16310,6 +17855,51 @@
     "dependencies": []
   },
   {
+    "name": "nom",
+    "version": "7.1.3",
+    "license": "MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "memchr",
+        "req": "^2.3",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "minimal-lexical",
+        "req": "^0.2.0",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "doc-comment",
+        "req": "^0.3",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "proptest",
+        "req": "^1.0.0",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      }
+    ]
+  },
+  {
     "name": "nonmax",
     "version": "0.5.5",
     "license": "MIT OR Apache-2.0",
@@ -17211,7 +18801,7 @@
     "name": "openmls_basic_credential",
     "version": "0.5.0",
     "license": "MIT",
-    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "source": null,
     "workspace": false,
     "dependencies": [
       {
@@ -17221,6 +18811,17 @@
         "uses_default_features": true,
         "features": [
           "rand_core"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "getrandom",
+        "req": "^0.4",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "sys_rng"
         ],
         "kind": null,
         "target": null
@@ -17236,7 +18837,7 @@
       },
       {
         "name": "p256",
-        "req": "^0.13",
+        "req": "^0.14",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -17246,6 +18847,15 @@
       {
         "name": "rand",
         "req": "^0.8",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "rand_core",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -17356,7 +18966,7 @@
     "name": "openmls_rust_crypto",
     "version": "0.5.1",
     "license": "MIT",
-    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "source": null,
     "workspace": false,
     "dependencies": [
       {
@@ -17389,6 +18999,17 @@
         "target": null
       },
       {
+        "name": "getrandom",
+        "req": "^0.4",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "sys_rng"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
         "name": "hkdf",
         "req": "^0.12",
         "optional": false,
@@ -17408,7 +19029,7 @@
       },
       {
         "name": "hpke-rs",
-        "req": "^0.6.0",
+        "req": "^0.8",
         "optional": false,
         "uses_default_features": false,
         "features": [
@@ -17420,7 +19041,7 @@
       },
       {
         "name": "hpke-rs-crypto",
-        "req": "^0.6.0",
+        "req": "^0.8",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -17429,7 +19050,7 @@
       },
       {
         "name": "hpke-rs-rust-crypto",
-        "req": "^0.6.0",
+        "req": "^0.8",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -17456,7 +19077,7 @@
       },
       {
         "name": "p256",
-        "req": "^0.13",
+        "req": "^0.14",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -17475,6 +19096,15 @@
       {
         "name": "rand_chacha",
         "req": "^0.3",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "rand_core",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -17887,14 +19517,14 @@
   },
   {
     "name": "p256",
-    "version": "0.13.2",
+    "version": "0.14.0",
     "license": "Apache-2.0 OR MIT",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "ecdsa",
-        "req": "^0.16",
+        "req": "^0.17",
         "optional": true,
         "uses_default_features": false,
         "features": [
@@ -17905,19 +19535,36 @@
       },
       {
         "name": "elliptic-curve",
-        "req": "^0.13.1",
+        "req": "^0.14.1",
         "optional": false,
         "uses_default_features": false,
         "features": [
-          "hazmat",
           "sec1"
         ],
         "kind": null,
         "target": null
       },
       {
+        "name": "hash2curve",
+        "req": "^0.14",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
         "name": "hex-literal",
-        "req": "^0.4",
+        "req": "^1",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "primefield",
+        "req": "^0.14",
         "optional": true,
         "uses_default_features": true,
         "features": [],
@@ -17926,7 +19573,7 @@
       },
       {
         "name": "primeorder",
-        "req": "^0.13",
+        "req": "^0.14",
         "optional": true,
         "uses_default_features": true,
         "features": [],
@@ -17935,7 +19582,7 @@
       },
       {
         "name": "serdect",
-        "req": "^0.2",
+        "req": "^0.4",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -17944,7 +19591,7 @@
       },
       {
         "name": "sha2",
-        "req": "^0.10",
+        "req": "^0.11",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -17952,17 +19599,8 @@
         "target": null
       },
       {
-        "name": "blobby",
-        "req": "^0.3",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": "dev",
-        "target": null
-      },
-      {
         "name": "criterion",
-        "req": "^0.4",
+        "req": "^0.7",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -17971,7 +19609,7 @@
       },
       {
         "name": "ecdsa",
-        "req": "^0.16",
+        "req": "^0.17",
         "optional": false,
         "uses_default_features": false,
         "features": [
@@ -17982,7 +19620,16 @@
       },
       {
         "name": "hex-literal",
-        "req": "^0.4",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "primefield",
+        "req": "^0.14",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -17991,7 +19638,7 @@
       },
       {
         "name": "primeorder",
-        "req": "^0.13",
+        "req": "^0.14",
         "optional": false,
         "uses_default_features": true,
         "features": [
@@ -18008,30 +19655,19 @@
         "features": [],
         "kind": "dev",
         "target": null
-      },
-      {
-        "name": "rand_core",
-        "req": "^0.6",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [
-          "getrandom"
-        ],
-        "kind": "dev",
-        "target": null
       }
     ]
   },
   {
     "name": "p384",
-    "version": "0.13.1",
+    "version": "0.14.0",
     "license": "Apache-2.0 OR MIT",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "ecdsa",
-        "req": "^0.16",
+        "req": "^0.17",
         "optional": true,
         "uses_default_features": false,
         "features": [
@@ -18042,19 +19678,36 @@
       },
       {
         "name": "elliptic-curve",
-        "req": "^0.13",
+        "req": "^0.14.1",
         "optional": false,
         "uses_default_features": false,
         "features": [
-          "hazmat",
           "sec1"
         ],
         "kind": null,
         "target": null
       },
       {
+        "name": "hash2curve",
+        "req": "^0.14",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
         "name": "hex-literal",
-        "req": "^0.3",
+        "req": "^1",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "primefield",
+        "req": "^0.14",
         "optional": true,
         "uses_default_features": true,
         "features": [],
@@ -18063,8 +19716,8 @@
       },
       {
         "name": "primeorder",
-        "req": "^0.13",
-        "optional": false,
+        "req": "^0.14",
+        "optional": true,
         "uses_default_features": true,
         "features": [],
         "kind": null,
@@ -18072,7 +19725,7 @@
       },
       {
         "name": "serdect",
-        "req": "^0.2",
+        "req": "^0.4",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -18081,7 +19734,7 @@
       },
       {
         "name": "sha2",
-        "req": "^0.10",
+        "req": "^0.11",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -18089,17 +19742,8 @@
         "target": null
       },
       {
-        "name": "blobby",
-        "req": "^0.3",
-        "optional": false,
-        "uses_default_features": true,
-        "features": [],
-        "kind": "dev",
-        "target": null
-      },
-      {
         "name": "criterion",
-        "req": "^0.4",
+        "req": "^0.7",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -18108,7 +19752,7 @@
       },
       {
         "name": "ecdsa",
-        "req": "^0.16",
+        "req": "^0.17",
         "optional": false,
         "uses_default_features": false,
         "features": [
@@ -18119,16 +19763,27 @@
       },
       {
         "name": "hex-literal",
-        "req": "^0.3",
+        "req": "^1",
         "optional": false,
         "uses_default_features": true,
         "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "primeorder",
+        "req": "^0.14",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "dev"
+        ],
         "kind": "dev",
         "target": null
       },
       {
         "name": "proptest",
-        "req": "^1.1",
+        "req": "^1.11",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -18136,15 +19791,13 @@
         "target": null
       },
       {
-        "name": "rand_core",
-        "req": "^0.6",
+        "name": "fiat-crypto",
+        "req": "^0.3",
         "optional": false,
-        "uses_default_features": true,
-        "features": [
-          "getrandom"
-        ],
-        "kind": "dev",
-        "target": null
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": "cfg(p384_backend = \"fiat\")"
       }
     ]
   },
@@ -18622,7 +20275,7 @@
   },
   {
     "name": "pem-rfc7468",
-    "version": "0.7.0",
+    "version": "1.0.0",
     "license": "Apache-2.0 OR MIT",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
@@ -18817,6 +20470,93 @@
       {
         "name": "hex-literal",
         "req": "^0.3",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "tempfile",
+        "req": "^3",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      }
+    ]
+  },
+  {
+    "name": "pkcs8",
+    "version": "0.11.0",
+    "license": "Apache-2.0 OR MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "ctutils",
+        "req": "^0.4",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "der",
+        "req": "^0.8.0-rc.12",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "oid"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "getrandom",
+        "req": "^0.4",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [
+          "sys_rng"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "pkcs5",
+        "req": "^0.8",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [
+          "rand_core"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "rand_core",
+        "req": "^0.10",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "spki",
+        "req": "^0.8",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "hex-literal",
+        "req": "^1",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -19239,6 +20979,51 @@
     ]
   },
   {
+    "name": "poly1305",
+    "version": "0.9.1",
+    "license": "Apache-2.0 OR MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "universal-hash",
+        "req": "^0.6",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "zeroize",
+        "req": "^1",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "hex-literal",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "cpufeatures",
+        "req": "^0.3",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": "cfg(any(target_arch = \"x86_64\", target_arch = \"x86\"))"
+      }
+    ]
+  },
+  {
     "name": "polyval",
     "version": "0.6.2",
     "license": "Apache-2.0 OR MIT",
@@ -19298,6 +21083,69 @@
         "features": [],
         "kind": null,
         "target": "cfg(any(target_arch = \"aarch64\", target_arch = \"x86_64\", target_arch = \"x86\"))"
+      }
+    ]
+  },
+  {
+    "name": "polyval",
+    "version": "0.7.3",
+    "license": "Apache-2.0 OR MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "cpubits",
+        "req": "^0.1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "universal-hash",
+        "req": "^0.6",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "zeroize",
+        "req": "^1",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "hex-literal",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "cpufeatures",
+        "req": "^0.3",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": "cfg(any(target_arch = \"aarch64\", target_arch = \"x86\", target_arch = \"x86_64\"))"
+      },
+      {
+        "name": "proptest",
+        "req": "^1.9",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": "cfg(any(unix, windows))"
       }
     ]
   },
@@ -19561,6 +21409,77 @@
     ]
   },
   {
+    "name": "prettyplease",
+    "version": "0.3.0",
+    "license": "MIT OR Apache-2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "proc-macro2",
+        "req": "^1.0.80",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "syn",
+        "req": "^3",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "full"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "indoc",
+        "req": "^2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "proc-macro2",
+        "req": "^1.0.80",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "quote",
+        "req": "^1.0.35",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "syn",
+        "req": "^3",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "clone-impls",
+          "extra-traits",
+          "parsing",
+          "printing",
+          "visit-mut"
+        ],
+        "kind": "dev",
+        "target": null
+      }
+    ]
+  },
+  {
     "name": "primal-check",
     "version": "0.3.4",
     "license": "MIT OR Apache-2.0",
@@ -19588,15 +21507,86 @@
     ]
   },
   {
+    "name": "primefield",
+    "version": "0.14.0",
+    "license": "Apache-2.0 OR MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "crypto-bigint",
+        "req": "^0.7.5",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "rand_core",
+          "hybrid-array",
+          "subtle"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "crypto-common",
+        "req": "^0.2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "rand_core"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "ff",
+        "req": "^0.14",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "rand_core",
+        "req": "^0.10",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "subtle",
+        "req": "^2.6",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "const-generics"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "zeroize",
+        "req": "^1.7",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      }
+    ]
+  },
+  {
     "name": "primeorder",
-    "version": "0.13.6",
+    "version": "0.14.0",
     "license": "Apache-2.0 OR MIT",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "elliptic-curve",
-        "req": "^0.13.7",
+        "req": "^0.14.1",
         "optional": false,
         "uses_default_features": false,
         "features": [
@@ -19607,9 +21597,36 @@
         "target": null
       },
       {
-        "name": "serdect",
-        "req": "^0.2",
+        "name": "once_cell",
+        "req": "^1.21",
         "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "primefield",
+        "req": "^0.14",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "serdect",
+        "req": "^0.4",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "wnaf",
+        "req": "^0.14",
+        "optional": false,
         "uses_default_features": false,
         "features": [],
         "kind": null,
@@ -22235,25 +24252,14 @@
   },
   {
     "name": "rfc6979",
-    "version": "0.4.0",
+    "version": "0.6.0",
     "license": "Apache-2.0 OR MIT",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
-        "name": "hmac",
-        "req": "^0.12",
-        "optional": false,
-        "uses_default_features": false,
-        "features": [
-          "reset"
-        ],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "subtle",
-        "req": "^2",
+        "name": "crypto-bigint",
+        "req": "^0.7.5",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -22261,8 +24267,28 @@
         "target": null
       },
       {
+        "name": "hmac",
+        "req": "^0.13",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "crypto-bigint",
+        "req": "^0.7.5",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "alloc"
+        ],
+        "kind": "dev",
+        "target": null
+      },
+      {
         "name": "hex-literal",
-        "req": "^0.3",
+        "req": "^1",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -22271,7 +24297,16 @@
       },
       {
         "name": "sha2",
-        "req": "^0.10",
+        "req": "^0.11",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "sha3",
+        "req": "^0.12",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -23655,14 +25690,14 @@
   },
   {
     "name": "sec1",
-    "version": "0.7.3",
+    "version": "0.8.1",
     "license": "Apache-2.0 OR MIT",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "base16ct",
-        "req": "^0.2",
+        "req": "^1",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -23670,8 +25705,17 @@
         "target": null
       },
       {
+        "name": "ctutils",
+        "req": "^0.4",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
         "name": "der",
-        "req": "^0.7",
+        "req": "^0.8",
         "optional": true,
         "uses_default_features": true,
         "features": [
@@ -23681,17 +25725,8 @@
         "target": null
       },
       {
-        "name": "generic-array",
-        "req": "^0.14.7",
-        "optional": true,
-        "uses_default_features": false,
-        "features": [],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "pkcs8",
-        "req": "^0.10",
+        "name": "hybrid-array",
+        "req": "^0.4.6",
         "optional": true,
         "uses_default_features": false,
         "features": [],
@@ -23700,7 +25735,7 @@
       },
       {
         "name": "serdect",
-        "req": "^0.2",
+        "req": "^0.4",
         "optional": true,
         "uses_default_features": false,
         "features": [
@@ -23729,7 +25764,7 @@
       },
       {
         "name": "hex-literal",
-        "req": "^0.4",
+        "req": "^1",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -24576,6 +26611,129 @@
       },
       {
         "name": "serde_derive",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      }
+    ]
+  },
+  {
+    "name": "serdect",
+    "version": "0.4.3",
+    "license": "Apache-2.0 OR MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "base16ct",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "serde",
+        "req": "^1.0.184",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "zeroize",
+        "req": "^1",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "ciborium",
+        "req": "^0.2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "hex-literal",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "postcard",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "use-std"
+        ],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "proptest",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "rmp-serde",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "serde",
+        "req": "^1.0.184",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "derive"
+        ],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "serde-json-core",
+        "req": "^0.6",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "std"
+        ],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "serde_json",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "toml",
         "req": "^1",
         "optional": false,
         "uses_default_features": true,
@@ -25551,6 +27709,33 @@
     ]
   },
   {
+    "name": "signature",
+    "version": "3.0.0",
+    "license": "Apache-2.0 OR MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "digest",
+        "req": "^0.11",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "rand_core",
+        "req": "^0.10",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      }
+    ]
+  },
+  {
     "name": "simd-adler32",
     "version": "0.3.10",
     "license": "MIT",
@@ -26443,6 +28628,82 @@
       {
         "name": "hex-literal",
         "req": "^0.4",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "tempfile",
+        "req": "^3",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      }
+    ]
+  },
+  {
+    "name": "spki",
+    "version": "0.8.1",
+    "license": "Apache-2.0 OR MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "arbitrary",
+        "req": "^1.4",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [
+          "derive"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "base64ct",
+        "req": "^1",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "der",
+        "req": "^0.8.2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "oid"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "digest",
+        "req": "^0.11",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "sha2",
+        "req": "^0.11",
+        "optional": true,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "hex-literal",
+        "req": "^1",
         "optional": false,
         "uses_default_features": true,
         "features": [],
@@ -30921,8 +33182,142 @@
     ]
   },
   {
+    "name": "tls_codec",
+    "version": "0.5.0",
+    "license": "Apache-2.0 OR MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "arbitrary",
+        "req": "^1.4",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [
+          "derive"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "serde",
+        "req": "^1.0.228",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [
+          "derive"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "serde_bytes",
+        "req": "^0.11.19",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "tls_codec_derive",
+        "req": "=0.5.0",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "zeroize",
+        "req": "^1.9",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [
+          "alloc"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "ciborium",
+        "req": "^0.2.2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "criterion",
+        "req": "^0.6",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "serde_json",
+        "req": "^1.0",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      }
+    ]
+  },
+  {
     "name": "tls_codec_derive",
     "version": "0.4.2",
+    "license": "Apache-2.0 OR MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "proc-macro2",
+        "req": "^1.0",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "quote",
+        "req": "^1.0",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "syn",
+        "req": "^2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "parsing"
+        ],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "trybuild",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": "dev",
+        "target": null
+      }
+    ]
+  },
+  {
+    "name": "tls_codec_derive",
+    "version": "0.5.0",
     "license": "Apache-2.0 OR MIT",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
@@ -35859,6 +38254,33 @@
     ]
   },
   {
+    "name": "universal-hash",
+    "version": "0.6.1",
+    "license": "MIT OR Apache-2.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "crypto-common",
+        "req": "^0.2",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "ctutils",
+        "req": "^0.4",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      }
+    ]
+  },
+  {
     "name": "untrusted",
     "version": "0.9.0",
     "license": "ISC",
@@ -38122,6 +40544,51 @@
     ]
   },
   {
+    "name": "wnaf",
+    "version": "0.14.1",
+    "license": "Apache-2.0 OR MIT",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "workspace": false,
+    "dependencies": [
+      {
+        "name": "hybrid-array",
+        "req": "^0.4.13",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "ff",
+        "req": "^0.14",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "group",
+        "req": "^0.14",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
+        "name": "primefield",
+        "req": "^0.14",
+        "optional": false,
+        "uses_default_features": false,
+        "features": [],
+        "kind": null,
+        "target": null
+      }
+    ]
+  },
+  {
     "name": "writeable",
     "version": "0.6.4",
     "license": "Unicode-3.0",
@@ -38161,14 +40628,14 @@
   },
   {
     "name": "x25519-dalek",
-    "version": "2.0.1",
+    "version": "3.0.0",
     "license": "BSD-3-Clause",
     "source": "registry+https://github.com/rust-lang/crates.io-index",
     "workspace": false,
     "dependencies": [
       {
         "name": "curve25519-dalek",
-        "req": "^4",
+        "req": "^5.0.0",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -38176,8 +40643,17 @@
         "target": null
       },
       {
+        "name": "getrandom",
+        "req": "^0.4",
+        "optional": true,
+        "uses_default_features": true,
+        "features": [],
+        "kind": null,
+        "target": null
+      },
+      {
         "name": "rand_core",
-        "req": "^0.6",
+        "req": "^0.10",
         "optional": false,
         "uses_default_features": false,
         "features": [],
@@ -38200,19 +40676,8 @@
         "req": "^1",
         "optional": true,
         "uses_default_features": false,
-        "features": [
-          "zeroize_derive"
-        ],
-        "kind": null,
-        "target": null
-      },
-      {
-        "name": "bincode",
-        "req": "^1",
-        "optional": false,
-        "uses_default_features": true,
         "features": [],
-        "kind": "dev",
+        "kind": null,
         "target": null
       },
       {
@@ -38225,12 +40690,23 @@
         "target": null
       },
       {
-        "name": "rand_core",
-        "req": "^0.6",
+        "name": "getrandom",
+        "req": "^0.4",
         "optional": false,
-        "uses_default_features": false,
+        "uses_default_features": true,
         "features": [
-          "getrandom"
+          "sys_rng"
+        ],
+        "kind": "dev",
+        "target": null
+      },
+      {
+        "name": "postcard",
+        "req": "^1",
+        "optional": false,
+        "uses_default_features": true,
+        "features": [
+          "alloc"
         ],
         "kind": "dev",
         "target": null

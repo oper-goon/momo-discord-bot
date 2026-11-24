@@ -6,6 +6,14 @@ private review branch. It does not authorize production changes or publication.
 
 ## Compatible updates
 
+### Coordinated backend upgrade — current status
+
+The final voice vulnerability is remediated by the backend adapters:
+crypto-bigint 0.7.11, P-256 0.14, HPKE 0.8 and ctutils 0.4.8.
+All four cargo-deny gates pass. See [the upgrade record](voice-upgrade.md) for
+scope, provenance, compatibility evidence and remaining live-test limits.
+The sections below preserve the earlier investigation and are historical.
+
 ### Latest dependency pass and operator acceptance
 
 The owner confirmed months of live Discord testing and confidence in a 1.0

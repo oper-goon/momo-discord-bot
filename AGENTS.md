@@ -134,6 +134,11 @@ external response.
 - `vendor/libcrux-secrets` and `vendor/ringbuf` contain intentional security
   backports. Do not replace or edit them casually; their invariants are tested
   in `bot-app` and documented in `vendor/README.md` and `docs/security.md`.
+- `vendor/davey`, `vendor/openmls_basic_credential`, and
+  `vendor/openmls_rust_crypto` adapt existing DAVE/OpenMLS APIs to patched
+  upstream P-256/HPKE releases. Preserve key formats and protocol behavior;
+  never edit cryptographic arithmetic locally. Run their package tests and
+  mixed-version interoperability checks when changing these adapters.
 
 ## Documentation maintenance (mandatory)
 

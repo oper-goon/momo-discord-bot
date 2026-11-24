@@ -11,6 +11,7 @@ backups
 docs
 licenses/PolyForm-Noncommercial-1.0.0.txt
 examples
+tests/voice-interop
 *.png
 *.jpg
 __pycache__
