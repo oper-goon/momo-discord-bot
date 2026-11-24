@@ -107,6 +107,9 @@ pub fn parse_url(value: &str) -> Result<Url> {
     Ok(url)
 }
 async fn pinned_client(url: &Url) -> Result<reqwest::Client> {
+    client_with_headers(url, reqwest::header::HeaderMap::new()).await
+}
+async fn client_with_headers(url: &Url, headers: reqwest::header::HeaderMap) -> Result<reqwest::Client> {
     let host = url.host_str().context("URL requires a hostname")?;
     let port = url.port_or_known_default().context("Invalid URL port")?;
     let addresses: Vec<SocketAddr> = tokio::time::timeout(
@@ -122,6 +125,7 @@ async fn pinned_client(url: &Url) -> Result<reqwest::Client> {
     );
     // Pin the checked DNS result to prevent rebinding. Redirects are rejected, not followed.
     Ok(reqwest::Client::builder()
+        .default_headers(headers)
         .no_proxy()
         .redirect(reqwest::redirect::Policy::none())
         .connect_timeout(Duration::from_secs(10))
@@ -130,11 +134,16 @@ async fn pinned_client(url: &Url) -> Result<reqwest::Client> {
         .build()?)
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 struct BoundedHttpRequest {
     client: Client,
     request: String,
     max_bytes: u64,
+}
+impl std::fmt::Debug for BoundedHttpRequest {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("BoundedHttpRequest([private media])")
+    }
 }
 
 impl BoundedHttpRequest {
@@ -302,8 +311,20 @@ impl Compose for BoundedHttpRequest {
 }
 
 async fn stream(url: &str) -> Result<PlayableTrack> {
+    stream_authenticated(url, None).await
+}
+
+pub(crate) async fn stream_authenticated(url: &str, credentials: Option<(&str, &str)>) -> Result<PlayableTrack> {
     let url = parse_url(url)?;
-    let client = pinned_client(&url).await?;
+    let mut client = pinned_client(&url).await?;
+    if let Some((username, password)) = credentials {
+        let request = client.get(url.as_str()).basic_auth(username, Some(password))
+            .build().map_err(|_| anyhow::anyhow!("Invalid media authentication"))?;
+        let mut headers = request.headers().clone();
+        if let Some(auth) = headers.get_mut(reqwest::header::AUTHORIZATION) { auth.set_sensitive(true); }
+        // Reuse the checked, pinned client; credentials stay on this single origin.
+        client = client_with_headers(&url, headers).await?;
+    }
     let mut input = Input::Lazy(Box::new(BoundedHttpRequest::new(
         client,
         url.to_string(),
