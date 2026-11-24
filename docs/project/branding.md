@@ -7,8 +7,9 @@ unlicensed third-party anime imagery.
 
 The local release candidate includes AI-generated derivatives created from the
 owner's uploaded references: a navigation wordmark, eye-and-horns emblem, and
-mascot banner. These are review candidates, not original source artwork. Confirm
-the reference artwork's provenance and approve the derivatives before publication.
+mascot banner. These are generated derivatives, not original source artwork.
+The owner approved these assets and confirmed publication rights on 2026-11-24.
+Preserve any creator credit required by the original artwork agreement.
 The website supports these integration points:
 
 | File under docs/assets/brand/ | Use |

@@ -16,6 +16,13 @@ Versioning and Keep a Changelog conventions.
 
 ### Changed
 
+- Apply PolyForm Noncommercial 1.0.0 to first-party release-candidate code after
+  owner confirmation of rights; preserve earlier MIT grants and third-party terms.
+
+- Update Tokio, TLS certificate verification/trust roots and URL parsing to
+  patched compatible releases, clearing four release-audit findings. Four
+  transitive dependency findings remain; no advisory exceptions were added.
+
 - Docker Compose forwards optional integration settings from the private env
   file, uses safer container defaults, bounds logs and rejects missing config
   mounts. Existing database volume and non-root image behavior are retained.

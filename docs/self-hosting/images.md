@@ -10,7 +10,7 @@ A release workflow should publish a full semantic version tag and optionally a s
 
 After an actual image exists, updates use `docker compose pull` followed by `docker compose up -d`; back up first and choose a reviewed version. Release licensing and third-party notices must be resolved before distribution.
 
-The image now accepts VERSION and REVISION build arguments for OCI metadata (defaults: development/unknown). Release builders must supply the reviewed tag and commit. The license label remains MIT until a separately approved license change; application license and third-party notices are included under /usr/share/doc/momokun/. Full transitive binary-license collection remains a release gate.
+The image now accepts VERSION and REVISION build arguments for OCI metadata (defaults: development/unknown). Release builders must supply the reviewed tag and commit. The first-party license label is PolyForm-Noncommercial-1.0.0; application license and third-party notices are included under /usr/share/doc/momokun/. Full transitive binary-license collection remains a release gate.
 
 Other image build arguments are `YT_DLP_VERSION=2026.10.26` and
 `BGUTIL_PROVIDER_VERSION=2.0.2`; change these only with compatibility/security

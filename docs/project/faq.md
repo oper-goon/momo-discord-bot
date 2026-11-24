@@ -19,8 +19,8 @@ self-hosting path because it supplies media tools and a consistent runtime.
 
 ## Is this already licensed as noncommercial source-available software?
 
-No. The current checkout remains MIT-licensed. The intended PolyForm transition
-requires ownership and contribution-rights review and explicit approval. Read
+Yes. This release candidate uses PolyForm Noncommercial 1.0.0 after the owner's
+confirmation of rights. Earlier MIT grants and third-party terms remain valid. Read
 [the licensing status](license.md) before redistributing.
 
 ## Are public images and the official bot invite available?

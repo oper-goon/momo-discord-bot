@@ -18,8 +18,8 @@ Use the pull request template. Describe user-visible behavior, compatibility,
 database changes, configuration changes and relevant tests. Maintainers review
 before merging; opening a PR does not authorize production deployment.
 
-The existing project is MIT-licensed. A PolyForm Noncommercial proposal is under
-review and is not effective. Submit only material you have the right to
+The release candidate's first-party code uses PolyForm Noncommercial 1.0.0.
+Submit only material you have the right to
 contribute, retain third-party notices, and identify copied or generated assets
 and their provenance. No Contributor License Agreement is currently imposed.
 Any future CLA or relicensing requires a separate maintainer decision and clear

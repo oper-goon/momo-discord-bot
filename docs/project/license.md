@@ -1,8 +1,12 @@
-# License status and proposed transition
+# License
 
-The current LICENSE and Cargo metadata remain **MIT**. The planned PolyForm
-Noncommercial 1.0.0 transition is a proposal, not an effective license change.
-Do not label existing MIT versions as retroactively noncommercial.
+This release candidate's first-party code uses **PolyForm Noncommercial 1.0.0**.
+The owner confirmed code relicensing and artwork publication rights on
+2026-11-24. The root LICENSE contains the official, unmodified license text;
+Cargo metadata and container labels use the same identifier.
+Earlier MIT grants remain valid; the previous notice is preserved in
+`licenses/MIT-legacy.txt`. Do not label earlier MIT versions as retroactively
+noncommercial.
 
 The [official PolyForm project](https://github.com/polyformproject/polyform-licenses)
 publishes the unmodified terms. PolyForm Noncommercial permits use, modification
@@ -11,10 +15,9 @@ personal and noncommercial uses. It is source-available rather than an
 OSI-approved open-source license. The exact text controls; the summary is not a
 substitute for reviewing the terms.
 
-Before adoption, the owner must confirm copyright ownership, contributor rights,
-any employer interests, and artwork rights. Git author names alone do not prove
-ownership. Existing MIT grants and third-party licenses remain relevant.
-Third-party code cannot simply be relabeled as PolyForm.
+Third-party code retains its original terms and notices. The first-party
+license change does not relicense dependencies, vendored code, or service media.
+Full binary/container attribution review remains a publication requirement.
 
 Commercial permission would need a separate agreement from a party authorized
 to grant it. Until a licensing contact is approved, ask the repository owner

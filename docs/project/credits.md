@@ -10,6 +10,8 @@ conditions. THIRD_PARTY_NOTICES.md describes license obligations and remaining
 distribution checks.
 
 Thanks to upstream maintainers and project contributors. Approved character
-references were provided by the owner; artist credit and distributable original
-files remain to be confirmed before artwork is packaged. Service names belong
+references were provided by the owner, who confirmed publication rights.
+Three branding derivatives were generated with OpenAI image generation from
+those references and approved by the owner. Add any artist credit required by
+the reference artwork agreement before publication. Service names belong
 to their respective owners and do not imply endorsement.

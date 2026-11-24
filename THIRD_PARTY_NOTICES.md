@@ -1,8 +1,9 @@
 # Third-party notices
 
-Momokun's current first-party license is the MIT license in `LICENSE`. The
-proposed PolyForm transition has not been applied. Third-party components retain
-their own licenses; neither MIT nor a future first-party license replaces them.
+Momokun's first-party release candidate uses PolyForm Noncommercial 1.0.0 in
+`LICENSE`, following the owner's confirmation of code and artwork rights.
+Earlier MIT grants remain valid; `licenses/MIT-legacy.txt` preserves the prior
+notice. Third-party components retain their own licenses.
 
 ## Bundled source
 
@@ -43,7 +44,8 @@ authorize bypassing service restrictions.
 
 ## Artwork
 
-Approved Momokun reference artwork was supplied by the owner during release
-preparation. Original files, creator attribution and redistribution rights
-still need to be recorded before packaging those assets. No third-party mascot
-has been substituted.
+Approved Momokun reference artwork was supplied by the owner, who confirmed
+permission to publish it and its derivatives on 2026-11-24. Three AI-generated
+derivatives are integrated and owner-approved. Creator attribution, if required
+by the original agreement, should be supplied before public publication. No
+third-party mascot has been substituted.

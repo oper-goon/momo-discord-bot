@@ -78,9 +78,10 @@ private configurations, logs, database backups and signed media URLs out of issu
 
 ## License and identity
 
-The existing [MIT license](LICENSE) remains in effect. The requested PolyForm
-Noncommercial 1.0.0 source-available licensing model is **prepared for review,
-not applied**: contribution rights and third-party obligations need confirmation.
+This release candidate uses [PolyForm Noncommercial 1.0.0](LICENSE) for
+first-party code, following the owner's confirmation of licensing rights.
+It is source-available; commercial use requires separate permission.
 See the [licensing review](docs/project/license.md) and [third-party notices](THIRD_PARTY_NOTICES.md).
-No CLA has been imposed. Branding rights are separate; approved mascot/logo files
-were unavailable in this snapshot. See [branding guidelines](docs/project/branding.md).
+Earlier MIT grants and all third-party licenses remain valid. No CLA has been
+imposed. Branding derivatives are integrated and owner-approved; see
+[branding guidelines](docs/project/branding.md).

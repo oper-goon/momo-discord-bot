@@ -12,13 +12,13 @@ FROM denoland/deno:bin-2.9.4 AS deno
 FROM debian:bookworm-slim
 ARG VERSION=development
 ARG REVISION=unknown
-# Keep the current license until the proposed relicensing is approved.
+# First-party licensing; third-party components retain their own terms.
 LABEL org.opencontainers.image.title="Momokun" \
       org.opencontainers.image.description="Self-hosted modular Discord bot" \
       org.opencontainers.image.source="https://github.com/oper-goon/momo-discord-bot" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.revision="${REVISION}" \
-      org.opencontainers.image.licenses="MIT"
+      org.opencontainers.image.licenses="PolyForm-Noncommercial-1.0.0"
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates ffmpeg libssl3 libopus0 python3 python3-venv sqlite3 && rm -rf /var/lib/apt/lists/*
 ARG YT_DLP_VERSION=2026.10.26
 ARG BGUTIL_PROVIDER_VERSION=2.0.2
@@ -31,6 +31,7 @@ COPY --from=builder /build/target/release/bot-app /app/bot
 COPY config/example.toml /app/config/example.toml
 COPY LICENSE THIRD_PARTY_NOTICES.md /usr/share/doc/momokun/
 COPY licenses/Apache-2.0.txt /usr/share/doc/momokun/licenses/Apache-2.0.txt
+COPY licenses/MIT-legacy.txt /usr/share/doc/momokun/licenses/MIT-legacy.txt
 COPY vendor/ringbuf/LICENSE-MIT /usr/share/doc/momokun/licenses/ringbuf-LICENSE-MIT
 ENV PATH="/opt/ytdlp/bin:${PATH}" DATABASE_URL=sqlite:///data/bot.db DENO_NO_UPDATE_CHECK=1 DENO_NO_PROMPT=1
 USER bot

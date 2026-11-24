@@ -7,6 +7,15 @@ licenses unless a specific reviewed exception is in `deny.toml`.
 
 ## Dependency decisions
 
+The 2026-11-24 release follow-up updates the lockfile to Tokio 1.54.1,
+rustls-webpki 0.103.17, webpki-roots 1.0.12 and url 2.5.9 (with
+form_urlencoded 1.2.3). These remove RUSTSEC-2026-0386, -0382, -0381 and
+-0592 from the advisory gate. Updating pin-utils to 0.1.1 does not resolve its
+unmaintained status. The remaining gate failures are chrono, pin-utils,
+crypto-bigint 0.5.5 and bundled libsqlite3-sys 0.37.0. No new exception was
+added. See `docs/audit/dependency-remediation.md` in the repository for
+dependency chains and remaining work.
+
 - Serenity and Songbird use native TLS, removing Serenity 0.12.5's old
   rustls-webpki 0.102 chain. Linux deployments must keep system OpenSSL updated.
   Direct media HTTP uses the current rustls chain through reqwest. The 0.9.0

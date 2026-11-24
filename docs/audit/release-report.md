@@ -3,6 +3,23 @@
 Review date: 2026-11-24. Branch: `feature/public-release-docs`.
 Worktree: `work/public-release` inside the original repository.
 
+Follow-up: the owner approved the documentation and generated branding. The
+candidate was pushed privately as draft PR #10. Compatible dependency updates
+subsequently reduced the eight baseline advisory findings to four; see
+[dependency remediation](dependency-remediation.md). Counts below describe the
+initial audit unless explicitly marked as a follow-up.
+
+Licensing follow-up: the owner confirmed all first-party relicensing and artwork
+publication rights on 2026-11-24. The requested PolyForm Noncommercial 1.0.0
+transition is applied in this candidate, including Cargo/container metadata;
+the prior MIT notice is retained and third-party terms are unchanged. No CLA
+was imposed. Complete binary/image notices remain a release requirement.
+
+Final follow-up checks passed: 81 workspace tests (two live tests ignored),
+strict Clippy, formatting, offline startup, registry freshness, 13 Python tests,
+strict documentation build and 2,883 internal links/assets. The advisory gate
+still reports four failures; license, source and ban checks pass.
+
 ## Executive summary
 
 The documentation and community-release foundation is implemented and locally
