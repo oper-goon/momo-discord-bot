@@ -634,7 +634,7 @@ pub enum ProviderError {
     Dns,
 }
 impl ProviderError {
-    fn classify(error: &anyhow::Error) -> Self {
+    pub(crate) fn classify(error: &anyhow::Error) -> Self {
         let text = error.to_string().to_ascii_lowercase();
         if text.contains("authentication") || text.contains("credentials") {
             Self::Authentication
@@ -695,18 +695,45 @@ impl Sources {
     async fn attempt<T>(
         &self,
         slot: &ProviderSlot,
+        operation: &'static str,
         work: impl std::future::Future<Output = Result<T>>,
     ) -> Result<T> {
+        let started = tokio::time::Instant::now();
+        let provider = slot.provider.id();
         // Serializing each provider also gives an open circuit exactly one recovery probe.
-        let mut state = tokio::time::timeout(Duration::from_secs(5), slot.state.lock())
-            .await
-            .context("Provider busy")?;
-        ensure!(
-            !state
-                .open_until
-                .is_some_and(|until| until > tokio::time::Instant::now()),
-            "Provider cooling down"
-        );
+        let mut state = match tokio::time::timeout(Duration::from_secs(5), slot.state.lock()).await
+        {
+            Ok(state) => state,
+            Err(_) => {
+                tracing::info!(
+                    provider,
+                    operation,
+                    reason = "busy",
+                    elapsed_ms = started.elapsed().as_millis() as u64,
+                    "Music provider skipped"
+                );
+                anyhow::bail!("Provider busy");
+            }
+        };
+        if let Some(until) = state.open_until
+            && until > tokio::time::Instant::now()
+        {
+            tracing::info!(
+                provider,
+                operation,
+                reason = "cooling_down",
+                remaining_ms = until
+                    .saturating_duration_since(tokio::time::Instant::now())
+                    .as_millis() as u64,
+                "Music provider skipped"
+            );
+            anyhow::bail!("Provider cooling down");
+        }
+        let recovery = state.open_until.is_some();
+        if recovery {
+            tracing::info!(provider, operation, "Music provider recovery probe");
+        }
+        tracing::info!(provider, operation, "Music provider attempt started");
         let result = tokio::time::timeout(
             Duration::from_secs(self.config.provider_timeout_seconds),
             work,
@@ -717,19 +744,41 @@ impl Sources {
             Ok(_) => {
                 state.open_until = None;
                 state.last_error = None;
+                tracing::info!(
+                    provider,
+                    operation,
+                    outcome = "success",
+                    elapsed_ms = started.elapsed().as_millis() as u64,
+                    "Music provider attempt finished"
+                );
+                if recovery {
+                    tracing::info!(provider, "Music provider circuit closed");
+                }
             }
             Err(error) => {
-                state.last_error = Some(ProviderError::classify(error));
+                let reason = ProviderError::classify(error);
+                state.last_error = Some(reason);
                 let retry_after = error
                     .downcast_ref::<crate::providers::RateLimited>()
                     .map_or(0, |limit| limit.0);
-                state.open_until = Some(
-                    tokio::time::Instant::now()
-                        + Duration::from_secs(
-                            self.config.provider_cooldown_seconds.max(retry_after),
-                        ),
-                );
+                let cooldown_seconds = self.config.provider_cooldown_seconds.max(retry_after);
+                state.open_until =
+                    Some(tokio::time::Instant::now() + Duration::from_secs(cooldown_seconds));
                 state.search = None;
+                tracing::info!(
+                    provider,
+                    operation,
+                    outcome = "failure",
+                    ?reason,
+                    elapsed_ms = started.elapsed().as_millis() as u64,
+                    "Music provider attempt finished"
+                );
+                tracing::info!(
+                    provider,
+                    ?reason,
+                    cooldown_seconds,
+                    "Music provider circuit opened"
+                );
             }
         }
         result
@@ -761,19 +810,38 @@ impl Sources {
                 for track in &mut tracks {
                     track.requested_by = user.to_string();
                 }
+                tracing::info!(
+                    provider = slot.provider.id(),
+                    operation = "search",
+                    outcome = "metadata_cache_hit",
+                    result_count = tracks.len(),
+                    "Music provider search finished"
+                );
                 return Ok(tracks);
             }
         }
-        let mut tracks = self.attempt(slot, work).await?;
+        let mut tracks = self.attempt(slot, "search", work).await?;
         tracks.retain(|track| {
             crate::matching::confidence(
                 wanted,
                 &crate::matching::Metadata::from_title(&track.title, track.duration_ms),
             ) >= self.config.match_min_confidence
         });
+        tracing::info!(
+            provider = slot.provider.id(),
+            operation = "search",
+            outcome = if tracks.is_empty() {
+                "no_match"
+            } else {
+                "matched"
+            },
+            result_count = tracks.len(),
+            "Music provider search finished"
+        );
         slot.state.lock().await.search = Some((key, tokio::time::Instant::now(), tracks.clone()));
         Ok(tracks)
     }
+    #[tracing::instrument(name = "music_search", skip_all, fields(search_id = %uuid::Uuid::new_v4()))]
     pub async fn inspect(&self, input: &str, user: u64) -> Result<Vec<TrackRef>> {
         ensure!(
             !input.trim().is_empty() && input.len() <= 2000,
@@ -788,21 +856,44 @@ impl Sources {
                 .iter()
                 .find(|p| p.provider.accepts(input))
                 .context("Unsupported source; local files are disabled")?;
-            return self.attempt(slot, slot.provider.inspect(input, user)).await;
+            return self
+                .attempt(slot, "inspect", slot.provider.inspect(input, user))
+                .await;
         }
         let wanted = crate::matching::Metadata::from_title(input, None);
+        let mut previous = None;
         for slot in self.providers.iter().filter(|p| p.provider.id() != "http") {
+            if let Some(from_provider) = previous {
+                tracing::info!(
+                    from_provider,
+                    to_provider = slot.provider.id(),
+                    operation = "search",
+                    "Music provider fallback"
+                );
+            }
             if let Ok(tracks) = self.search(slot, &wanted, user).await
                 && let Some(track) = tracks.first()
             {
+                tracing::info!(
+                    provider = slot.provider.id(),
+                    operation = "search",
+                    "Music provider selected"
+                );
                 return Ok(vec![track.clone()]);
             }
+            previous = Some(slot.provider.id());
         }
+        tracing::info!(
+            operation = "search",
+            reason = "all_providers_unavailable_or_no_match",
+            "Music providers exhausted"
+        );
         anyhow::bail!("No enabled music provider found a sufficiently accurate available track")
     }
     pub async fn resolve(&self, track: &TrackRef) -> Result<PlayableTrack> {
         self.resolve_excluding(track, &[]).await
     }
+    #[tracing::instrument(name = "music_resolution", skip_all, fields(resolution_id = %uuid::Uuid::new_v4()))]
     pub async fn resolve_excluding(
         &self,
         track: &TrackRef,
@@ -825,10 +916,26 @@ impl Sources {
                     .filter(|p| p.provider.id() != track.provider && p.provider.id() != "http"),
             );
         }
+        let mut previous = None;
         for slot in ordered {
             let id = slot.provider.id();
             if excluded.iter().any(|p| p == id) {
+                tracing::info!(
+                    provider = id,
+                    operation = "resolve",
+                    reason = "initialization_already_failed",
+                    "Music provider skipped"
+                );
+                previous = Some(id);
                 continue;
+            }
+            if let Some(from_provider) = previous {
+                tracing::info!(
+                    from_provider,
+                    to_provider = id,
+                    operation = "resolve",
+                    "Music provider fallback"
+                );
             }
             let work = async {
                 let candidate;
@@ -852,11 +959,18 @@ impl Sources {
                 };
                 slot.provider.resolve(target).await
             };
-            if let Ok(mut playable) = self.attempt(slot, work).await {
+            if let Ok(mut playable) = self.attempt(slot, "resolve", work).await {
                 playable.provider = Some(id.into());
+                tracing::info!(provider = id, "Music audio resolved");
                 return Ok(playable);
             }
+            previous = Some(id);
         }
+        tracing::info!(
+            operation = "resolve",
+            reason = "all_providers_unavailable",
+            "Music providers exhausted"
+        );
         anyhow::bail!("All enabled music providers are unavailable or cooling down")
     }
     pub async fn health(&self) -> bool {
@@ -915,6 +1029,12 @@ impl Sources {
                     + Duration::from_secs(self.config.provider_cooldown_seconds),
             );
             state.search = None;
+            tracing::info!(
+                provider = slot.provider.id(),
+                reason = "playback_initialization_failed",
+                cooldown_seconds = self.config.provider_cooldown_seconds,
+                "Music provider circuit opened"
+            );
         }
     }
 }
@@ -922,6 +1042,63 @@ impl Sources {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use tracing::instrument::WithSubscriber;
+    #[tokio::test(start_paused = true)]
+    async fn logs_safe_provider_outcomes_fallback_and_recovery_without_private_data() {
+        let capture = crate::log_capture::Capture::default();
+        async {
+            let (sources, _, mut track) = fixture(
+                [
+                    Some("source access challenge SECRET_CANARY https://private.invalid/token"),
+                    None,
+                    None,
+                ],
+                false,
+            );
+            track.canonical_url = "https://private.invalid/SECRET_CANARY".into();
+            track.requested_by = "PRIVATE_REQUESTER_CANARY".into();
+            assert_eq!(
+                sources.resolve(&track).await.unwrap().provider.as_deref(),
+                Some("easynews")
+            );
+            sources.resolve(&track).await.unwrap(); // Shared open circuit is skipped.
+            tokio::time::advance(Duration::from_secs(121)).await;
+            sources
+                .attempt(&sources.providers[0], "resolve", async { Ok(()) })
+                .await
+                .unwrap();
+        }
+        .with_subscriber(capture.clone())
+        .await;
+        let logs = capture.snapshot();
+        for expected in [
+            "INFO",
+            "yt-dlp",
+            "easynews",
+            "Blocked",
+            "elapsed_ms",
+            "resolution_id",
+            "Music provider fallback",
+            "cooling_down",
+            "Music provider circuit opened",
+            "Music provider recovery probe",
+            "Music provider circuit closed",
+            "Music audio resolved",
+        ] {
+            assert!(
+                logs.contains(expected),
+                "Missing log field/event: {expected}"
+            );
+        }
+        for private in [
+            "SECRET_CANARY",
+            "PRIVATE_REQUESTER_CANARY",
+            "private.invalid",
+            "Artist - Song",
+        ] {
+            assert!(!logs.contains(private), "Private field leaked to logs");
+        }
+    }
     #[tokio::test]
     async fn bounded_stream_probes_audio_and_rejects_expired_or_corrupt_data() {
         let mut wav = Vec::new();

@@ -95,6 +95,26 @@ still requires per-guild enablement and existing command permissions.
 
 ## Reliability and security decisions
 
+Provider activity is logged at INFO with fixed event names, provider IDs,
+operation (`search`, `inspect`, `resolve`), safe failure categories and elapsed
+milliseconds. Events cover attempts, metadata-cache hits, no-match results,
+fallback transitions, cooldown skips, circuit opening/recovery and resolution.
+`Music audio resolved` means audio passed initialization; `Music playback
+started` is emitted when Songbird reports playback, with the active provider.
+Pause/resume events do not duplicate the playback-start record.
+
+Searches have a `search_id`; each resolution pass has a `resolution_id`. Guild
+resolutions also inherit a `playback_id` and `player_id`, and the playback ID is
+retained across initialization fallback. The same playback ID appears on the
+actual playback-start event. Queries, titles, requester IDs, credentials,
+headers, raw dependency errors and private URLs are excluded. Automated log
+capture tests check redaction and the fallback/start records. Default `RUST_LOG`
+already includes these INFO events; no debug logging is required. Inspect with:
+
+```sh
+docker compose logs --since 10m bot | grep 'Music '
+```
+
 Each provider is serialized behind a bounded wait, inside the global four-job
 resolver limit. Search metadata has a bounded one-entry, 30-second cache per
 provider; repeated searches share that cached metadata. No audio cache exists

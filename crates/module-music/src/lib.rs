@@ -1,5 +1,7 @@
 #![forbid(unsafe_code)]
 mod commands;
+#[cfg(test)]
+mod log_capture;
 pub mod matching;
 pub mod player;
 mod providers;
