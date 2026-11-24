@@ -1,6 +1,7 @@
 .git
 .github
 .tools
+.cache
 target
 work
 outputs

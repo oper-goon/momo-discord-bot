@@ -41,6 +41,9 @@ COPY config/example.toml /app/config/example.toml
 COPY LICENSE THIRD_PARTY_NOTICES.md /usr/share/doc/momokun/
 COPY licenses/Apache-2.0.txt /usr/share/doc/momokun/licenses/Apache-2.0.txt
 COPY licenses/MIT-legacy.txt /usr/share/doc/momokun/licenses/MIT-legacy.txt
+COPY licenses/upstream/denoland--deno/14eea3160ae5834476aa3b9d317b8d41d991b982/LICENSE.md /usr/share/doc/momokun/licenses/Deno-2.9.4-MIT.txt
+COPY licenses/upstream/brainicism--bgutil-ytdlp-pot-provider/26475e9d3665b972c4aeb83b4dbaafcf64b88438/LICENSE /usr/share/doc/momokun/licenses/BgUtils-2.0.2-GPL-3.0.txt
+COPY licenses/runtime-supplements.json /usr/share/doc/momokun/licenses/runtime-supplements.json
 COPY licenses/MPL-2.0.txt /usr/share/doc/momokun/bundle/licenses/MPL-2.0.txt
 COPY --from=builder /build-notices /usr/share/doc/momokun/bundle
 COPY vendor/davey/LICENSE /usr/share/doc/momokun/licenses/davey-MIT.txt

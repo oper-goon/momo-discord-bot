@@ -32,7 +32,8 @@ obligations; a green dependency scan alone would not validate their source patch
   without credentials or network access.
 - The owner confirmed months of live Discord testing and acceptance for 1.0
   on 2026-11-24. This is operator-reported acceptance of the running bot;
-  newly changed dependency binaries have not been deployed by this initiative.
+  the new dependency build was briefly trialed and rolled back; no audible
+  result was recorded.
 - Account-backed Easynews and TorBox behavior across supported plans. Local
   metadata/configured status is not proof of successful authentication.
 - ARM64 build, runtime and vendored assembly tests before advertising that target.
@@ -51,3 +52,17 @@ components retain their licenses. No CLA has been imposed.
 
 The release checklist is tracked in the repository. No separate accepted feature
 roadmap exists; do not infer future support or delivery dates from this list.
+
+## Latest release preparation
+
+The new distribution collectors passed private Linux CI, recording 488 reachable
+Rust packages, 311 Debian packages and 14 Python distributions. Exact source
+archives and recovered original notices are retained. Three Rust attribution
+gaps and final system/tool source obligations remain; this is not license
+clearance for a public image.
+
+An explicitly authorized 20-minute trial reached readiness on the existing bot,
+then automatically restored its original image/configuration. No playback was
+recorded, so the upgraded build still needs audible voice acceptance. Restored
+backup startup and post-rollback readiness passed. A Windows archive line-ending
+issue was caught on the disposable copy and corrected before the trial.

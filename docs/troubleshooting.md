@@ -100,3 +100,23 @@ Do not remove limits to make one file work; choose a supported, smaller source.
 
 If a problem persists, open a redacted issue using the repository templates.
 Security reports belong in the private [security process](project/security.md).
+
+## SQLite reports a modified migration
+
+Stop the upgrade if SQLx says a previously applied migration was modified. Do
+not edit `_sqlx_migrations`, replace its checksums or change applied SQL files.
+SQLx hashes exact bytes, so CRLF versus LF line endings can cause this error
+even when the visible SQL is identical. The repository requires LF migrations.
+
+On Windows, use a fresh checkout that honors `.gitattributes`. When producing
+a source archive for a Linux build, use canonical bytes:
+
+```sh
+git -c core.autocrlf=false archive --format=tar --output=candidate.tar HEAD
+```
+
+Keep your original working image and a verified backup. Compare the candidate's
+canonical migration hashes with the database's applied hashes on a restored
+copy before switching services. If an older installation applied different
+bytes, retain its matching original build and review recovery separately; do
+not force the new build to accept altered history.

@@ -1,6 +1,6 @@
 # Focused upgraded-build voice smoke test
 
-Prepared 2026-11-24. **Procedure only: not executed.** This covers the newly adapted P-256/HPKE/DAVE dependency build, not a repeat of the owner's months of acceptance of the running bot. The offline original/upgraded peer handshake, epoch rotation, encrypted packet and tamper tests are recorded in [voice upgrade](voice-upgrade.md). Those tests cannot prove Discord voice negotiation, RTP delivery, audible Opus playback, or active-audio shutdown.
+Prepared 2026-11-24. **Authorized trial completed; audible playback was not exercised.** This covers the newly adapted P-256/HPKE/DAVE dependency build, not a repeat of the owner's months of acceptance of the running bot. The offline original/upgraded peer handshake, epoch rotation, encrypted packet and tamper tests are recorded in [voice upgrade](voice-upgrade.md). Those tests cannot prove Discord voice negotiation, RTP delivery, audible Opus playback, or active-audio shutdown.
 
 ## Chosen route: existing bot during an agreed maintenance window
 
@@ -99,3 +99,37 @@ If direct audio works but a website fails before `Music audio resolved`, investi
 ## Unavoidable operator actions
 
 For the chosen existing-bot route, the operator must agree the maintenance window, verify image/data rollback readiness and the candidate registry/schema scope, supply access to the existing private configuration without disclosing secrets, and authorize the concrete bot-only switch. No new application or token is required. The separate-bot alternative instead needs a new application/token and invite. At least one human listener must verify audible audio; a second listener/client is needed for the membership-change observation. These cannot be replaced by the credential-free offline CI checks, and were not performed during documentation preparation.
+
+## 2026-11-24 trial evidence
+
+The owner explicitly authorized separate server preparation and a 20-minute
+existing-bot trial with return to the original image. Read-only preflight found
+all three deployed migration checksums match the candidate's canonical Git
+bytes; all inspected feature-module source files match. The running image was
+retained under a private rollback tag, and fresh online backups passed SQLite
+integrity/foreign-key checks. No credentials or private paths are included here.
+
+The first Windows-created Git archive used CRLF SQL files; offline startup on
+the restored copy correctly rejected their checksums. No live switch occurred.
+Re-creating the archive with `git -c core.autocrlf=false archive` restored the
+canonical LF bytes; all three checksums were checked before transfer. The rebuilt
+candidate then passed restored-copy integrity and offline application startup.
+An explicit migration LF rule prevents this checkout/build inconsistency.
+
+A raw Compose JSON comparison initially suggested credential drift. Docker's
+escaped-dollar serialization explained it; normalized values matched. Temporary
+credential overrides were removed. The final switch verified that all sensitive
+runtime environment values and DATABASE_URL match the original process, without
+printing them or editing the original environment file.
+
+The authorized candidate reached readiness with command synchronization disabled,
+unchanged provider service and authoritative storage. A private watchdog will
+restore the retained original image/configuration after 20 minutes if manual
+rollback has not completed. It did so successfully when the window expired.
+Original image identity, readiness and zero restart count were verified after
+rollback; authoritative data and the provider service were preserved. No
+playback-start or audio-resolution events were recorded in the window, and no
+human audible result was supplied. Audible playback, controls, membership
+changes, reconnects and active-audio shutdown remain untested for this build.
+The trial proves readiness, unchanged runtime credentials, schema-compatible
+startup and timed image/configuration rollback; it does not prove voice output.

@@ -58,6 +58,17 @@ but a manifest license declaration is not substituted for missing attribution.
 System-package corresponding source, Deno/manual-tool notices, optional-provider
 image obligations and applicable combined-license requirements need final review.
 
+Exact-release supplements also retain Deno 2.9.4's MIT notice at upstream commit
+`14eea3160ae5834476aa3b9d317b8d41d991b982` and BgUtils 2.0.2's GPL 3.0 text at
+`26475e9d3665b972c4aeb83b4dbaafcf64b88438`. Their original files are under
+`licenses/upstream/` and copied into the image notice directory. BgUtils source
+distribution remains outstanding; the proposed exact-source download was
+declined. Do not assume a GPL license-text copy alone completes its obligations.
+Deno's root MIT notice likewise does not establish that all its embedded
+third-party notices have been collected. Debian's installed FFmpeg build has
+GPL enabled; preserve its package notices and address corresponding source
+before redistribution. These separate tools retain their own terms.
+
 The container also includes Debian packages (including FFmpeg, OpenSSL, Opus,
 SQLite and Python), yt-dlp and its installed extras, the BgUtils provider
 plugin, and Deno. Their licenses and required notices must accompany the

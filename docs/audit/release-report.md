@@ -10,7 +10,9 @@ member-add epoch rotation and twelve encrypted packet roundtrips. See
 [voice upgrade](voice-upgrade.md). Earlier findings/counts below describe the
 historical audit. Linux container/offline recovery validation passed; complete
 third-party distribution validation remains pending;
-no public release, merge or production deployment occurred.
+no public release or merge occurred. A later explicitly authorized 20-minute
+production-identity trial reached readiness and restored the original image;
+no playback was recorded. See [trial evidence](voice-smoke.md).
 
 Follow-up: the owner approved the documentation and generated branding. The
 candidate was pushed privately as draft PR #10. Compatible dependency updates
@@ -33,7 +35,8 @@ build/start/storage/backup/restore job. [Hosted CI evidence](https://github.com/
 The separate documentation workflow passed with public deployment skipped.
 Chrono and pin-utils have maintenance exceptions due for review by 2026-12-20.
 The owner accepts months of live testing as acceptance of the running bot for
-planned 1.0; this upgraded dependency build has not been deployed.
+planned 1.0; the upgraded build was subsequently trialed briefly and rolled back; audible
+voice acceptance remains open.
 
 ## Executive summary
 
@@ -308,3 +311,27 @@ edits. Review the concrete candidate before approving any publication step.
 
 Distribution follow-up: [notice collection assessment](distribution-notices.md)
 records the remaining exact-image attribution/source work and its limits.
+
+## Distribution and authorized trial follow-up
+
+Commit 0c88f48 passed Linux code/Docker/documentation CI. Distribution collection
+retains 488 reachable Rust packages, 470 exact registry archives, modified vendor
+source, 311 Debian package records and 14 Python distribution records. Original
+notices recovered from exact upstream revisions reduced Rust gaps to three.
+Deno/BgUtils root license supplements are prepared; system/tool source and
+attribution requirements remain, including GPL-enabled FFmpeg and BgUtils.
+The proposed BgUtils source download was declined and not executed. See
+[distribution evidence](distribution-notices.md) for the precise limits.
+
+The owner authorized separate server preparation, verified backup and a
+20-minute existing-bot trial with return to the original image. A Windows
+archive CRLF mismatch failed safely on the restored copy; canonical LF rebuild
+then passed. Candidate readiness, unchanged sensitive runtime environment,
+unchanged storage/provider, automatic timed rollback and original readiness
+passed. No audio-resolution/playback events or human audible result were
+recorded, so upgraded-build voice acceptance remains untested. The currently
+running image/configuration is the original. No secrets or private host paths
+are included in these reports.
+
+Final notice COPY and migration LF/cache exclusions are a small follow-up to
+the tested image; its own Docker CI result must be reviewed before release.

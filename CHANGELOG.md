@@ -20,6 +20,10 @@ Versioning and Keep a Changelog conventions.
 
 ### Changed
 
+- Enforce canonical LF migration files across checkouts and exclude local audit
+  caches from Docker build contexts. A restored-copy trial caught checksum
+  mismatches in a Windows-created source archive before any live switch.
+
 - Pin tested Rust 1.98.1 consistently across tooling, CI and Docker; avoid
   compiler drift triggering Poise's generated rest-argument lint on Rust 1.100.
 

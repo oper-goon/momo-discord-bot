@@ -19,7 +19,14 @@ notice; the third manifest repository cannot resolve its recorded commit.
 The build now bundles these Rust materials and inventories installed Debian and
 Python distributions with media-tool build evidence. CI extracts the evidence
 privately for seven days. Actual Linux execution of this new collection step
-is pending; earlier Linux image/start/recovery checks passed before the collectors.
+passed in private CI run 45476419957 for commit 0c88f48. The extracted runtime
+inventory contains 311 installed Debian packages (all have matching notice
+files) and 14 Python distributions (the BgUtils plugin has no matching packaged
+license text). FFmpeg 5.1.9 is configured with GPL enabled. Deno 2.9.4,
+yt-dlp 2026.10.26, OpenSSL 3.0.22, Python 3.11.2 and the Debian SQLite CLI
+were recorded; the bot separately embeds patched SQLite 3.54.1. Version strings
+alone do not establish Debian backport/advisory status. The source/notice
+archive evidence was downloaded and inspected privately.
 Final system corresponding-source, Deno/manual executable and optional provider
 obligations remain under review. The earlier assessment below records the
 baseline evidence and rationale; its 586-package counts are historical.
@@ -127,3 +134,21 @@ actual build options.
 Public binary/image redistribution remains pending completion and review of
 these materials. A green dependency license allowlist is useful evidence, not
 a substitute for this work.
+
+## Exact-image follow-up and current limits
+
+Private Linux CI 45476419957 passed the collectors, image build and isolated
+startup/recovery tests. Its artifact was inspected: 311 Debian packages have
+matching packaged notice files, and 14 Python distributions are inventoried.
+The BgUtils 2.0.2 plugin lacks a packaged standalone license file; its exact
+upstream release supplies GPL 3.0, now retained with provenance. Deno 2.9.4's
+root MIT notice is also retained. Neither retrieval establishes full combined
+binary compliance. The requested BgUtils source-archive download was declined
+and was not executed. Corresponding-source delivery remains pending, along
+with system/FFmpeg GPL obligations, Deno's embedded third-party notices and
+Rust standard-library/toolchain attribution. The optional provider image is
+referenced from upstream, not republished by this initiative.
+
+The two final runtime-license COPY additions and migration LF/cache exclusions
+follow the tested 0c88f48 image and require the next Docker CI build. No public
+image, release, repository visibility change or merge has been performed.
