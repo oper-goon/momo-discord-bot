@@ -138,7 +138,7 @@ impl Lifecycle for MusicLifecycle {
             if self.service.sources.health().await {
                 "healthy"
             } else {
-                "degraded: yt-dlp unavailable"
+                "degraded: music providers unavailable"
             },
             self.service.count().await
         ))
