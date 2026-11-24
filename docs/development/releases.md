@@ -64,3 +64,25 @@ for the default deployment. Do not commit an unsolicited `CNAME` now.
 Existing CI retains Rust quality gates, dependency policy and a Linux Docker
 build. A previously green pipeline does not resolve newly reported advisories.
 Read the release's own results and review exceptions before distribution.
+
+## Distribution evidence
+
+The Docker builder runs `scripts/collect_rust_notices.py` against locked Cargo
+metadata filtered for its host target. It follows resolved non-development
+edges from `bot-app`, conservatively retaining build tools. It is not an exact
+measurement of linked bytes. Original package notices, exact registry archives,
+modified vendor source and release-specific notice supplements accompany the
+image. Supplement file hashes and packaged Git revisions must match.
+
+The runtime stage runs `scripts/collect_image_notices.py` after installing its
+tools. It captures Debian/Python versions, packaged notices and FFmpeg build
+configuration. CI extracts `/usr/share/doc/momokun/` as a private seven-day
+artifact for review. Neither collection script accesses bot configuration,
+credentials or production storage.
+
+Review every unresolved item and system/tool source requirement before
+publishing; collection success is not a publishing gate approval. The Rust
+collector's `--require-reviewed` flag fails when its unresolved list is nonempty;
+even a zero list does not replace final image/distribution review. Keep any
+reviewed binary's matching evidence/source materials with that release rather
+than relying on the short-lived CI artifact.

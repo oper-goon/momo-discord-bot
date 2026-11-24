@@ -40,6 +40,24 @@ bundle. Before publishing binaries/images, collect exact resolved dependency
 licenses, copyright notices and any source-disclosure obligations, including
 MPL-covered files and Mozilla trust-root data.
 
+The image build now creates `/usr/share/doc/momokun/bundle/rust-index.json`,
+original notices, checksum-verified registry source archives and the actual
+modified source of active vendored packages. MPL-covered source retains its
+MPL terms; `licenses/MPL-2.0.txt` is Mozilla's official text. Archive extraction
+instructions accompany the bundle. `licenses/rust-supplements.json` pins
+recovered upstream notices to the exact packaged release commit and file hashes.
+These materials do not apply Momokun's noncommercial restriction to third-party
+source. License alternatives are preserved rather than automatically selected.
+
+The runtime build also creates `/usr/share/doc/momokun/image-notices/inventory.json`
+with installed Debian/Python versions, original notices and media-tool build
+information. Private CI retains the generated evidence for seven days, without
+publishing an image. Three Rust notice gaps remain under review: convert_case
+0.4.0, realfft 3.5.0 and serenity-voice-model 0.3.0. Exact sources are retained,
+but a manifest license declaration is not substituted for missing attribution.
+System-package corresponding source, Deno/manual-tool notices, optional-provider
+image obligations and applicable combined-license requirements need final review.
+
 The container also includes Debian packages (including FFmpeg, OpenSSL, Opus,
 SQLite and Python), yt-dlp and its installed extras, the BgUtils provider
 plugin, and Deno. Their licenses and required notices must accompany the

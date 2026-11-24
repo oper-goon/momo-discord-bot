@@ -36,7 +36,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: docker build -t momo:test .
+      - run: docker build --build-arg REVISION=${{ github.sha }} -t momo:test .
+      - name: Extract private distribution evidence
+        run: |
+          mkdir -p outputs/distribution
+          container=$(docker create momo:test)
+          docker cp "$container:/usr/share/doc/momokun/." outputs/distribution/
+          docker rm "$container"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: distribution-evidence-${{ github.run_id }}
+          path: outputs/distribution
+          retention-days: 7
+          if-no-files-found: error
       - name: Validate standalone Compose configuration
         run: |
           cp .env.example .env

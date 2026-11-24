@@ -20,3 +20,18 @@ they are media-tool settings, not bot configuration fields. `PATH` includes
 `/opt/ytdlp/bin`, and Compose fixes `DATABASE_URL` to the persistent volume path.
 The standalone example's `MOMOKUN_IMAGE` is a required Compose image reference,
 not a secret or an application setting.
+
+## Included distribution evidence
+
+Source builds collect Rust notices and exact registry source archives under
+`/usr/share/doc/momokun/bundle/`. The index records the build target, revision,
+lockfile digest, declared terms, original notices and unresolved items. Modified
+vendored dependencies include their actual source. MPL-covered source remains
+under MPL 2.0; extract an included crate with `tar -xzf PACKAGE.crate`.
+
+`/usr/share/doc/momokun/image-notices/inventory.json` records installed
+Debian/Python packages and tool build information, with packaged notices beside
+it. These are review evidence, not a declaration that every redistribution
+obligation is complete. Missing upstream notices, system corresponding source,
+Deno and optional-provider materials remain release checks. Personal source
+builds do not require a public registry image.

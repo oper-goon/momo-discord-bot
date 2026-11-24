@@ -7,6 +7,10 @@ Versioning and Keep a Changelog conventions.
 
 ### Added
 
+- Collect exact-image Debian/Python inventories and Rust dependency notices with
+  checksum-verified upstream source archives. Retain unresolved attribution and
+  source requirements for review before binary/image publication.
+
 - Material for MkDocs documentation with beginner Docker setup, module guides,
   generated command/configuration references, operations and developer guides.
 - Strict documentation CI, offline registry export, stale-reference and built-site
@@ -28,8 +32,8 @@ Versioning and Keep a Changelog conventions.
 
 - Update bundled SQLite to 3.54.1 through compatible libsqlite3-sys 0.39.1,
   with a linked-runtime security-version regression check. Record two dated
-  maintenance exceptions while preserving picker IDs; the active
-  voice cryptography advisory remains a release blocker.
+  maintenance exceptions while preserving picker IDs. The subsequent voice
+  backend upgrade clears the remaining cryptography advisory.
 - Record the owner's months of live Discord testing as operator acceptance
   for the planned 1.0 release.
 
@@ -37,8 +41,9 @@ Versioning and Keep a Changelog conventions.
   owner confirmation of rights; preserve earlier MIT grants and third-party terms.
 
 - Update Tokio, TLS certificate verification/trust roots and URL parsing to
-  patched compatible releases, clearing four release-audit findings. Four
-  transitive dependency findings remain; no advisory exceptions were added.
+  patched compatible releases, clearing four release-audit findings. Subsequent
+  SQLite and voice updates clear the other vulnerability/unsoundness findings;
+  two maintenance findings have dated exceptions.
 
 - Docker Compose forwards optional integration settings from the private env
   file, uses safer container defaults, bounds logs and rejects missing config

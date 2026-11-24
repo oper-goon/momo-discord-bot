@@ -1,11 +1,20 @@
 FROM rust:1.98.1-bookworm AS builder
-RUN apt-get update && apt-get install -y --no-install-recommends cmake pkg-config libopus-dev libssl-dev && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends cmake pkg-config libopus-dev libssl-dev python3 && rm -rf /var/lib/apt/lists/*
 WORKDIR /build
 COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
 COPY crates ./crates
 COPY migrations ./migrations
 COPY vendor ./vendor
+COPY scripts/collect_rust_notices.py ./scripts/collect_rust_notices.py
+COPY LICENSE ./LICENSE
+COPY licenses ./licenses
+ARG REVISION=unknown
 RUN cargo build --locked --release -p bot-app
+RUN target=$(rustc -vV | sed -n 's/^host: //p') && \
+    cargo metadata --locked --format-version 1 --filter-platform "$target" > /tmp/cargo-metadata.json && \
+    python3 scripts/collect_rust_notices.py --metadata /tmp/cargo-metadata.json \
+      --lockfile Cargo.lock --cargo-home "$CARGO_HOME" --output /build-notices \
+      --target "$target" --revision "$REVISION"
 
 FROM denoland/deno:bin-2.9.4 AS deno
 
@@ -32,10 +41,14 @@ COPY config/example.toml /app/config/example.toml
 COPY LICENSE THIRD_PARTY_NOTICES.md /usr/share/doc/momokun/
 COPY licenses/Apache-2.0.txt /usr/share/doc/momokun/licenses/Apache-2.0.txt
 COPY licenses/MIT-legacy.txt /usr/share/doc/momokun/licenses/MIT-legacy.txt
+COPY licenses/MPL-2.0.txt /usr/share/doc/momokun/bundle/licenses/MPL-2.0.txt
+COPY --from=builder /build-notices /usr/share/doc/momokun/bundle
 COPY vendor/davey/LICENSE /usr/share/doc/momokun/licenses/davey-MIT.txt
 COPY vendor/openmls_basic_credential/LICENSE /usr/share/doc/momokun/licenses/openmls-basic-credential-MIT.txt
 COPY vendor/openmls_rust_crypto/LICENSE /usr/share/doc/momokun/licenses/openmls-rust-crypto-MIT.txt
 COPY vendor/ringbuf/LICENSE-MIT /usr/share/doc/momokun/licenses/ringbuf-LICENSE-MIT
+COPY scripts/collect_image_notices.py /usr/local/libexec/momokun/collect_image_notices.py
+RUN python3 /usr/local/libexec/momokun/collect_image_notices.py --output /usr/share/doc/momokun/image-notices
 ENV PATH="/opt/ytdlp/bin:${PATH}" DATABASE_URL=sqlite:///data/bot.db DENO_NO_UPDATE_CHECK=1 DENO_NO_PROMPT=1
 USER bot
 WORKDIR /app

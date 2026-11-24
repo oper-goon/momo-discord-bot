@@ -1,0 +1,3 @@
+# Preserve exact downloaded upstream notice bytes and their recorded digests.
+licenses/upstream/** -text
+licenses/MPL-2.0.txt -text

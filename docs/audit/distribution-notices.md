@@ -1,7 +1,29 @@
 # Distribution notice collection assessment
 
-Reviewed 2026-11-24. This assessment proposes the remaining collection work. It
-is not completed license clearance or authorization to publish an image.
+Reviewed 2026-11-24. The collector design below has now been implemented.
+This is not completed license clearance or authorization to publish an image.
+
+## Implementation follow-up
+
+The target-filtered local resolved graph contains 488 reachable packages. The
+collector retains 470 checksum-verified registry archives, all 20 MPL source
+archives, original nested notices and four actual modified vendor source trees.
+Packaged SPDX license directories fixed three omissions. Exact upstream commit
+notices were recovered for 33 of the remaining 36 non-MPL packages and pinned
+in `licenses/rust-supplements.json`; their hashes and packaged Git revisions
+are checked during collection. Three standalone notice gaps remain:
+convert_case 0.4.0, realfft 3.5.0 and serenity-voice-model 0.3.0. No upstream
+copyright was invented. The first two exact repository trees lack a standalone
+notice; the third manifest repository cannot resolve its recorded commit.
+
+The build now bundles these Rust materials and inventories installed Debian and
+Python distributions with media-tool build evidence. CI extracts the evidence
+privately for seven days. Actual Linux execution of this new collection step
+is pending; earlier Linux image/start/recovery checks passed before the collectors.
+Final system corresponding-source, Deno/manual executable and optional provider
+obligations remain under review. The earlier assessment below records the
+baseline evidence and rationale; its 586-package counts are historical.
+
 
 ## Evidence and limits
 
