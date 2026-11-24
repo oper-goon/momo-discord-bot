@@ -20,6 +20,15 @@ strict Clippy, formatting, offline startup, registry freshness, 13 Python tests,
 strict documentation build and 2,883 internal links/assets. The advisory gate
 still reports four failures; license, source and ban checks pass.
 
+Latest dependency pass: patched bundled SQLite removes a fifth original finding.
+Chrono and pin-utils have narrowly documented maintenance exceptions, due for
+review by 2026-12-20. The active DAVE crypto-bigint vulnerability remains
+unwaived and blocks the advisory gate. The owner reports months of live Discord
+testing and accepts the running bot for a planned 1.0 release; a repeat of the
+entire historical live acceptance program is not required. This does not claim
+the new dependency build has been deployed. See the remediation record for
+specific upstream constraints and test results.
+
 ## Executive summary
 
 The documentation and community-release foundation is implemented and locally

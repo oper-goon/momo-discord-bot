@@ -7,18 +7,18 @@ require acceptance testing. Preparation is not a claim of production readiness.
 ## Security gate
 
 A refreshed cargo-deny run on 2026-11-24 identified eight findings. Compatible
-lockfile updates cleared four; a follow-up check still fails on the four below.
+lockfile updates cleared five. Two maintenance-only findings have dated,
+documented exceptions; the remaining vulnerability below still fails the gate.
 Dependency bans, licenses and sources passed.
 
 | Package | Advisory |
 | --- | --- |
-| chrono | RUSTSEC-2026-0543 (unmaintained) |
 | crypto-bigint | RUSTSEC-2026-0387 |
-| libsqlite3-sys | RUSTSEC-2026-0459 |
-| pin-utils | RUSTSEC-2026-0441 |
 
-These are release blockers pending dependency remediation or a specific,
-documented reachability review. This initiative adds no advisory waivers.
+This remains a release blocker: the affected arithmetic is used by voice
+encryption. Chrono and pin-utils remain unmaintained; their narrowly scoped
+maintenance exceptions expire for review on 2026-12-20. See the
+[dependency security policy](../security.md) for rationale and removal conditions.
 Existing [vendored backports and exceptions](../security.md) remain separate
 obligations; a green dependency scan alone would not validate their source patches.
 
@@ -26,8 +26,9 @@ obligations; a green dependency scan alone would not validate their source patch
 
 - An isolated build/start of the revised Docker deployment and backup/restore
   commands. Docker was unavailable in the documentation implementation environment.
-- Live Discord command/component rendering, permissions and hierarchy, cache
-  fallbacks, command synchronization, voice playback/seek and load-time shutdown.
+- The owner confirmed months of live Discord testing and acceptance for 1.0
+  on 2026-11-24. This is operator-reported acceptance of the running bot;
+  newly changed dependency binaries have not been deployed by this initiative.
 - Account-backed Easynews and TorBox behavior across supported plans. Local
   metadata/configured status is not proof of successful authentication.
 - ARM64 build, runtime and vendored assembly tests before advertising that target.

@@ -1,6 +1,6 @@
 # Dependency and media security policy
 
-Review date: 2026-10-14. Next required exception review: 2026-12-20.
+Review date: 2026-11-24. Next required exception review: 2026-12-20.
 Every dependency change must re-evaluate these conclusions. CI blocks new
 vulnerabilities, yanked dependencies, unmaintained packages, and unapproved
 licenses unless a specific reviewed exception is in `deny.toml`.
@@ -10,11 +10,35 @@ licenses unless a specific reviewed exception is in `deny.toml`.
 The 2026-11-24 release follow-up updates the lockfile to Tokio 1.54.1,
 rustls-webpki 0.103.17, webpki-roots 1.0.12 and url 2.5.9 (with
 form_urlencoded 1.2.3). These remove RUSTSEC-2026-0386, -0382, -0381 and
--0592 from the advisory gate. Updating pin-utils to 0.1.1 does not resolve its
-unmaintained status. The remaining gate failures are chrono, pin-utils,
-crypto-bigint 0.5.5 and bundled libsqlite3-sys 0.37.0. No new exception was
-added. See `docs/audit/dependency-remediation.md` in the repository for
-dependency chains and remaining work.
+-0592 from the advisory gate. The next follow-up updates bundled libsqlite3-sys
+to 0.39.1 (SQLite 3.54.1), within SQLx 0.9.1's supported range. A database test
+checks the actual linked SQLite version against the 3.54.0 security floor.
+Poise's chrono feature is retained because existing picker sessions use its
+feature-gated `Context::id`. Two maintenance-only exceptions are reviewed below. The only remaining
+advisory gate failure is crypto-bigint 0.5.5; it is not waived.
+See `docs/audit/dependency-remediation.md` for the full dependency record.
+
+- `chrono` 0.4.45 remains through Poise/Serenity timestamps and Songbird 0.6.1 →
+  serde-aux defaults. Removing Poise's feature was compile-tested and rejected
+  because it removes `Context::id`, used by image, media and TorBox pickers.
+  Existing behavior is preserved. Songbird's
+  FFprobe code uses numeric/bool helpers, not serde-aux's date helpers. There is
+  no patched Chrono release. RUSTSEC-2026-0543 is accepted as maintenance debt,
+  not a claim that Chrono is maintained or free of vulnerabilities. Recheck
+  on parent/feature changes and by 2026-12-20; prefer upstream removal of the
+  unused default feature over a large local fork.
+- `pin-utils` 0.1.1 remains through Davey → OpenMLS's `js` feature →
+  fluvio-wasm-timer. OpenMLS 0.8.3 uses `std::time` on native platforms;
+  its Fluvio lifetime import is wasm32-only. RUSTSEC-2026-0441 is accepted as
+  maintenance debt for this native bot. Recheck on dependency/target changes
+  and by 2026-12-20. This is not an approval of WebAssembly deployment.
+- `crypto-bigint` 0.5.5 is used by DAVE's active P-256 signing and key exchange.
+  RUSTSEC-2026-0387 requires 0.7.6 or later, outside the current elliptic-curve
+  0.13 API range. Even Davey's current upstream manifest retains this chain.
+  Do not mark this unreachable, disable voice encryption, or waive it to ship.
+  A maintained coordinated crypto-stack upgrade or upstream-reviewed compatible
+  backport is required. The upstream fix covers multiple arithmetic operations;
+  a hand-written partial patch is not sufficient evidence of constant-time safety.
 
 - Serenity and Songbird use native TLS, removing Serenity 0.12.5's old
   rustls-webpki 0.102 chain. Linux deployments must keep system OpenSSL updated.

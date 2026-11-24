@@ -16,6 +16,13 @@ Versioning and Keep a Changelog conventions.
 
 ### Changed
 
+- Update bundled SQLite to 3.54.1 through compatible libsqlite3-sys 0.39.1,
+  with a linked-runtime security-version regression check. Record two dated
+  maintenance exceptions while preserving picker IDs; the active
+  voice cryptography advisory remains a release blocker.
+- Record the owner's months of live Discord testing as operator acceptance
+  for the planned 1.0 release.
+
 - Apply PolyForm Noncommercial 1.0.0 to first-party release-candidate code after
   owner confirmation of rights; preserve earlier MIT grants and third-party terms.
 

@@ -459,6 +459,24 @@ impl Database {
 
 #[cfg(test)]
 mod tests {
+    #[tokio::test]
+    async fn linked_sqlite_contains_wal_page_size_security_fix() -> anyhow::Result<()> {
+        let db = super::Database::open("sqlite::memory:", 1).await?;
+        let version: String = sqlx::query_scalar("SELECT sqlite_version()")
+            .fetch_one(&db.pool)
+            .await?;
+        let parts = version
+            .split('.')
+            .map(str::parse::<u32>)
+            .collect::<Result<Vec<_>, _>>()?;
+        assert!(
+            parts.as_slice() >= [3, 54, 0].as_slice(),
+            "SQLite {version} lacks the RUSTSEC-2026-0459 fix"
+        );
+        db.close().await;
+        Ok(())
+    }
+
     use super::*;
 
     #[tokio::test]

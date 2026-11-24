@@ -2,6 +2,16 @@
 
 Current revision: `0.9.0` pre-1.0 feature release.
 
+## Operator acceptance for 1.0
+
+On 2026-11-24 the owner confirmed months of live Discord testing and confidence
+in a 1.0 release. This is accepted as operator-reported live acceptance of the
+running bot; repeating the whole historical live-test program is not a release
+requirement. It does not mean every individual scenario below was separately
+observed or that the newly updated dependency build has been deployed.
+Dependency/security and packaging checks remain separate release gates. No
+production deployment was performed as part of this dependency follow-up.
+
 ## Verified locally
 
 - Workspace format check
