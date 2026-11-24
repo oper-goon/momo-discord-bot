@@ -89,19 +89,14 @@ impl Metadata {
     }
 }
 
-pub fn confidence(wanted: &Metadata, candidate: &Metadata) -> f64 {
-    let requested = words(&wanted.query());
-    let actual = words(&candidate.query());
-    if requested.is_empty() || actual.is_empty() {
-        return 0.0;
-    }
-    // Version differences are disqualifying unless that version was requested.
-    for version in [
+fn has_unrequested_version(requested: &HashSet<String>, actual: &HashSet<String>) -> bool {
+    [
         "live",
         "cover",
         "karaoke",
         "instrumental",
         "remix",
+        "mix",
         "slowed",
         "sped",
         "speed",
@@ -114,10 +109,76 @@ pub fn confidence(wanted: &Metadata, candidate: &Metadata) -> f64 {
         "demo",
         "extended",
         "reverb",
-    ] {
-        if actual.contains(version) && !requested.contains(version) {
-            return 0.0;
-        }
+    ]
+    .into_iter()
+    .any(|version| actual.contains(version) && !requested.contains(version))
+}
+
+/// Initial natural-language discovery may contain only part of a song's title.
+/// Require the complete identified artist and every requested title word; an
+/// explicit Artist - Title or known recording metadata remains a strict match.
+/// Never use this function to replace an already selected track on fallback.
+pub fn query_confidence(wanted: &Metadata, candidate: &Metadata) -> f64 {
+    let strict = confidence(wanted, candidate);
+    if wanted.artist.is_some() || wanted.duration_ms.is_some() || wanted.album.is_some() {
+        return strict;
+    }
+    let Some(artist) = &candidate.artist else {
+        // Without a distinct artist field, extra words cannot safely be
+        // identified as title completion rather than a different artist.
+        return strict;
+    };
+    let requested = words(&wanted.title);
+    let artist = words(artist);
+    let title = words(&candidate.title);
+    let title_query: HashSet<_> = requested.difference(&artist).cloned().collect();
+    if artist.is_empty()
+        || !artist.is_subset(&requested)
+        || title_query.is_empty()
+        || !title_query.is_subset(&title)
+        || has_unrequested_version(&requested, &words(&candidate.query()))
+    {
+        return strict;
+    }
+    // All query identity words matched. Do not penalize the remaining title
+    // words as though the user supplied a complete canonical recording title.
+    // Reuse strict self-validation to retain format/metadata validity checks.
+    strict.max(confidence(candidate, candidate))
+}
+
+/// Preserve a YouTube creator attribution only when the user explicitly named
+/// that entire creator and matching title words. A channel is not a verified
+/// recording artist; this enrichment is restricted to initial natural queries.
+pub fn creator_attributed_title(wanted: &Metadata, title: &str, creator: &str) -> Option<String> {
+    if wanted.artist.is_some()
+        || wanted.duration_ms.is_some()
+        || wanted.album.is_some()
+        || Metadata::from_title(title, None).artist.is_some()
+    {
+        return None;
+    }
+    let requested = words(&wanted.title);
+    let creator_words = words(creator);
+    if creator_words.is_empty()
+        || !creator_words.is_subset(&requested)
+        || requested.difference(&creator_words).next().is_none()
+    {
+        return None;
+    }
+    let candidate = Metadata {
+        artist: Some(creator.to_owned()),
+        title: title.to_owned(),
+        ..Metadata::default()
+    };
+    (query_confidence(wanted, &candidate) == 1.0)
+        .then(|| format!("{} - {}", creator.trim(), title.trim()))
+}
+
+pub fn confidence(wanted: &Metadata, candidate: &Metadata) -> f64 {
+    let requested = words(&wanted.query());
+    let actual = words(&candidate.query());
+    if requested.is_empty() || actual.is_empty() || has_unrequested_version(&requested, &actual) {
+        return 0.0;
     }
     let title = words(&wanted.title);
     if title.is_empty() || !title.is_subset(&actual) {
@@ -157,6 +218,50 @@ pub fn confidence(wanted: &Metadata, candidate: &Metadata) -> f64 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn natural_query_completes_title_only_for_the_identified_artist() {
+        let query = Metadata::from_title("tyler the creator sugar", None);
+        let official = Metadata::from_title(
+            "Tyler, The Creator - Sugar On My Tongue (Official Video)",
+            Some(183_000),
+        );
+        assert!(confidence(&query, &official) < 0.85);
+        assert_eq!(query_confidence(&query, &official), 1.0);
+        for title in [
+            "Other Artist - Sugar On My Tongue",
+            "Tyler, The Creator - Sugar On My Tongue (Live)",
+            "Tyler, The Creator - Sugar On My Tongue (Cover)",
+            "Tyler, The Creator - Sugar On My Tongue (Remix)",
+            "Tyler, The Creator - Sugar On My Tongue (Freak Mix)",
+            "Tyler, The Creator - Sugar On My Tongue (Slowed)",
+            "Tyler, The Creator - Another Song",
+            "Sugar On My Tongue",
+        ] {
+            assert!(query_confidence(&query, &Metadata::from_title(title, None)) < 0.85);
+        }
+        assert!(
+            query_confidence(
+                &Metadata::from_title("tyler the creator sugar unrelated", None),
+                &official
+            ) < 0.85
+        );
+        assert!(
+            query_confidence(
+                &Metadata::from_title("Tyler, The Creator - Sugar", None),
+                &official
+            ) < 0.85
+        );
+        let full = Metadata::from_title("Artist - Song", Some(200_000));
+        let expanded = Metadata::from_title("Artist - Song Two", Some(200_000));
+        assert!(confidence(&full, &expanded) < 0.85);
+        assert!(query_confidence(&full, &expanded) < 0.85);
+        assert!(
+            query_confidence(
+                &Metadata::from_title("Artist Song", Some(200_000)),
+                &expanded
+            ) < 0.85
+        );
+    }
     #[test]
     fn conway_sarah_query_matches_official_video_and_release_filenames() {
         let wanted = Metadata::from_title("Conway the machine sarah", None);

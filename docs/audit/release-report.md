@@ -26,9 +26,10 @@ transition is applied in this candidate, including Cargo/container metadata;
 the prior MIT notice is retained and third-party terms are unchanged. No CLA
 was imposed. Complete binary/image notices remain a release requirement.
 
-Latest validation: 83 workspace tests (two pre-existing live tests ignored),
+Latest validation: 87 workspace tests (two pre-existing live tests ignored),
 five backend tests, strict Clippy, formatting, offline startup, registry freshness,
-13 Python tests, strict documentation build and 2,884 internal links/assets pass.
+23 Python tests (one Windows symlink test skipped), strict documentation build
+and 2,899 internal links/assets pass.
 All four cargo-deny gates pass. Linux CI also passed its complete code-check job
 for `07e3e558edbd52dfa7b57a3666c287a3ca6a2920`, along with its isolated Docker
 build/start/storage/backup/restore job. [Hosted CI evidence](https://github.com/oper-goon/momo-discord-bot/actions/runs/45471740197).
@@ -335,3 +336,26 @@ are included in these reports.
 
 Final notice COPY and migration LF/cache exclusions are a small follow-up to
 the tested image; its own Docker CI result must be reviewed before release.
+
+## Second-window acceptance and search follow-up
+
+The owner explicitly authorized another 20-minute trial. Direct-YouTube audio,
+pause/resume and skip were confirmed by the listener; clean active shutdown was
+measured at 0.576 seconds with exit 0 and no budget warning. Restart readiness
+and operator-confirmed audio after restart passed. The original image and
+configuration are restored and healthy. See the voice report for scope limits.
+
+The natural-language query `tyler the creator sugar` exposed a separate search
+issue. The exact public metadata response is now covered by regressions: bounded
+five-result discovery, requested creator context, partial-title completion,
+unrequested live/remix rejection and strict canonical fallback isolation. The
+search follow-up is not part of the live-tested image. Packaging safeguards and
+notice copies passed Linux CI at a83abc2; newer Rust changes require their own
+quality gates and hosted checks before integration.
+
+The search follow-up passes 87 workspace tests (two pre-existing live tests
+ignored), including 24 music tests, strict workspace Clippy, formatting and
+offline startup. Python ran 23 tests with one Windows symlink skip; strict
+MkDocs and 2,899 internal links/assets passed. No dependency or registry tree
+change was introduced. Hosted validation of this latest source commit follows
+the private branch push.

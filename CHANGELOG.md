@@ -5,6 +5,17 @@ Versioning and Keep a Changelog conventions.
 
 ## [Unreleased]
 
+### Fixed
+
+- Accept natural music discovery queries containing the full artist and a partial
+  title, such as `tyler the creator sugar`, without weakening explicit
+  `Artist - Title` or playback fallback matching. Keep discovery cache entries
+  distinct from explicit recording requests and reject unrequested versions.
+  Check up to five YouTube discovery candidates instead of rejecting a query
+  solely because its first upstream result is unrelated. Preserve matching
+  YouTube creator context for title-only results only when that complete
+  channel name was explicitly requested; never infer an artist from an uploader.
+
 ### Added
 
 - Collect exact-image Debian/Python inventories and Rust dependency notices with

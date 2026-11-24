@@ -84,3 +84,13 @@ Opus playback or reconnects. A focused voice smoke test of the new build is
 appropriate before release; repeating months of acceptance is not required.
 No production infrastructure, credentials or repository visibility changed.
 Full container/third-party distribution validation remains separate.
+
+## Subsequent authorized live observation
+
+A second explicitly approved 20-minute existing-bot trial confirmed audible
+YouTube playback, pause/resume, skip, active-audio shutdown (0.576 seconds,
+exit 0, no shutdown-budget warning) and operator-reported audio after restart.
+The original image/configuration was restored and verified healthy. This
+validates the focused new dependency build; the separately reproduced partial
+text-search fix was developed afterward and is not part of that live observation.
+See [voice trial evidence](voice-smoke.md).

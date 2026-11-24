@@ -28,6 +28,7 @@ use tokio_util::io::StreamReader;
 use url::Url;
 
 const MAX_AUDIO_BYTES: u64 = 64 * 1024 * 1024;
+const MAX_SEARCH_RESULTS: usize = 5;
 
 fn classify_resolver_diagnostics(diagnostics: &[u8]) -> &'static str {
     let text = String::from_utf8_lossy(diagnostics).to_ascii_lowercase();
@@ -420,7 +421,15 @@ impl YtDlpSource {
                 .any(|d| h == *d || h.ends_with(&format!(".{d}")))
         })
     }
-    async fn run(&self, input: &str, inspect: bool) -> Result<Value> {
+    fn search_input(query: &crate::matching::Metadata) -> Result<String> {
+        let query = query.query();
+        ensure!(
+            !query.trim().is_empty() && query.len() <= 2000,
+            "Search must be 1–2000 bytes"
+        );
+        Ok(format!("ytsearch{MAX_SEARCH_RESULTS}:{query}"))
+    }
+    async fn run(&self, input: &str, entry_limit: Option<usize>) -> Result<Value> {
         let _permit = tokio::time::timeout(Duration::from_secs(5), self.global.acquire())
             .await
             .context("Media resolver busy; try again")??;
@@ -437,10 +446,10 @@ impl YtDlpSource {
             "1",
             "--no-check-formats",
         ]);
-        if inspect {
+        if let Some(limit) = entry_limit {
             cmd.arg("--flat-playlist")
                 .arg("--playlist-end")
-                .arg((self.config.max_playlist_import + 1).to_string());
+                .arg(limit.to_string());
         } else {
             cmd.args([
                 "--no-playlist",
@@ -549,6 +558,38 @@ impl YtDlpSource {
             })
             .collect()
     }
+    fn parse_search_entries(
+        mut value: Value,
+        query: &crate::matching::Metadata,
+        user: u64,
+    ) -> Result<Vec<TrackRef>> {
+        fn attribute_creator(entry: &mut Value, query: &crate::matching::Metadata) {
+            let attributed = entry
+                .get("title")
+                .and_then(Value::as_str)
+                .zip(entry.get("channel").and_then(Value::as_str))
+                .and_then(|(title, creator)| {
+                    crate::matching::creator_attributed_title(query, title, creator)
+                });
+            if let Some(title) = attributed {
+                entry["title"] = Value::String(title);
+            }
+        }
+        if let Some(entries) = value.get_mut("entries").and_then(Value::as_array_mut) {
+            ensure!(
+                !entries.is_empty() && entries.len() <= MAX_SEARCH_RESULTS,
+                "Search returned an invalid number of candidates"
+            );
+            for entry in entries {
+                attribute_creator(entry, query);
+            }
+        } else {
+            attribute_creator(&mut value, query);
+        }
+        // Keep normal URL validation, duration handling and the 200-character
+        // display-title bound. Direct URL/playlist inspection never calls this.
+        Self::parse_entries(value, user, MAX_SEARCH_RESULTS)
+    }
 }
 #[async_trait]
 impl AudioSourceProvider for YtDlpSource {
@@ -574,15 +615,27 @@ impl AudioSourceProvider for YtDlpSource {
             format!("ytsearch1:{input}")
         };
         Self::parse_entries(
-            self.run(&input, true).await?,
+            self.run(&input, Some(self.config.max_playlist_import + 1))
+                .await?,
             user,
             self.config.max_playlist_import,
+        )
+    }
+    async fn search(&self, query: &crate::matching::Metadata, user: u64) -> Result<Vec<TrackRef>> {
+        // A single upstream hit can be unrelated even for a precise query.
+        // Keep provider ranking but inspect a small fixed set; Sources applies
+        // query or canonical fallback confidence in the appropriate context.
+        let input = Self::search_input(query)?;
+        Self::parse_search_entries(
+            self.run(&input, Some(MAX_SEARCH_RESULTS)).await?,
+            query,
+            user,
         )
     }
     async fn resolve(&self, track: &TrackRef) -> Result<PlayableTrack> {
         let canonical = parse_url(&track.canonical_url)?;
         ensure!(Self::webpage(&canonical), "Unsupported canonical media URL");
-        let result = self.run(canonical.as_str(), false).await?;
+        let result = self.run(canonical.as_str(), None).await?;
         let url = result
             .get("url")
             .and_then(Value::as_str)
@@ -783,7 +836,9 @@ impl Sources {
         }
         result
     }
-    async fn search(
+    // User discovery only. Playback fallback below deliberately uses strict
+    // canonical confidence and does not reuse the discovery result cache.
+    async fn search_query(
         &self,
         slot: &ProviderSlot,
         wanted: &crate::matching::Metadata,
@@ -792,7 +847,9 @@ impl Sources {
         let _gate = tokio::time::timeout(Duration::from_secs(5), slot.search_gate.lock())
             .await
             .context("Provider search busy")?;
-        let key = format!("{}:{:?}", wanted.query(), wanted.duration_ms);
+        // Keep explicit Artist - Title distinct from natural text with the same
+        // flattened query: they intentionally have different matching rules.
+        let key = format!("{wanted:?}");
         // Bounded one-entry metadata cache per provider; no audio cache exists.
         let work = async { slot.provider.search(wanted, user).await };
         {
@@ -822,7 +879,7 @@ impl Sources {
         }
         let mut tracks = self.attempt(slot, "search", work).await?;
         tracks.retain(|track| {
-            crate::matching::confidence(
+            crate::matching::query_confidence(
                 wanted,
                 &crate::matching::Metadata::from_title(&track.title, track.duration_ms),
             ) >= self.config.match_min_confidence
@@ -871,7 +928,7 @@ impl Sources {
                     "Music provider fallback"
                 );
             }
-            if let Ok(tracks) = self.search(slot, &wanted, user).await
+            if let Ok(tracks) = self.search_query(slot, &wanted, user).await
                 && let Some(track) = tracks.first()
             {
                 tracing::info!(
@@ -1139,6 +1196,7 @@ mod tests {
     use std::sync::atomic::{AtomicUsize, Ordering};
     struct MockProvider {
         id: &'static str,
+        titles: &'static [&'static str],
         failure: Option<&'static str>,
         calls: Arc<AtomicUsize>,
         slow: bool,
@@ -1152,13 +1210,17 @@ mod tests {
             true
         }
         async fn inspect(&self, _: &str, user: u64) -> Result<Vec<TrackRef>> {
-            Ok(vec![TrackRef {
-                provider: self.id.into(),
-                canonical_url: "mock:track".into(),
-                title: "Artist - Song".into(),
-                duration_ms: Some(200_000),
-                requested_by: user.to_string(),
-            }])
+            Ok(self
+                .titles
+                .iter()
+                .map(|title| TrackRef {
+                    provider: self.id.into(),
+                    canonical_url: "mock:track".into(),
+                    title: (*title).into(),
+                    duration_ms: Some(200_000),
+                    requested_by: user.to_string(),
+                })
+                .collect())
         }
         async fn resolve(&self, _: &TrackRef) -> Result<PlayableTrack> {
             self.calls.fetch_add(1, Ordering::SeqCst);
@@ -1185,6 +1247,7 @@ mod tests {
             .map(|(i, id)| {
                 ProviderSlot::new(Arc::new(MockProvider {
                     id,
+                    titles: &["Artist - Song"],
                     failure: failures[i],
                     calls: calls[i].clone(),
                     slow: slow && i == 0,
@@ -1206,6 +1269,48 @@ mod tests {
                 requested_by: "1".into(),
             },
         )
+    }
+    #[tokio::test]
+    async fn natural_query_accepts_partial_title_but_cache_and_fallback_stay_strict() {
+        let calls = Arc::new(AtomicUsize::new(0));
+        let sources = Sources {
+            limit: Semaphore::new(4),
+            providers: vec![ProviderSlot::new(Arc::new(MockProvider {
+                id: "yt-dlp",
+                titles: &[
+                    "SWEET / I THOUGHT YOU WANTED TO DANCE (Audio)",
+                    "Tyler, The Creator - Sugar On My Tongue (Live)",
+                    "Tyler, The Creator - Sugar On My Tongue (Official Video)",
+                ],
+                failure: None,
+                calls: calls.clone(),
+                slow: false,
+            }))],
+            config: MusicConfig::default(),
+        };
+        let tracks = sources.inspect("tyler the creator sugar", 1).await.unwrap();
+        assert_eq!(tracks.len(), 1);
+        assert!(tracks[0].title.contains("Sugar On My Tongue"));
+        let cached = sources.inspect("tyler the creator sugar", 2).await.unwrap();
+        assert_eq!(cached[0].requested_by, "2");
+        // Same flattened query as the successful natural request, but the
+        // explicit artist/title must not reuse its broader discovery cache.
+        assert!(
+            sources
+                .inspect("tyler the creator - sugar", 1)
+                .await
+                .is_err()
+        );
+
+        let canonical = TrackRef {
+            provider: "unavailable-original".into(),
+            canonical_url: "https://www.youtube.com/watch?v=canonical".into(),
+            title: "Tyler, The Creator - Sugar".into(),
+            duration_ms: Some(200_000),
+            requested_by: "1".into(),
+        };
+        assert!(sources.resolve(&canonical).await.is_err());
+        assert_eq!(calls.load(Ordering::SeqCst), 0);
     }
     #[tokio::test]
     async fn youtube_success_and_fallback_order() {
@@ -1296,5 +1401,110 @@ mod tests {
             Some(10000)
         );
         assert!(YtDlpSource::parse_entries(fixture, 1, 0).is_err());
+    }
+    #[test]
+    fn youtube_discovery_has_a_separate_fixed_candidate_bound() {
+        let query = crate::matching::Metadata::from_title("tyler the creator sugar", None);
+        assert_eq!(
+            YtDlpSource::search_input(&query).unwrap(),
+            "ytsearch5:tyler the creator sugar"
+        );
+        assert!(YtDlpSource::search_input(&crate::matching::Metadata::default()).is_err());
+        let entry = serde_json::json!({
+            "title": "Tyler, The Creator - Sugar On My Tongue",
+            "url": "https://www.youtube.com/watch?v=example", "duration": 183
+        });
+        let five = serde_json::json!({"entries": vec![entry.clone(); MAX_SEARCH_RESULTS]});
+        assert_eq!(
+            YtDlpSource::parse_entries(five.clone(), 1, MAX_SEARCH_RESULTS)
+                .unwrap()
+                .len(),
+            5
+        );
+        let six = serde_json::json!({"entries": vec![entry; MAX_SEARCH_RESULTS + 1]});
+        assert!(YtDlpSource::parse_entries(six, 1, MAX_SEARCH_RESULTS).is_err());
+        // The same website playlist remains bound by its configured import
+        // limit; discovery's fixed limit is not reused for URL inspection.
+        assert!(YtDlpSource::parse_entries(five, 1, 1).is_err());
+    }
+    #[test]
+    fn youtube_discovery_preserves_only_explicitly_requested_creator_context() {
+        let query = crate::matching::Metadata::from_title("tyler the creator sugar", None);
+        let fixture = serde_json::json!({"entries": [
+            {"title": "SUGAR ON MY TONGUE (Official Video)", "artist": null,
+             "channel": "Tyler, The Creator", "uploader": "Tyler, The Creator",
+             "duration": 164, "url": "https://www.youtube.com/watch?v=official"},
+            {"title": "SWEET / I THOUGHT YOU WANTED TO DANCE (Audio)",
+             "channel": "Tyler, The Creator", "duration": 589,
+             "url": "https://www.youtube.com/watch?v=unrelated"},
+            {"title": "Tyler, The Creator - Sugar On My Tongue (Live at Camp Flog Gnaw 2025)",
+             "channel": "Live Shows", "url": "https://www.youtube.com/watch?v=live"},
+            {"title": "SUGAR ON MY TONGUE (Freak Mix)", "channel": "Tyler, The Creator",
+             "url": "https://www.youtube.com/watch?v=mix"},
+            {"title": "SUGAR ON MY TONGUE", "channel": "Unrelated Creator",
+             "uploader": "Tyler, The Creator", "url": "https://www.youtube.com/watch?v=untrusted"}
+        ]});
+        let tracks = YtDlpSource::parse_search_entries(fixture.clone(), &query, 1).unwrap();
+        assert_eq!(
+            tracks[0].title,
+            "Tyler, The Creator - SUGAR ON MY TONGUE (Official Video)"
+        );
+        assert_eq!(tracks[0].duration_ms, Some(164_000));
+        let matched: Vec<_> = tracks
+            .iter()
+            .filter(|track| {
+                crate::matching::query_confidence(
+                    &query,
+                    &crate::matching::Metadata::from_title(&track.title, track.duration_ms),
+                ) >= 0.85
+            })
+            .collect();
+        assert_eq!(matched.len(), 1);
+        assert!(matched[0].canonical_url.ends_with("v=official"));
+        // Channel is creator context, not an unconditional artist fallback:
+        // a matching uploader cannot override a different/missing channel.
+        assert_eq!(tracks[4].title, "SUGAR ON MY TONGUE");
+        let uploader_only = serde_json::json!({
+            "title": "SUGAR ON MY TONGUE", "uploader": "Tyler, The Creator",
+            "url": "https://www.youtube.com/watch?v=uploader"
+        });
+        assert_eq!(
+            YtDlpSource::parse_search_entries(uploader_only, &query, 1).unwrap()[0].title,
+            "SUGAR ON MY TONGUE"
+        );
+        // Generic URL/playlist inspection and canonical fallback search keep
+        // raw titles even when the same channel field is present.
+        assert_eq!(
+            YtDlpSource::parse_entries(fixture.clone(), 1, 5).unwrap()[0].title,
+            "SUGAR ON MY TONGUE (Official Video)"
+        );
+        let canonical = crate::matching::Metadata::from_title(
+            "Tyler, The Creator - Sugar On My Tongue",
+            Some(164_000),
+        );
+        assert_eq!(
+            YtDlpSource::parse_search_entries(fixture, &canonical, 1).unwrap()[0].title,
+            "SUGAR ON MY TONGUE (Official Video)"
+        );
+        let no_title = crate::matching::Metadata::from_title("tyler the creator", None);
+        assert!(
+            crate::matching::creator_attributed_title(
+                &no_title,
+                "SUGAR ON MY TONGUE",
+                "Tyler, The Creator"
+            )
+            .is_none()
+        );
+        let long = serde_json::json!({
+            "title": format!("SUGAR ON MY TONGUE {}", "extra ".repeat(50)),
+            "channel": "Tyler, The Creator", "url": "https://www.youtube.com/watch?v=long"
+        });
+        assert_eq!(
+            YtDlpSource::parse_search_entries(long, &query, 1).unwrap()[0]
+                .title
+                .chars()
+                .count(),
+            200
+        );
     }
 }

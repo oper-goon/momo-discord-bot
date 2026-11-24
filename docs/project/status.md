@@ -25,15 +25,17 @@ obligations; a green dependency scan alone would not validate their source patch
 
 ## Acceptance still needed
 
-- A focused live voice smoke test of the upgraded dependency build, including
-  reconnect and shutdown during playback. Linux x86_64 CI passed the revised
+- A focused existing-bot trial passed operator-observed YouTube playback,
+  pause/resume, skip, active-audio shutdown and playback after restart; the
+  original image was restored afterward. The partial-title search fix found
+  during that trial still needs final CI/live verification. Linux x86_64 CI passed the revised
   image build, Compose configuration, offline startup, persistent storage,
   SQLite backup/restore and integrity checks. These used disposable storage
   without credentials or network access.
 - The owner confirmed months of live Discord testing and acceptance for 1.0
   on 2026-11-24. This is operator-reported acceptance of the running bot;
-  the new dependency build was briefly trialed and rolled back; no audible
-  result was recorded.
+  the new dependency build passed a second operator-observed voice trial
+  and was rolled back afterward.
 - Account-backed Easynews and TorBox behavior across supported plans. Local
   metadata/configured status is not proof of successful authentication.
 - ARM64 build, runtime and vendored assembly tests before advertising that target.
@@ -61,8 +63,9 @@ archives and recovered original notices are retained. Three Rust attribution
 gaps and final system/tool source obligations remain; this is not license
 clearance for a public image.
 
-An explicitly authorized 20-minute trial reached readiness on the existing bot,
-then automatically restored its original image/configuration. No playback was
-recorded, so the upgraded build still needs audible voice acceptance. Restored
-backup startup and post-rollback readiness passed. A Windows archive line-ending
-issue was caught on the disposable copy and corrected before the trial.
+Two explicitly authorized windows returned the original image/configuration.
+The first ended before an audible result was supplied; the second passed
+operator-observed YouTube audio, controls, active shutdown and post-restart
+audio. Restored backup startup and post-rollback readiness passed. A Windows
+archive line-ending issue was caught on the disposable copy and corrected
+before any switch. The text-search follow-up is separate from that tested build.

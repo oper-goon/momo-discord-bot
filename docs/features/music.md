@@ -6,6 +6,7 @@ Music plays audio in Discord voice with an independent queue per server, interac
 
 ```text
 /play input:Artist - Track Title
+/play input:tyler the creator sugar
 /nowplaying
 /queue show
 /pause
@@ -35,6 +36,8 @@ Easynews and TorBox are optional and disabled by default. Configure credentials 
 ## Fallback and reliability
 
 Text discovery follows configured provider priority. At playback, the queued provider is tried first and remaining configured providers can supply a conservative match. `Artist - Title` gives the strongest identity; include live/remix words only when you want that version. Matching is based on metadata rather than audio fingerprints. A blocked provider enters a cooldown so repeated requests do not hammer it. `/music providers` and `/music status` report local configuration and safe failure categories, not authenticated account tests. `/nowplaying` shows the actual active provider.
+
+For initial text discovery, you can supply the artist's full name and part of the title without a separator. For example, `tyler the creator sugar` can select `Tyler, The Creator - Sugar On My Tongue` when the result identifies that artist separately. A title-only YouTube result can also retain its channel name as creator attribution when your natural query explicitly includes every word of that channel name and matching title words. This is creator context, not a verified recording-artist claim; unrelated channels and uploader-only metadata do not qualify. YouTube discovery checks at most five provider-ranked results so an unrelated first hit does not hide a later matching song. Every requested title word must match, and unrequested live, cover, remix or mix versions are still rejected. An explicit `Artist - Title` request and playback fallback keep strict full-recording matching, including available duration metadata. Optional providers can apply additional matching requirements; incomplete or unidentified artist metadata can still require a more precise query. Website playlist imports keep their separately configured limit.
 
 Playback uses Songbird directly with bounded public HTTP streams; there is no persistent audio cache. Streams have a 64 MiB ceiling. Easynews accepts supported individual audio formats, never archives; TorBox music does not import torrents or start peer downloads. Missing metadata, ambiguous matches, unavailable cached files and upstream restrictions can prevent fallback. Review the outstanding live acceptance checks in [release readiness](../project/status.md).
 

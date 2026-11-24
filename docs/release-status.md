@@ -12,8 +12,11 @@ observed or that the newly updated dependency build has been deployed.
 Dependency/security and packaging checks remain separate release gates. No
 permanent production upgrade was performed. A later explicitly authorized
 20-minute trial reached readiness and automatically restored the original image.
-No playback was recorded; audible voice acceptance of the upgraded build remains
-open. Restored-copy backup validation and original readiness passed.
+The first window supplied no audible result. A second expressly approved
+window passed operator-observed direct-YouTube audio, pause/resume, skip,
+clean active-audio shutdown and audio after restart. Restored-copy backup
+validation and original readiness passed. A partial-title search issue found
+in that window has a separate local regression fix, not yet live-tested.
 
 ## Verified locally
 

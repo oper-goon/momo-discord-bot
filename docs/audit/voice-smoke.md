@@ -133,3 +133,27 @@ human audible result was supplied. Audible playback, controls, membership
 changes, reconnects and active-audio shutdown remain untested for this build.
 The trial proves readiness, unchanged runtime credentials, schema-compatible
 startup and timed image/configuration rollback; it does not prove voice output.
+
+## Second authorized window: voice acceptance
+
+The owner explicitly approved a fresh 20-minute window and confirmed being in
+Discord ready to listen. The same tested 0c88f48 candidate reached readiness.
+The operator confirmed a direct YouTube URL played audibly, pause/resume and
+skip worked, and left audio playing for the controlled shutdown. Measured
+shutdown took 0.576 seconds, exited with code 0, and emitted no shutdown-budget
+warning. The candidate restarted and reached readiness; the operator then
+confirmed audible playback after restart. This is operator-observed live
+acceptance, not a claim that offline counters prove sound was heard. The timed
+rollback returned the original image/configuration, and original identity,
+running state and zero restarts were verified. No permanent upgrade was made.
+
+The window also exposed text-discovery behavior: `tyler the creator sugar`
+failed although a direct URL played. Public metadata reproduction found an
+unrelated first YouTube hit and a correct `SUGAR ON MY TONGUE (Official Video)`
+result whose creator was only in its channel field. A local follow-up separates
+natural-query matching from canonical fallback, checks five bounded ranked
+results, and preserves explicitly requested creator context. Exact-response
+regressions pass; this follow-up was not deployed during the voice trial.
+Membership-change, supported-provider combinations and ARM64 remain outside
+this focused observation. The owner's historical live acceptance remains
+separate evidence for the running bot.
