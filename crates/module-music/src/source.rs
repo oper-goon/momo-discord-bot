@@ -121,7 +121,7 @@ pub fn parse_url(value: &str) -> Result<Url> {
     ensure!(url.host_str().is_some(), "URL requires a hostname");
     Ok(url)
 }
-async fn pinned_client(url: &Url) -> Result<reqwest::Client> {
+pub(crate) async fn pinned_client(url: &Url) -> Result<reqwest::Client> {
     client_with_headers(url, reqwest::header::HeaderMap::new()).await
 }
 async fn client_with_headers(
@@ -627,6 +627,11 @@ pub enum ProviderError {
     Blocked,
     Timeout,
     Unavailable,
+    Network,
+    InvalidAudio,
+    NoMatch,
+    UnsafeResponse,
+    Dns,
 }
 impl ProviderError {
     fn classify(error: &anyhow::Error) -> Self {
@@ -639,6 +644,16 @@ impl ProviderError {
             Self::Blocked
         } else if text.contains("timed out") || text.contains("timeout") {
             Self::Timeout
+        } else if text.contains("media stream could not start") {
+            Self::InvalidAudio
+        } else if text.contains("request failed") || text.contains("network") {
+            Self::Network
+        } else if text.contains("no accurate") {
+            Self::NoMatch
+        } else if text.contains("unsafe") || text.contains("invalid easynews") {
+            Self::UnsafeResponse
+        } else if text.contains("dns") {
+            Self::Dns
         } else {
             Self::Unavailable
         }

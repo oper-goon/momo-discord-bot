@@ -2,7 +2,7 @@
 use super::{client, json};
 use crate::{
     matching::{Metadata, audio_extension, confidence},
-    source::{AudioSourceProvider, PlayableTrack, stream_authenticated},
+    source::{AudioSourceProvider, PlayableTrack, pinned_client, stream_authenticated},
 };
 use anyhow::{Result, anyhow, ensure};
 use async_trait::async_trait;
@@ -20,6 +20,48 @@ pub struct Easynews {
 }
 
 impl Easynews {
+    async fn media_url(&self, mut url: Url) -> Result<String> {
+        // Easynews's members endpoint redirects to its regional download farm.
+        // Follow explicitly, never through reqwest's automatic redirect policy.
+        for _ in 0..=3 {
+            ensure!(trusted(&url), "Unsafe Easynews media origin");
+            let (username, password) = self.auth()?;
+            let response = pinned_client(&url)
+                .await?
+                .get(url.as_str())
+                .basic_auth(username, Some(password))
+                .header(reqwest::header::RANGE, "bytes=0-0")
+                .send()
+                .await
+                .map_err(|_| anyhow!("Easynews media request failed"))?;
+            if response.status().is_success() {
+                return Ok(url.into());
+            }
+            if response.status().is_redirection() {
+                let location = response
+                    .headers()
+                    .get(reqwest::header::LOCATION)
+                    .and_then(|value| value.to_str().ok())
+                    .ok_or_else(|| anyhow!("Invalid Easynews media redirect"))?;
+                url = checked_redirect(&url, location)?;
+            } else {
+                match response.status().as_u16() {
+                    401 | 403 => anyhow::bail!("Easynews authentication failed"),
+                    429 => {
+                        let retry = response
+                            .headers()
+                            .get(reqwest::header::RETRY_AFTER)
+                            .and_then(|value| value.to_str().ok())
+                            .and_then(|value| value.parse::<u64>().ok())
+                            .unwrap_or(120);
+                        return Err(super::RateLimited(retry.min(86400)).into());
+                    }
+                    _ => anyhow::bail!("Easynews media unavailable"),
+                }
+            }
+        }
+        anyhow::bail!("Easynews media exceeded redirect limit")
+    }
     pub fn new(minimum: f64) -> Self {
         let credentials = std::env::var("EASYNEWS_USERNAME")
             .ok()
@@ -170,6 +212,13 @@ fn trusted(url: &Url) -> bool {
             .host_str()
             .is_some_and(|h| h == "members.easynews.com" || h.ends_with(".easynews.com"))
 }
+fn checked_redirect(current: &Url, location: &str) -> Result<Url> {
+    let url = current
+        .join(location)
+        .map_err(|_| anyhow!("Invalid Easynews media redirect"))?;
+    ensure!(trusted(&url), "Unsafe Easynews media redirect");
+    Ok(url)
+}
 
 #[async_trait]
 impl AudioSourceProvider for Easynews {
@@ -201,7 +250,8 @@ impl AudioSourceProvider for Easynews {
         let url = Url::parse(&candidate.canonical_url)
             .map_err(|_| anyhow!("Invalid Easynews reference"))?;
         ensure!(trusted(&url), "Unsafe Easynews reference");
-        stream_authenticated(url.as_str(), Some(self.auth()?)).await
+        let url = self.media_url(url).await?;
+        stream_authenticated(&url, Some(self.auth()?)).await
     }
     async fn health(&self) -> bool {
         self.credentials.is_some()
@@ -211,6 +261,21 @@ impl AudioSourceProvider for Easynews {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn regional_redirects_require_https_easynews_origin_without_credentials() {
+        let origin = Url::parse("https://members.easynews.com/dl/example").unwrap();
+        assert!(checked_redirect(&origin, "https://iad-dl-06.easynews.com/file").is_ok());
+        for location in [
+            "https://evil.test/file",
+            "http://iad-dl-06.easynews.com/file",
+            "https://easynews.com.evil.test/file",
+            "https://user:secret@iad-dl-06.easynews.com/file",
+            "https://iad-dl-06.easynews.com:8443/file",
+            "https://127.0.0.1/file",
+        ] {
+            assert!(checked_redirect(&origin, location).is_err());
+        }
+    }
     #[tokio::test]
     async fn mocked_search_authentication_and_private_reference() {
         let (base, server) = super::super::mock_api(vec![("200 OK", serde_json::json!({"data":[{"hash":"abcdef","id":"123","fn":"Artist - Song","extension":".mp3"}]}).to_string())]).await;

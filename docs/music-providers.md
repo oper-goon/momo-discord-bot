@@ -112,8 +112,10 @@ Easynews uses `https://members.easynews.com/3.0/api/search`, Basic auth and
 against [AIOStreams's client](https://github.com/Viren070/AIOStreams/blob/main/packages/core/src/builtins/easynews-search/api.ts).
 Only standalone audio extensions are accepted: MP3, FLAC, M4A, AAC, OGG, Opus,
 WAV, AIFF and ALAC. Archives are never requested or unpacked. Download origins
-must be HTTPS under `easynews.com`; DNS pinning, redirect rejection and public
-address checks still apply. Credentials are sent only as a sensitive HTTP
+must be HTTPS under `easynews.com`. Easynews alone permits up to three manually
+validated redirects to its regional download farms, with DNS pinning and public
+address checks at every hop. All other media sources still reject redirects.
+Credentials are sent only as a sensitive HTTP
 header, retained for range resumption on that origin. Queues/playlists contain
 an Easynews search marker, never the private download URL. Playback searches
 again to avoid persisting expiring URLs. If the unofficial schema changes,
@@ -177,7 +179,24 @@ gate.
   webpki-roots RUSTSEC-2026-0381. Bans, licenses and sources pass. This feature
   adds no dependencies or advisory exceptions. Resolve the dependency gate
   before release.
-- Live account/Discord checks and a Linux Docker build have not been performed.
+- On 2026-11-24, built the integration on Ohio against its existing source
+  snapshot, authenticated Easynews and successfully resolved/probed an MP3
+  through the Rust fallback path with yt-dlp deliberately unavailable. This
+  exposed the regional redirect requirement described above. Workspace tests
+  and focused strict Clippy passed after the redirect fix.
+- Deployed to the existing Ohio `bot` service with YouTube first, Easynews
+  enabled and TorBox music disabled. The production configuration, migration-3
+  database and composed registry passed offline validation, startup reached
+  `Bot ready`, and the initial automatic restart count was zero. The other
+  Compose service was not recreated. The prior image is retained as
+  `momo-music-rollback:pre-easynews-20261124`; an online database backup at
+  `/data/backups/pre-easynews-20261124.db` passed integrity checking. Original
+  changed source files and Compose configuration are backed up under
+  `/home/goon/momo-music-source-backup-20261124` on Ohio.
+- This live probe verifies HTTP retrieval and decoder initialization, not
+  audible Discord voice playback. Discord listening/controls acceptance and
+  live TorBox music checks remain outstanding. Temporary credentials are kept
+  only in Ohio's private host environment file, never in source or this guide.
 
 Modified files are the music module's `source.rs`, `player.rs`, `commands.rs`,
 `lib.rs`, new `matching.rs` and `providers/{mod,easynews,torbox}.rs`, core
