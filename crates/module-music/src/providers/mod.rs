@@ -1,4 +1,5 @@
 pub mod easynews;
+pub mod torbox;
 
 use anyhow::{Result, anyhow, ensure};
 use serde_json::Value;
