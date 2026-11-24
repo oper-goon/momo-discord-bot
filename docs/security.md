@@ -146,3 +146,22 @@ deleted only after a successful repost; if deletion fails, Momo removes the
 new webhook message to avoid duplicates. Messages with attachments, stickers,
 or polls are not reposted. The module requires Message Content plus Discord's
 Manage Messages and Manage Webhooks permissions and is disabled by default.
+
+Media lookup sends bounded title queries only to fixed HTTPS AniList and TMDB
+API origins. It disables proxies and redirects, bounds each response to 512 KiB,
+limits total lookup time to 25 seconds and concurrent lookups to two, and never
+logs or persists queries, provider payloads, or TMDB_READ_ACCESS_TOKEN. Only
+numeric provider IDs and validated trailer IDs form external links. Provider
+HTML is stripped and Discord markdown is escaped and length-bounded. The bot
+does not fetch trailers or artwork. TMDB read tokens use Authorization headers; TMDB_API_KEY uses the provider's
+required api_key query parameter. HTTP errors are replaced with safe messages
+so credential-bearing URLs are never returned or logged. Missing credentials disable movie/TV lookup without affecting
+anime or offline startup validation. No dependencies were added to the workspace.
+
+Media cover artwork is referenced in Discord embeds, never fetched by Momo.
+Only HTTPS AniList cover URLs on s4.anilist.co and validated TMDB poster paths
+on image.tmdb.org are accepted. Search selection menus retain at most ten
+bounded result previews per session, with 64 sessions and a five-minute expiry.
+Selections are single-use and bound to the invoking user, guild, and channel;
+module activation and the originating search command's current permission policy
+are rechecked. Selected details share the normal provider concurrency limits.

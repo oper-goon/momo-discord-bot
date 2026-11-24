@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block extrahead %}
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Momokun">
+  <meta property="og:title" content="{{ (page.title ~ ' · ' if page and page.title else '') ~ config.site_name | e }}">
+  <meta property="og:description" content="{{ config.site_description | e }}">
+  <meta property="og:url" content="{{ page.canonical_url | e }}">
+  <meta name="twitter:card" content="summary">
+  {% if config.extra.branding.social %}
+  <meta property="og:image" content="{{ config.site_url }}{{ config.extra.branding.social }}">
+  {% endif %}
+{% endblock %}
+{% block content %}
+  {% if page and page.url == '' and config.extra.branding.banner %}
+  <img class="momo-banner" src="{{ config.extra.branding.banner | url }}" alt="Momokun glitch wordmark and monochrome horned mascot" width="2048" height="683" fetchpriority="high">
+  {% elif page and page.url == '' and config.extra.branding.mascot %}
+  <img class="momo-mascot" src="{{ config.extra.branding.mascot | url }}" alt="Momokun's monochrome horned mascot" width="450" height="550" fetchpriority="high">
+  {% endif %}
+  {{ super() }}
+{% endblock %}

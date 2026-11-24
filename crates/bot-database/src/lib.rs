@@ -103,6 +103,49 @@ impl Database {
         tx.commit().await?;
         Ok(())
     }
+    pub async fn module_channels(&self, guild: u64, module: &str) -> Result<Vec<String>> {
+        Ok(sqlx::query_scalar("SELECT channel_id FROM module_channels WHERE guild_id=? AND module_id=? ORDER BY channel_id")
+            .bind(guild.to_string()).bind(module).fetch_all(&self.pool).await?)
+    }
+
+    pub async fn add_module_channel(&self, guild: u64, module: &str, channel: u64) -> Result<()> {
+        sqlx::query(
+            "INSERT OR IGNORE INTO module_channels(guild_id,module_id,channel_id) VALUES(?,?,?)",
+        )
+        .bind(guild.to_string())
+        .bind(module)
+        .bind(channel.to_string())
+        .execute(&self.pool)
+        .await?;
+        Ok(())
+    }
+
+    pub async fn remove_module_channel(
+        &self,
+        guild: u64,
+        module: &str,
+        channel: u64,
+    ) -> Result<()> {
+        sqlx::query(
+            "DELETE FROM module_channels WHERE guild_id=? AND module_id=? AND channel_id=?",
+        )
+        .bind(guild.to_string())
+        .bind(module)
+        .bind(channel.to_string())
+        .execute(&self.pool)
+        .await?;
+        Ok(())
+    }
+
+    pub async fn reset_module_channels(&self, guild: u64, module: &str) -> Result<()> {
+        sqlx::query("DELETE FROM module_channels WHERE guild_id=? AND module_id=?")
+            .bind(guild.to_string())
+            .bind(module)
+            .execute(&self.pool)
+            .await?;
+        Ok(())
+    }
+
     pub async fn prefix(&self, guild: u64) -> Result<Option<(String, bool)>> {
         Ok(
             sqlx::query_as("SELECT prefix,prefix_enabled FROM guild_settings WHERE guild_id=?")
@@ -418,6 +461,26 @@ impl Database {
 mod tests {
     use super::*;
 
+    #[tokio::test]
+    async fn module_channel_allowlists_are_isolated_and_resettable() -> Result<()> {
+        let db = Database::open("sqlite::memory:", 1).await?;
+        assert!(db.module_channels(1, "media").await?.is_empty());
+        db.add_module_channel(1, "media", u64::MAX).await?;
+        db.add_module_channel(1, "media", u64::MAX).await?;
+        db.add_module_channel(1, "media", 2).await?;
+        assert_eq!(db.module_channels(1, "media").await?.len(), 2);
+        assert!(db.module_channels(2, "media").await?.is_empty());
+        assert!(db.module_channels(1, "music").await?.is_empty());
+        db.remove_module_channel(1, "media", 2).await?;
+        assert_eq!(
+            db.module_channels(1, "media").await?,
+            vec![u64::MAX.to_string()]
+        );
+        db.reset_module_channels(1, "media").await?;
+        assert!(db.module_channels(1, "media").await?.is_empty());
+        Ok(())
+    }
+
     struct TestFile(std::path::PathBuf);
 
     impl TestFile {
@@ -443,8 +506,12 @@ mod tests {
 
     async fn assert_saved_state(db: &Database, reminder: i64, bookmark: i64) -> Result<()> {
         let guild = u64::MAX;
-        assert_eq!(db.health().await?, 2);
+        assert_eq!(db.health().await?, 3);
         assert_eq!(db.module_enabled(guild, "music").await?, Some(true));
+        assert_eq!(
+            db.module_channels(guild, "music").await?,
+            vec!["2".to_owned()]
+        );
         assert_eq!(db.module_enabled(guild, "utility").await?, Some(false));
         assert_eq!(db.prefix(guild).await?, Some(("?".into(), true)));
         let rules = db.rules(guild).await?;
@@ -518,6 +585,7 @@ mod tests {
         let db = Database::open(&original.url(), 2).await?;
         let guild = u64::MAX;
         db.set_module(guild, "music", true, 3).await?;
+        db.add_module_channel(guild, "music", 2).await?;
         db.set_module(guild, "utility", false, 3).await?;
         db.set_prefix(guild, "?", true).await?;
         db.set_rule(
@@ -614,7 +682,7 @@ mod tests {
     #[tokio::test]
     async fn migrations_repositories_and_transactions() -> Result<()> {
         let db = Database::open("sqlite::memory:", 1).await?;
-        assert_eq!(db.health().await?, 2);
+        assert_eq!(db.health().await?, 3);
         assert_eq!(db.module_enabled(u64::MAX, "music").await?, None);
         db.set_module(u64::MAX, "music", true, 1).await?;
         assert_eq!(db.module_enabled(u64::MAX, "music").await?, Some(true));

@@ -27,3 +27,4 @@ module-torbox.workspace = true
 module-download.workspace = true
 module-image.workspace = true
 module-social-embeds.workspace = true
+module-media.workspace = true

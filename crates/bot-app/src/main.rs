@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 mod banner;
+mod reference;
 mod update_check;
 use anyhow::{Context, Result};
 use bot_core::{serenity, *};
@@ -17,6 +18,7 @@ fn compose(
     let mut registry = ModuleRegistry::new(vec![
         commands::module(),
         module_general::module(),
+        module_media::module(),
         module_admin::module(),
         module_moderation::module(),
         module_utility::module(),
@@ -104,6 +106,13 @@ async fn synchronize(
 async fn main() -> Result<()> {
     let startup_started = std::time::Instant::now();
     let args: Vec<_> = std::env::args().collect();
+    if let Some(index) = args
+        .iter()
+        .position(|arg| arg == "--export-command-reference")
+    {
+        let path = args.get(index + 1).context("Provide an export JSON path")?;
+        return reference::write(path);
+    }
     let config_path = args
         .windows(2)
         .find(|a| a[0] == "--config")
@@ -135,6 +144,7 @@ async fn main() -> Result<()> {
         social_embeds.clone(),
     )?;
     let mut services = ServiceRegistry::default();
+    services.insert(Arc::new(module_media::MediaService::new()?))?;
     services.insert(music)?;
     services.insert(torbox)?;
     services.insert(download)?;
@@ -298,8 +308,31 @@ mod tests {
         let social_embeds =
             Arc::new(module_social_embeds::SocialEmbedService::new(&config).unwrap());
         let (registry, commands) = compose(service, download, image, social_embeds).unwrap();
-        assert_eq!(registry.modules.len(), 10);
+        assert_eq!(registry.modules.len(), 11);
         assert!(commands.len() > 30);
+        for name in [
+            "anime",
+            "movie",
+            "tv",
+            "animesearch",
+            "moviesearch",
+            "tvsearch",
+        ] {
+            assert_eq!(registry.owner(name).unwrap(), "media");
+            let command = commands
+                .iter()
+                .find(|command| command.name == name)
+                .unwrap();
+            assert!(command.slash_action.is_some());
+            assert!(command.prefix_action.is_some());
+        }
+        assert!(
+            registry
+                .module("media")
+                .unwrap()
+                .subscriptions
+                .contains(&"media_component")
+        );
         assert_eq!(registry.owner("queue.move").unwrap(), "music");
         assert_eq!(registry.owner("module.disable").unwrap(), "core");
         assert_eq!(registry.owner("role.add").unwrap(), "admin");

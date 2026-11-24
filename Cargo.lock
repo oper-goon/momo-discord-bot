@@ -176,6 +176,7 @@ dependencies = [
  "module-download",
  "module-general",
  "module-image",
+ "module-media",
  "module-moderation",
  "module-music",
  "module-social-embeds",
@@ -2300,6 +2301,20 @@ dependencies = [
  "poise",
  "reqwest",
  "serde",
+ "serde_json",
+ "tokio",
+ "url",
+]
+
+[[package]]
+name = "module-media"
+version = "0.9.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "bot-core",
+ "poise",
+ "reqwest",
  "serde_json",
  "tokio",
  "url",

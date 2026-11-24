@@ -305,6 +305,11 @@ impl ModuleRegistry {
             }
             serenity::FullEvent::InteractionCreate {
                 interaction: serenity::Interaction::Component(component),
+            } if component.data.custom_id.starts_with("media:") => {
+                ("media_component", component.guild_id.map(|g| g.get()))
+            }
+            serenity::FullEvent::InteractionCreate {
+                interaction: serenity::Interaction::Component(component),
             } if component.data.custom_id.starts_with("image:") => {
                 ("image_component", component.guild_id.map(|g| g.get()))
             }
@@ -397,6 +402,17 @@ pub async fn command_check(ctx: Context<'_>) -> Result<bool> {
                 .enabled(&ctx.data().database, guild.get(), module)
                 .await?,
             "This module is disabled. Ask a server administrator to enable it"
+        );
+    }
+    if let Some(channels) = crate::channel_policy::blocked_channels(ctx, module).await? {
+        let destinations = channels
+            .iter()
+            .take(5)
+            .map(|id| format!("<#{id}>"))
+            .collect::<Vec<_>>()
+            .join(", ");
+        anyhow::bail!(
+            "Use {module} commands in {destinations}. See /module channels list for all allowed channels."
         );
     }
     if matches!(ctx, poise::Context::Prefix(_)) {

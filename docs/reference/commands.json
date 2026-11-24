@@ -1,0 +1,5258 @@
+{
+  "commands": [
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "command",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "command",
+            "options": [],
+            "required": false,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "List available commands, or show a command path such as queue move.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "help",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "help"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Version and service health.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "about",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "about"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Manage server modules.",
+      "dm_only": false,
+      "group": true,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "module",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "modules"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "List module activation.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "module.list",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "module_list"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "module",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "module",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Inspect a compiled module.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "module.info",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "module_info"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "module",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "module",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Enable a module for this server.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "module.enable",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "module_enable"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "module",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "module",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Disable a module and stop its server services.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "module.disable",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "module_disable"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Manage module channel allowlists (slash-only configuration).",
+      "dm_only": false,
+      "group": true,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "module.channels",
+      "prefix": false,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "module_channels"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "module",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "module",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": null,
+          "name": "channel",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "channel",
+            "options": [],
+            "required": true,
+            "type": 7
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Allow a module in a channel; the first entry restricts use elsewhere.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "module.channels.add",
+      "prefix": false,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "module_channels_add"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "module",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "module",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": null,
+          "name": "channel",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "channel",
+            "options": [],
+            "required": true,
+            "type": 7
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Remove an allowed channel; the last removal restores access everywhere.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "module.channels.remove",
+      "prefix": false,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "module_channels_remove"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "module",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "module",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Show a module's allowed channels.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "module.channels.list",
+      "prefix": false,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "module_channels_list"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "module",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "module",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Restore a module's access to all channels.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "module.channels.reset",
+      "prefix": false,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "module_channels_reset"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Manage command authorization rules.",
+      "dm_only": false,
+      "group": true,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "permissions",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "permissions"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "target",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "target",
+            "options": [],
+            "required": false,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "List server authorization rules.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "permissions.list",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "permission_list"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "target",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "target",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": null,
+          "name": "effect",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [
+              {
+                "name": "Allow",
+                "name_localizations": {},
+                "value": 0
+              },
+              {
+                "name": "Deny",
+                "name_localizations": {},
+                "value": 1
+              }
+            ],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "effect",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        },
+        {
+          "description": null,
+          "name": "subject",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "subject",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": null,
+          "name": "channel",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "channel",
+            "options": [],
+            "required": false,
+            "type": 7
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Set a rule; subject is everyone, user:ID, role:ID, or channel:ID.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "permissions.set",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "permission_set"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "target",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "target",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": null,
+          "name": "subject",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "subject",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": null,
+          "name": "channel",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "channel",
+            "options": [],
+            "required": false,
+            "type": 7
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Remove a matching rule.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "permissions.reset",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "permission_reset"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "command",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "command",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": null,
+          "name": "user",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "user",
+            "options": [],
+            "required": false,
+            "type": 6
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Explain the winning custom rule for a command.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "permissions.explain",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "permission_explain"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Configure optional prefix commands.",
+      "dm_only": false,
+      "group": true,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "prefix",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "prefix"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Show the server prefix.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "prefix.show",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "prefix_show"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "value",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "value",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Set the server prefix, up to 16 characters.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "prefix.set",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "prefix_set"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Enable server prefix commands.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "prefix.enable",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "prefix_enable"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Disable server prefix commands.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "prefix.disable",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "prefix_disable"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Configure typed server music settings.",
+      "dm_only": false,
+      "group": true,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "config",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "config"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Show effective music settings.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "config.show",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "config_show"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "key",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "key",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": null,
+          "name": "value",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "value",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Set a music key: volume, queue_limit, idle_seconds, empty_seconds, dj_role, announce.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "config.set",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "config_set"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Reset music settings to process defaults.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "config.reset",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "config_reset"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Inspect or manage roles.",
+      "dm_only": false,
+      "group": true,
+      "guild_only": true,
+      "module": "core",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "role",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "role"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "role",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "role",
+            "options": [],
+            "required": true,
+            "type": 8
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Inspect a role.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "general",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "role.info",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "role_info"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "user",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "user",
+            "options": [],
+            "required": true,
+            "type": 6
+          }
+        },
+        {
+          "description": null,
+          "name": "role",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "role",
+            "options": [],
+            "required": true,
+            "type": 8
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Add a role to a member.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "admin",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "role.add",
+      "prefix": true,
+      "required_bot_permissions": "Manage Roles",
+      "required_permissions": "Manage Roles",
+      "slash": true,
+      "source_function": "role_add"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "user",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "user",
+            "options": [],
+            "required": true,
+            "type": 6
+          }
+        },
+        {
+          "description": null,
+          "name": "role",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "role",
+            "options": [],
+            "required": true,
+            "type": 8
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Remove a role from a member.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "admin",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "role.remove",
+      "prefix": true,
+      "required_bot_permissions": "Manage Roles",
+      "required_permissions": "Manage Roles",
+      "slash": true,
+      "source_function": "role_remove"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Check whether the bot is responding.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "general",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "ping",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "ping"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "user",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "user",
+            "options": [],
+            "required": false,
+            "type": 6
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Show a user's avatar.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "general",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "avatar",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "avatar"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "User information.",
+      "dm_only": false,
+      "group": true,
+      "guild_only": false,
+      "module": "general",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "user",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "user"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "user",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "user",
+            "options": [],
+            "required": false,
+            "type": 6
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Show a user's profile and account creation time.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "general",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "user.info",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "user_info"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Server information.",
+      "dm_only": false,
+      "group": true,
+      "guild_only": true,
+      "module": "general",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "server",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "server"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Show the server name and owner.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "general",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "server.info",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "server_info"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": "Anime title",
+          "name": "query",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "Anime title",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "query",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 5.0
+      },
+      "default_member_permissions": "",
+      "description": "Look up an anime's synopsis, score, studio, genres, status, and trailer.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "media",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "anime",
+      "prefix": true,
+      "required_bot_permissions": "Embed Links",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "anime"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": "Movie title",
+          "name": "query",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "Movie title",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "query",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 5.0
+      },
+      "default_member_permissions": "",
+      "description": "Look up a movie's synopsis, score, production company, genres, status, and trailer.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "media",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "movie",
+      "prefix": true,
+      "required_bot_permissions": "Embed Links",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "movie"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": "TV show title",
+          "name": "query",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "TV show title",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "query",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 5.0
+      },
+      "default_member_permissions": "",
+      "description": "Look up a TV show's synopsis, score, production company, genres, status, and trailer.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "media",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "tv",
+      "prefix": true,
+      "required_bot_permissions": "Embed Links",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "tv"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": "Anime title",
+          "name": "query",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "Anime title",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "query",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 5.0
+      },
+      "default_member_permissions": "",
+      "description": "Search anime titles and choose from up to ten matches.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "media",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "animesearch",
+      "prefix": true,
+      "required_bot_permissions": "Embed Links",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "animesearch"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": "Movie title",
+          "name": "query",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "Movie title",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "query",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 5.0
+      },
+      "default_member_permissions": "",
+      "description": "Search movie titles and choose from up to ten matches.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "media",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "moviesearch",
+      "prefix": true,
+      "required_bot_permissions": "Embed Links",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "moviesearch"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": "TV title",
+          "name": "query",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "TV title",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "query",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 5.0
+      },
+      "default_member_permissions": "",
+      "description": "Search TV titles and choose from up to ten matches.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "media",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "tvsearch",
+      "prefix": true,
+      "required_bot_permissions": "Embed Links",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "tvsearch"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "channel",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "channel",
+            "options": [],
+            "required": true,
+            "type": 7
+          }
+        },
+        {
+          "description": null,
+          "name": "message",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "message",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Send an announcement without mass mentions.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "admin",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "announce",
+      "prefix": true,
+      "required_bot_permissions": "Send Messages",
+      "required_permissions": "Manage Guild",
+      "slash": true,
+      "source_function": "announce"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "channel",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "channel",
+            "options": [],
+            "required": true,
+            "type": 7
+          }
+        },
+        {
+          "description": null,
+          "name": "seconds",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 21600.0,
+            "min_length": null,
+            "min_value": 0.0,
+            "name": "seconds",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Set a channel's slowmode in seconds.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "admin",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "slowmode",
+      "prefix": true,
+      "required_bot_permissions": "Manage Channels",
+      "required_permissions": "Manage Channels",
+      "slash": true,
+      "source_function": "slowmode"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "user",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "user",
+            "options": [],
+            "required": true,
+            "type": 6
+          }
+        },
+        {
+          "description": null,
+          "name": "nickname",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "nickname",
+            "options": [],
+            "required": false,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Set or clear a member nickname.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "admin",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "nick",
+      "prefix": true,
+      "required_bot_permissions": "Manage Nicknames",
+      "required_permissions": "Manage Nicknames",
+      "slash": true,
+      "source_function": "nick"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "user",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "user",
+            "options": [],
+            "required": true,
+            "type": 6
+          }
+        },
+        {
+          "description": null,
+          "name": "why",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "why",
+            "options": [],
+            "required": false,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Kick a member with an audit reason.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "moderation",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "kick",
+      "prefix": true,
+      "required_bot_permissions": "Kick Members",
+      "required_permissions": "Kick Members",
+      "slash": true,
+      "source_function": "kick"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "user",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "user",
+            "options": [],
+            "required": true,
+            "type": 6
+          }
+        },
+        {
+          "description": null,
+          "name": "delete_days",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 7.0,
+            "min_length": null,
+            "min_value": 0.0,
+            "name": "delete_days",
+            "options": [],
+            "required": false,
+            "type": 4
+          }
+        },
+        {
+          "description": null,
+          "name": "why",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "why",
+            "options": [],
+            "required": false,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Ban a server member with a bounded message deletion window.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "moderation",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "ban",
+      "prefix": true,
+      "required_bot_permissions": "Ban Members",
+      "required_permissions": "Ban Members",
+      "slash": true,
+      "source_function": "ban"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "user",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "user",
+            "options": [],
+            "required": true,
+            "type": 6
+          }
+        },
+        {
+          "description": null,
+          "name": "why",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "why",
+            "options": [],
+            "required": false,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Remove a ban by user ID.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "moderation",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "unban",
+      "prefix": true,
+      "required_bot_permissions": "Ban Members",
+      "required_permissions": "Ban Members",
+      "slash": true,
+      "source_function": "unban"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "user",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "user",
+            "options": [],
+            "required": true,
+            "type": 6
+          }
+        },
+        {
+          "description": null,
+          "name": "seconds",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 2419200.0,
+            "min_length": null,
+            "min_value": 1.0,
+            "name": "seconds",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        },
+        {
+          "description": null,
+          "name": "why",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "why",
+            "options": [],
+            "required": false,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Timeout a member for up to 28 days.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "moderation",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "timeout",
+      "prefix": true,
+      "required_bot_permissions": "Moderate Members",
+      "required_permissions": "Moderate Members",
+      "slash": true,
+      "source_function": "timeout"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "user",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "user",
+            "options": [],
+            "required": true,
+            "type": 6
+          }
+        },
+        {
+          "description": null,
+          "name": "why",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "why",
+            "options": [],
+            "required": false,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Remove a member timeout.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "moderation",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "untimeout",
+      "prefix": true,
+      "required_bot_permissions": "Moderate Members",
+      "required_permissions": "Moderate Members",
+      "slash": true,
+      "source_function": "untimeout"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "count",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 100.0,
+            "min_length": null,
+            "min_value": 1.0,
+            "name": "count",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        },
+        {
+          "description": null,
+          "name": "user",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "user",
+            "options": [],
+            "required": false,
+            "type": 6
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Delete up to 100 recent messages, optionally by author.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "moderation",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "purge",
+      "prefix": true,
+      "required_bot_permissions": "Manage Messages and Read Message History",
+      "required_permissions": "Manage Messages",
+      "slash": true,
+      "source_function": "purge"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "user",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "user",
+            "options": [],
+            "required": true,
+            "type": 6
+          }
+        },
+        {
+          "description": null,
+          "name": "why",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "why",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Record a warning in the audit history.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "moderation",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "warn",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "Moderate Members",
+      "slash": true,
+      "source_function": "warn"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "user",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "user",
+            "options": [],
+            "required": true,
+            "type": 6
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "List recent warnings for a member.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "moderation",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "warnings",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "Moderate Members",
+      "slash": true,
+      "source_function": "warnings"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "number",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 9007199254740991.0,
+            "min_length": null,
+            "min_value": -9007199254740991.0,
+            "name": "number",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Inspect an audit case.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "moderation",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "case",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "Moderate Members",
+      "slash": true,
+      "source_function": "case"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "options",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "options",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Choose one option separated by a vertical bar.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "choose",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "choose"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Create a poll.",
+      "dm_only": false,
+      "group": true,
+      "guild_only": true,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "poll",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "poll"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "question",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "question",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": null,
+          "name": "options",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "options",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Create a native Discord poll with options separated by a vertical bar.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "poll.create",
+      "prefix": true,
+      "required_bot_permissions": "Send Messages",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "poll_create"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "duration",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "duration",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": null,
+          "name": "message",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "message",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 5.0
+      },
+      "default_member_permissions": "",
+      "description": "Save a reminder; duration examples: 10m, 2h, 1d.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "remind",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "remind"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "List your pending reminders.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "reminders",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "reminders"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Edit, repeat, snooze, or cancel reminders.",
+      "dm_only": false,
+      "group": true,
+      "guild_only": false,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "reminder",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "reminder"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "interval",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "interval",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": null,
+          "name": "message",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "message",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 5.0
+      },
+      "default_member_permissions": "",
+      "description": "Create a recurring reminder.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "reminder.repeat",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "reminder_repeat"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "id",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 9007199254740991.0,
+            "min_length": null,
+            "min_value": -9007199254740991.0,
+            "name": "id",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        },
+        {
+          "description": null,
+          "name": "duration",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "duration",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": null,
+          "name": "message",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "message",
+            "options": [],
+            "required": false,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Change when a reminder fires and optionally replace its message.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "reminder.edit",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "reminder_edit"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "id",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 9007199254740991.0,
+            "min_length": null,
+            "min_value": -9007199254740991.0,
+            "name": "id",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        },
+        {
+          "description": null,
+          "name": "duration",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "duration",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Move a reminder later without changing its message.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "reminder.snooze",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "reminder_snooze"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "id",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 9007199254740991.0,
+            "min_length": null,
+            "min_value": -9007199254740991.0,
+            "name": "id",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Delete one of your reminders.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "reminder.cancel",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "reminder_cancel"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Manage private message bookmarks.",
+      "dm_only": false,
+      "group": true,
+      "guild_only": false,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "bookmark",
+      "prefix": false,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "bookmark"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "List your most recent bookmarks.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "bookmark.list",
+      "prefix": false,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "bookmark_list"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "query",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "query",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Search your saved message excerpts and notes.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "bookmark.search",
+      "prefix": false,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "bookmark_search"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "id",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 9007199254740991.0,
+            "min_length": null,
+            "min_value": -9007199254740991.0,
+            "name": "id",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        },
+        {
+          "description": null,
+          "name": "note",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "note",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Add or replace a private note on a bookmark.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "bookmark.note",
+      "prefix": false,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "bookmark_note"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "id",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 9007199254740991.0,
+            "min_length": null,
+            "min_value": -9007199254740991.0,
+            "name": "id",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Delete one of your bookmarks.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "bookmark.delete",
+      "prefix": false,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "bookmark_delete"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "message",
+          "required": true,
+          "schema": null
+        }
+      ],
+      "context_menu": "Bookmark Message",
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Save this message to your private bookmarks.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "bookmark_message",
+      "prefix": false,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": false,
+      "source_function": "bookmark_message"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "message",
+          "required": true,
+          "schema": null
+        }
+      ],
+      "context_menu": "Remind Me in 1 Hour",
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Create a one-hour reminder for this message.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "remind_message",
+      "prefix": false,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": false,
+      "source_function": "remind_message"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "unix_seconds",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 9007199254740991.0,
+            "min_length": null,
+            "min_value": -9007199254740991.0,
+            "name": "unix_seconds",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Format a Unix timestamp in Discord's local time display.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": false,
+      "module": "utility",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "timestamp",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "timestamp"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "input",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "input",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 2.0
+      },
+      "default_member_permissions": "",
+      "description": "Queue a supported website, public audio URL, or search query.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "play",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "play"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Join your voice channel; DJ or Manage Guild is required to move the bot.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "join",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "join"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Stop, clear the queue, and disconnect.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "leave",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "leave"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Pause current playback.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "pause",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "pause"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Resume current playback.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "resume",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "resume"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Skip the current track or retry the retained queue.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "skip",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "skip"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Clear all playback while staying connected.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "stop",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "stop"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "seconds",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 86400.0,
+            "min_length": null,
+            "min_value": 0.0,
+            "name": "seconds",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Seek to a position in seconds if supported by the source.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "seek",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "seek"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "percent",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 200.0,
+            "min_length": null,
+            "min_value": 0.0,
+            "name": "percent",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Set playback volume from 0 to 200 percent.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "volume",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "volume"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Show current playback and queue status.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "nowplaying",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "nowplaying"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "View or edit the pending queue.",
+      "dm_only": false,
+      "group": true,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "queue",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "queue"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Show the current track and up to fifteen upcoming tracks.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "queue.show",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "queue_show"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "position",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 4294967295.0,
+            "min_length": null,
+            "min_value": 1.0,
+            "name": "position",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Remove a pending track by one-based position.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "queue.remove",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "queue_remove"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "from",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 4294967295.0,
+            "min_length": null,
+            "min_value": 1.0,
+            "name": "from",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        },
+        {
+          "description": null,
+          "name": "to",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 4294967295.0,
+            "min_length": null,
+            "min_value": 1.0,
+            "name": "to",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Move a pending track; positions start at one.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "queue.move",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "queue_move"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Clear pending tracks without stopping the current track.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "queue.clear",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "queue_clear"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "mode",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [
+              {
+                "name": "Off",
+                "name_localizations": {},
+                "value": 0
+              },
+              {
+                "name": "Track",
+                "name_localizations": {},
+                "value": 1
+              },
+              {
+                "name": "Queue",
+                "name_localizations": {},
+                "value": 2
+              }
+            ],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "mode",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Set repeat mode to off, track, or queue.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "repeat",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "repeat"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Shuffle pending tracks only.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "shuffle",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "shuffle"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Manage server-local, user-owned playlists.",
+      "dm_only": false,
+      "group": true,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "playlist",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "playlist"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "name",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "name",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Save current and pending tracks under your playlist name.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "playlist.save",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "playlist_save"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "List saved playlists and their owners.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "playlist.list",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "playlist_list"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "name",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "name",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": null,
+          "name": "owner",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "owner",
+            "options": [],
+            "required": false,
+            "type": 6
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Queue a saved playlist, optionally from another owner.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "playlist.play",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "playlist_play"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "name",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "name",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": null,
+          "name": "owner",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "owner",
+            "options": [],
+            "required": false,
+            "type": 6
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Delete a playlist you own, or administer.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "playlist.delete",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "playlist_delete"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "name",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "name",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": null,
+          "name": "from",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 4294967295.0,
+            "min_length": null,
+            "min_value": 1.0,
+            "name": "from",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        },
+        {
+          "description": null,
+          "name": "to",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 4294967295.0,
+            "min_length": null,
+            "min_value": 1.0,
+            "name": "to",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        },
+        {
+          "description": null,
+          "name": "owner",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "owner",
+            "options": [],
+            "required": false,
+            "type": 6
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Reorder a saved playlist transactionally.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "playlist.move",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "playlist_move"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "name",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "name",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": null,
+          "name": "position",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": 4294967295.0,
+            "min_length": null,
+            "min_value": 1.0,
+            "name": "position",
+            "options": [],
+            "required": true,
+            "type": 4
+          }
+        },
+        {
+          "description": null,
+          "name": "owner",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "owner",
+            "options": [],
+            "required": false,
+            "type": 6
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Remove a saved playlist entry by one-based position.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "playlist.remove",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "playlist_remove"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Inspect enabled music providers and their circuit breakers.",
+      "dm_only": false,
+      "group": true,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "music",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "music"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Show enabled providers in configured priority order.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "music.providers",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "music_providers"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Show provider availability and safe failure categories.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "music",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "music.status",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "music_status"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Resolve cached TorBox downloads and video streams.",
+      "dm_only": false,
+      "group": true,
+      "guild_only": true,
+      "module": "torbox",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "torbox",
+      "prefix": false,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "torbox"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": "A BitTorrent magnet link",
+          "name": "magnet",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A BitTorrent magnet link",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "magnet",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": "One-based file number (optional picker bypass)",
+          "name": "file_number",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "One-based file number (optional picker bypass)",
+            "max_length": null,
+            "max_value": 4294967295.0,
+            "min_length": null,
+            "min_value": 0.0,
+            "name": "file_number",
+            "options": [],
+            "required": false,
+            "type": 4
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 10.0
+      },
+      "default_member_permissions": "",
+      "description": "Generate temporary download links for files in a cached magnet.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "torbox",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "torbox.download",
+      "prefix": false,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "download"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": "A BitTorrent magnet link",
+          "name": "magnet",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A BitTorrent magnet link",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "magnet",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        },
+        {
+          "description": "One-based video file number (optional picker bypass)",
+          "name": "file_number",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "One-based video file number (optional picker bypass)",
+            "max_length": null,
+            "max_value": 4294967295.0,
+            "min_length": null,
+            "min_value": 0.0,
+            "name": "file_number",
+            "options": [],
+            "required": false,
+            "type": 4
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 10.0
+      },
+      "default_member_permissions": "",
+      "description": "Create a TorBox stream for a video in a cached magnet.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "torbox",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "torbox.stream",
+      "prefix": false,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "stream"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": "Public video URL; omit to inspect a reply or recent messages",
+          "name": "url",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "Public video URL; omit to inspect a reply or recent messages",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "url",
+            "options": [],
+            "required": false,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 15.0
+      },
+      "default_member_permissions": "",
+      "description": "Download and reupload media from a URL, replied message, or recent chat.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "download",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "download",
+      "prefix": true,
+      "required_bot_permissions": "Send Messages and Attach Files",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "download"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "message",
+          "required": true,
+          "schema": null
+        }
+      ],
+      "context_menu": "Download Media",
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 15.0
+      },
+      "default_member_permissions": "",
+      "description": "Download media from this message.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "download",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "download_message",
+      "prefix": false,
+      "required_bot_permissions": "Send Messages and Attach Files",
+      "required_permissions": "",
+      "slash": false,
+      "source_function": "download_message"
+    },
+    {
+      "aliases": [],
+      "arguments": [],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Inspect or convert bounded media.",
+      "dm_only": false,
+      "group": true,
+      "guild_only": true,
+      "module": "download",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "media",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "media"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "url",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "url",
+            "options": [],
+            "required": false,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Show container, duration, size, and stream information.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "download",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "media.info",
+      "prefix": true,
+      "required_bot_permissions": "",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "media_info"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "url",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "url",
+            "options": [],
+            "required": false,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 15.0
+      },
+      "default_member_permissions": "",
+      "description": "Extract MP3 audio from a video.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "download",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "media.audio",
+      "prefix": true,
+      "required_bot_permissions": "Send Messages and Attach Files",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "media_audio"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "url",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "url",
+            "options": [],
+            "required": false,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 15.0
+      },
+      "default_member_permissions": "",
+      "description": "Re-encode a video to a smaller MP4.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "download",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "media.compress",
+      "prefix": true,
+      "required_bot_permissions": "Send Messages and Attach Files",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "media_compress"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "url",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "url",
+            "options": [],
+            "required": false,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 15.0
+      },
+      "default_member_permissions": "",
+      "description": "Convert the first ten seconds of a video to a GIF.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "download",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "media.gif",
+      "prefix": true,
+      "required_bot_permissions": "Send Messages and Attach Files",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "media_gif"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "url",
+          "required": false,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "A slash command parameter",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "url",
+            "options": [],
+            "required": false,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 15.0
+      },
+      "default_member_permissions": "",
+      "description": "Extract a JPEG thumbnail from a video.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "download",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "media.thumbnail",
+      "prefix": true,
+      "required_bot_permissions": "Send Messages and Attach Files",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "media_thumbnail"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": "What to search for",
+          "name": "query",
+          "required": true,
+          "schema": {
+            "autocomplete": false,
+            "channel_types": [],
+            "choices": [],
+            "description": "What to search for",
+            "max_length": null,
+            "max_value": null,
+            "min_length": null,
+            "min_value": null,
+            "name": "query",
+            "options": [],
+            "required": true,
+            "type": 3
+          }
+        }
+      ],
+      "context_menu": null,
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 5.0
+      },
+      "default_member_permissions": "",
+      "description": "Search the web for images using DuckDuckGo with a Bing fallback.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "image",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "image",
+      "prefix": true,
+      "required_bot_permissions": "Embed Links",
+      "required_permissions": "",
+      "slash": true,
+      "source_function": "image"
+    },
+    {
+      "aliases": [],
+      "arguments": [
+        {
+          "description": null,
+          "name": "message",
+          "required": true,
+          "schema": null
+        }
+      ],
+      "context_menu": "Repair Social Embed",
+      "cooldowns_seconds": {
+        "channel": null,
+        "global": null,
+        "guild": null,
+        "member": null,
+        "user": 1.0
+      },
+      "default_member_permissions": "",
+      "description": "Repair supported social links in this message.",
+      "dm_only": false,
+      "group": false,
+      "guild_only": true,
+      "module": "social-embeds",
+      "nsfw_only": false,
+      "owners_only": false,
+      "path": "repair_embed",
+      "prefix": false,
+      "required_bot_permissions": "Manage Messages and Manage Webhooks",
+      "required_permissions": "",
+      "slash": false,
+      "source_function": "repair_embed"
+    }
+  ],
+  "config_defaults": {
+    "commands": {
+      "development_guilds": [],
+      "mode": "none"
+    },
+    "database": {
+      "max_connections": 5,
+      "url": "sqlite://data/bot.db"
+    },
+    "discord": {
+      "administrator_bypass": true,
+      "default_prefix": "!",
+      "owners": [],
+      "prefix_commands": false
+    },
+    "download": {
+      "absolute_max_bytes": 524288000,
+      "allowed_domains": [
+        "youtube.com",
+        "youtu.be",
+        "tiktok.com",
+        "x.com",
+        "twitter.com",
+        "reddit.com",
+        "v.redd.it",
+        "instagram.com"
+      ],
+      "max_duration_seconds": 900,
+      "scan_messages": 25,
+      "timeout_seconds": 180,
+      "yt_dlp_path": "yt-dlp"
+    },
+    "logging": {
+      "format": "pretty"
+    },
+    "music": {
+      "default_volume_percent": 100,
+      "easynews_enabled": false,
+      "empty_channel_disconnect_seconds": 120,
+      "idle_disconnect_seconds": 300,
+      "match_min_confidence": 0.85,
+      "max_playlist_import": 100,
+      "max_queue_length": 500,
+      "provider_cooldown_seconds": 120,
+      "provider_priority": [
+        "youtube",
+        "easynews",
+        "torbox"
+      ],
+      "provider_timeout_seconds": 30,
+      "resolver_timeout_seconds": 30,
+      "torbox_cached_only": true,
+      "torbox_enabled": false,
+      "yt_dlp_path": "yt-dlp"
+    },
+    "social_embeds": {
+      "instagram_providers": [
+        "kkinstagram.com",
+        "oginstagram.com",
+        "d.oginstagram.com",
+        "vxinstagram.com"
+      ],
+      "probe_timeout_seconds": 6
+    }
+  },
+  "modules": [
+    {
+      "default_enabled": true,
+      "id": "core",
+      "intents": "GatewayIntents(0)",
+      "name": "Core",
+      "required": true,
+      "subscriptions": []
+    },
+    {
+      "default_enabled": true,
+      "id": "general",
+      "intents": "GatewayIntents(0)",
+      "name": "General",
+      "required": false,
+      "subscriptions": []
+    },
+    {
+      "default_enabled": false,
+      "id": "media",
+      "intents": "GatewayIntents(0)",
+      "name": "Media",
+      "required": false,
+      "subscriptions": [
+        "media_component"
+      ]
+    },
+    {
+      "default_enabled": false,
+      "id": "admin",
+      "intents": "GatewayIntents(0)",
+      "name": "Administration",
+      "required": false,
+      "subscriptions": []
+    },
+    {
+      "default_enabled": false,
+      "id": "moderation",
+      "intents": "GatewayIntents(0)",
+      "name": "Moderation",
+      "required": false,
+      "subscriptions": []
+    },
+    {
+      "default_enabled": true,
+      "id": "utility",
+      "intents": "GatewayIntents(0)",
+      "name": "Utility",
+      "required": false,
+      "subscriptions": []
+    },
+    {
+      "default_enabled": false,
+      "id": "music",
+      "intents": "GatewayIntents(128)",
+      "name": "Music",
+      "required": false,
+      "subscriptions": [
+        "voice_state",
+        "music_component"
+      ]
+    },
+    {
+      "default_enabled": false,
+      "id": "torbox",
+      "intents": "GatewayIntents(0)",
+      "name": "TorBox",
+      "required": false,
+      "subscriptions": [
+        "torbox_component"
+      ]
+    },
+    {
+      "default_enabled": false,
+      "id": "download",
+      "intents": "GatewayIntents(0)",
+      "name": "Download",
+      "required": false,
+      "subscriptions": []
+    },
+    {
+      "default_enabled": false,
+      "id": "image",
+      "intents": "GatewayIntents(0)",
+      "name": "Image Search",
+      "required": false,
+      "subscriptions": [
+        "image_component"
+      ]
+    },
+    {
+      "default_enabled": false,
+      "id": "social-embeds",
+      "intents": "GatewayIntents(33280)",
+      "name": "Social Embeds",
+      "required": false,
+      "subscriptions": [
+        "message"
+      ]
+    }
+  ],
+  "schema_version": 1
+}

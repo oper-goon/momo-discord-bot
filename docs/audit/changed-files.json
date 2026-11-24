@@ -1,0 +1,370 @@
+[
+  {
+    "path": ".dockerignore",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": ".env.example",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": ".github/dependabot.yml",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": ".github/ISSUE_TEMPLATE/config.yml",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": ".github/pull_request_template.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": ".github/workflows/docs.yml",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": ".gitignore",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "AGENTS.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "Cargo.lock",
+    "classification": "inherited development unchanged"
+  },
+  {
+    "path": "Cargo.toml",
+    "classification": "inherited development unchanged"
+  },
+  {
+    "path": "CHANGELOG.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "CODE_OF_CONDUCT.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "compose.yaml",
+    "classification": "inherited development plus release edits"
+  },
+  {
+    "path": "CONTRIBUTING.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "crates/bot-app/Cargo.toml",
+    "classification": "inherited development unchanged"
+  },
+  {
+    "path": "crates/bot-app/src/main.rs",
+    "classification": "inherited development plus release edits"
+  },
+  {
+    "path": "crates/bot-app/src/reference.rs",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "crates/bot-core/src/channel_policy.rs",
+    "classification": "inherited development unchanged"
+  },
+  {
+    "path": "crates/bot-core/src/commands.rs",
+    "classification": "inherited development unchanged"
+  },
+  {
+    "path": "crates/bot-core/src/lib.rs",
+    "classification": "inherited development unchanged"
+  },
+  {
+    "path": "crates/bot-core/src/runtime.rs",
+    "classification": "inherited development unchanged"
+  },
+  {
+    "path": "crates/bot-database/src/lib.rs",
+    "classification": "inherited development unchanged"
+  },
+  {
+    "path": "crates/module-media/Cargo.toml",
+    "classification": "inherited development unchanged"
+  },
+  {
+    "path": "crates/module-media/src/lib.rs",
+    "classification": "inherited development unchanged"
+  },
+  {
+    "path": "crates/module-media/src/search.rs",
+    "classification": "inherited development unchanged"
+  },
+  {
+    "path": "Dockerfile",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/audit/changed-files.json",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/audit/dependency-inventory.json",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/audit/implementation-plan.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/audit/input-snapshot.json",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/audit/public-release-review.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/audit/release-report.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/audit/scan_history.py",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/commands.md",
+    "classification": "inherited development unchanged"
+  },
+  {
+    "path": "docs/development/architecture.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/development/documentation.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/development/index.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/development/releases.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/features/admin.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/features/core.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/features/download.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/features/general.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/features/image.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/features/index.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/features/media.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/features/moderation.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/features/music.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/features/social-embeds.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/features/torbox.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/features/utility.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/getting-started/index.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/index.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/music-providers.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/overrides/main.html",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/project/branding.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/project/changelog.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/project/contributing.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/project/credits.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/project/faq.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/project/license.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/project/security.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/project/status.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/reference/commands.json",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/reference/commands.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/reference/configuration.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/reference/coverage.json",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/release-status.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/security.md",
+    "classification": "inherited development unchanged"
+  },
+  {
+    "path": "docs/self-hosting/images.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/self-hosting/index.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/self-hosting/native.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/self-hosting/operations.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/stylesheets/momokun.css",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "docs/troubleshooting.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "examples/compose.prebuilt.yaml.example",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "licenses/Apache-2.0.txt",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "licenses/PolyForm-Noncommercial-1.0.0.txt",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "migrations/0003_module_channels.sql",
+    "classification": "inherited development unchanged"
+  },
+  {
+    "path": "mkdocs.yml",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "README.md",
+    "classification": "inherited development plus release edits"
+  },
+  {
+    "path": "requirements-docs.txt",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "scripts/check_docs.py",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "scripts/docs_hooks.py",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "scripts/generate_reference.py",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "scripts/setup.py",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "scripts/test_check_docs.py",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "scripts/test_generate_reference.py",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "scripts/test_setup.py",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "SECURITY.md",
+    "classification": "release addition or edit"
+  },
+  {
+    "path": "THIRD_PARTY_NOTICES.md",
+    "classification": "release addition or edit"
+  }
+]

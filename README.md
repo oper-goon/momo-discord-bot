@@ -1,159 +1,86 @@
-# Momo Discord Bot
+# Momokun
 
-Momo is a self-hosted, modular Discord bot written in Rust. It provides
-per-server module activation, deterministic command policy, moderation audit
-cases, persistent reminders, utility commands, and isolated music players with
-saved playlists.
+A modular Discord bot you host yourself. Music queues and playlists, moderation
+cases, reminders, private bookmarks, media tools, and per-server feature controls.
+Written in Rust; internal crate and executable names still use Momo.
 
-This repository currently identifies as `0.9.0`. The implementation follows
-the checked-in [technical specification](docs/specification.md). Live Discord
-acceptance testing is still required before calling it a production `1.0.0`
-release; see [release status](docs/release-status.md).
+[![CI](https://github.com/oper-goon/momo-discord-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/oper-goon/momo-discord-bot/actions/workflows/ci.yml)
+[![Documentation](https://github.com/oper-goon/momo-discord-bot/actions/workflows/docs.yml/badge.svg)](https://github.com/oper-goon/momo-discord-bot/actions/workflows/docs.yml)
 
-## First-time setup
+**0.9.0, pre-1.0.** Public release preparation is in progress. Live Discord,
+container, dependency-security, artwork, and licensing acceptance remain release
+gates. No public website or container image was published by this initiative.
 
-1. Create a Discord application and bot in the Developer Portal. Copy the bot
-   token. Enable the Message Content intent for Social Embeds (and for optional
-   prefix commands).
-2. Copy `config/example.toml` to `config/config.toml` and add a private test
-   guild ID under `commands.development_guilds`.
-3. Set `DISCORD_TOKEN` in your environment. Never put it in the TOML file.
-   Set `TORBOX_API_KEY` as well when using the optional TorBox module.
-4. Start with Docker Compose:
+[Documentation sources](docs/index.md) ·
+[Documentation website (after approval)](https://oper-goon.github.io/momo-discord-bot/) ·
+[Commands](docs/reference/commands.md) · [Troubleshooting](docs/troubleshooting.md)
 
-   ```powershell
-   $env:DISCORD_TOKEN = 'your-token'
-   docker compose up --build -d
-   ```
+## Self-host with Docker Compose
 
-   The SQLite database lives in the named `momo-data` volume. The deployment
-   includes pinned yt-dlp and Deno releases, yt-dlp's matching EJS challenge
-   scripts, an internal PO-token provider for YouTube playback requests, and
-   FFmpeg for bounded video/audio merges.
-
-On a Linux deployment host, keep the token in a private `.env` file and make
-the bind-mounted configuration readable by the container's unprivileged user:
+Install Git, Docker and its Compose plugin. Create your Discord application and
+bot, enable Message Content Intent, and invite it with `bot` and
+`applications.commands` scopes. Follow [Getting started](docs/getting-started/index.md)
+for permissions and account setup.
 
 ```sh
-umask 077
-printf 'DISCORD_TOKEN=%s\n' "$DISCORD_TOKEN" > .env
-chmod 600 .env
-chmod 644 config/config.toml
-docker compose up --build -d
+git clone https://github.com/oper-goon/momo-discord-bot.git
+cd momo-discord-bot
+cp .env.example .env
+cp config/example.toml config/config.toml
 ```
 
-The TOML configuration contains no secrets. Docker Compose reads `.env`
-automatically; do not commit that file.
-
-With text logging, startup displays the Ghost Silver Momo logo, version,
-creator credit, bot name, server count reported by Discord at startup, loaded
-module count, top-level command count, command registration mode, prefix command
-status, startup duration, update availability, and ready status in a bordered
-panel. Terminal output uses the logo's silver shading;
-redirected output is plain text. Set `NO_COLOR` to disable terminal colors.
-JSON logging omits the banner to keep output machine-readable; the ready log
-includes startup duration and update status. Duration measures time from process
-initialization through Discord readiness, command synchronization, and the release
-check. The release check runs alongside synchronization and has a three-second
-total timeout. It checks the latest public stable GitHub release of
-`oper-goon/momo-discord-bot`, using numeric `vMAJOR.MINOR.PATCH` or
-`MAJOR.MINOR.PATCH` tags. Offline, rate-limited, malformed, or inaccessible release
-responses show `Unavailable`; a 404 shows `Unavailable (no public release)`.
-The offline `--check` command does not contact GitHub. Update checks only report
-availability and do not install anything.
-Private repository releases are inaccessible to this unauthenticated check;
-they show `Unavailable (no public release)` until releases are publicly readable.
-
-For local Windows development, `scripts/dev.ps1` uses the workspace-local Rust,
-LLVM, CMake, and Ninja tools installed during project creation:
-
-```powershell
-Copy-Item config/example.toml config/config.toml
-$env:DISCORD_TOKEN = 'your-token'
-./scripts/dev.ps1 run -p bot-app -- --config config/config.toml
-```
-
-Use `commands.mode = "guild"` while developing. Change to `global` for a
-production release. Command synchronization uses a content hash and runs only
-when the command tree changes; pass `--sync-commands` to force it.
-
-## Commands and modules
-
-The complete syntax and description for every command is in the
-[command reference](docs/commands.md).
-
-| Module ID | Enabled by default | Purpose |
-| --- | --- | --- |
-| `core` | Required | Help, module activation, permissions, prefixes, and server configuration |
-| `general` | Yes | Ping, avatars, and user, server, and role information |
-| `utility` | Yes | Choices, polls, recurring reminders, private bookmarks, and timestamps |
-| `admin` | No | Announcements, slowmode, nicknames, and role assignment |
-| `moderation` | No | Kick, ban, timeout, purge, warnings, and auditable cases |
-| `music` | No | Voice playback, queues, controls, repeat, shuffle, and saved playlists |
-| `download` | No | Bounded downloads, media inspection, conversion, and Discord reuploads |
-| `image` | No | Safe image search with interactive result navigation |
-| `torbox` | No | Interactive cached-magnet file picking, temporary links, and subscription-gated video streams |
-| `social-embeds` | No | Webhook-based embeds for X, Instagram, TikTok, Reddit, Threads, and Bluesky |
-
-Core is always enabled. Optional modules can be changed per server with
-`/module enable <module>` and `/module disable <module>`. Download is disabled
-by default because it consumes host and Discord bandwidth. Slash downloads
-honor Discord's reported attachment limit; prefix downloads use the server
-boost tier limit because message commands do not carry an attachment-limit
-field.
-Right-click or long-press a message and open **Apps** for `Bookmark Message`,
-`Remind Me in 1 Hour`, `Download Media`, and `Repair Social Embed`. Each action
-still follows its module's enablement and permission policy; bookmark results
-and reminder confirmations are private.
-Image Search is disabled by default because DuckDuckGo does not publish a
-supported image-search API. It requires no account or API key; repeated
-identical queries are cached briefly to reduce upstream traffic. Each search
-keeps up to ten results available for five minutes of button navigation.
-Social Embeds is disabled by default. It requires the Message Content intent
-and the View Channel, Manage Messages, Manage Webhooks, and Send Messages
-permissions. Enable it per server with `/module enable social-embeds`. Momo
-labels webhook names with `via Momo`, disables mentions in reposted content,
-and deletes the original only after the corrected webhook post succeeds. Each
-repost starts with links to the untouched original URL, corrected provider URL,
-and the content creator's platform profile when the source exposes that author.
-Messages containing uploads, stickers, or polls are left untouched. Add the
-standalone word `fxignore`, wrap a link in `< >`, or put it in inline/fenced
-code to opt out. Instagram providers are tried in configured order and must
-return usable Open Graph metadata before Momo replaces the original message.
-TorBox also requires `TORBOX_API_KEY`. Restrict it to trusted roles with
-`/permissions` before enabling it because users share the operator's TorBox
-account and rate limits.
-
-## Operations
-
-Run all quality gates before merging:
-
-```powershell
-./scripts/dev.ps1 fmt --all -- --check
-./scripts/dev.ps1 clippy --locked --workspace --all-targets --all-features -- -D warnings
-./scripts/dev.ps1 test --locked --workspace
-./scripts/dev.ps1 deny check
-./scripts/dev.ps1 run --locked -p bot-app -- --check
-```
-
-Back up a running database with SQLite's online backup command:
+Edit `.env` to replace the Discord token placeholder. Keep it private (`chmod 600
+.env` on Linux/macOS). Edit `config/config.toml`: use `commands.mode = "global"`,
+or set your private server ID in `commands.development_guilds` for guild mode.
+The unchanged example intentionally requires this choice.
 
 ```sh
-sqlite3 /data/bot.db ".backup '/data/backups/bot-$(date +%Y%m%d-%H%M%S).db'"
+docker compose build
+docker compose run --rm --no-deps bot --config /app/config/config.toml --check
+docker compose up -d
+docker compose logs --tail 100 bot
 ```
 
-Restore only while the bot is stopped, keeping the original database until the
-restored file passes `bot-app --check`. Schema migrations run before Discord
-connects. Review [security policy](docs/security.md) before dependency changes.
+Confirm `Bot ready`, then try `/ping` and `/help`. SQLite initializes automatically
+in the `momo-data` volume. Never run `docker compose down -v` against data you need.
+Only Discord credentials are required for core features. Public prebuilt images
+are pending approval and validation; source builds are the current method.
 
-## Revision policy
+[Detailed Docker guide and PowerShell steps](docs/self-hosting/index.md) ·
+[Backups and updates](docs/self-hosting/operations.md) ·
+[Configuration](docs/reference/configuration.md)
 
-- `main` stays releasable and is protected by CI.
-- Versions follow semantic versioning in the workspace `Cargo.toml`.
-- User-visible changes go in `CHANGELOG.md`.
-- Database changes are forward-only numbered files in `migrations/`.
-- Dependency updates arrive weekly through Dependabot and must pass cargo-deny.
-- Release tags use `vMAJOR.MINOR.PATCH` after the acceptance checklist passes.
+## Features
 
-The repository contains no Discord token, local configuration, database, or
-signed media URLs. Those paths are ignored by Git.
+- Core: per-server modules, command policies, channel restrictions and prefixes.
+- General and Utility: profiles/server info, polls, choices, timestamps,
+  persistent reminders and private bookmarks. Enabled by default with Core.
+- Optional: administration, moderation, music, downloads/conversions, anime/film/TV
+  lookup, image search, TorBox cached files/streams and social embed repair.
+- Music: YouTube, SoundCloud, Bandcamp and public HTTP audio; optional paid
+  Easynews and TorBox accounts. yt-dlp, Deno and FFmpeg ship in the Docker image.
+- Media lookup: credential-free AniList; TMDB movie/TV lookup requires a token/key.
+  Image search needs no key but relies on unsupported upstream interfaces.
+
+Enable optional modules with `/module enable <id>`. Credentials do not enable
+modules automatically. See [all feature guides](docs/features/index.md) for
+limitations, subscription requirements, permissions and privacy behavior.
+
+## Contribute and maintain
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md), [architecture](docs/development/architecture.md)
+and [development instructions](docs/development/index.md). Documentation builds
+locally with Python 3.12 and `requirements-docs.txt`; see the
+[preview and validation guide](docs/development/documentation.md).
+
+Report vulnerabilities privately using [SECURITY.md](SECURITY.md). Keep tokens,
+private configurations, logs, database backups and signed media URLs out of issues.
+
+## License and identity
+
+The existing [MIT license](LICENSE) remains in effect. The requested PolyForm
+Noncommercial 1.0.0 source-available licensing model is **prepared for review,
+not applied**: contribution rights and third-party obligations need confirmation.
+See the [licensing review](docs/project/license.md) and [third-party notices](THIRD_PARTY_NOTICES.md).
+No CLA has been imposed. Branding rights are separate; approved mascot/logo files
+were unavailable in this snapshot. See [branding guidelines](docs/project/branding.md).

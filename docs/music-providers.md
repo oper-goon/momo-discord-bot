@@ -82,14 +82,14 @@ it from music discovery/resolution. Other feature modules are unaffected.
 For Docker, put credentials in the host's private `.env` and use:
 
 ```sh
-docker compose -f compose.yaml -f compose.music-providers.yaml up -d --build bot
-docker compose -f compose.yaml -f compose.music-providers.yaml ps
-docker compose -f compose.yaml -f compose.music-providers.yaml logs --tail=50 bot
+docker compose up -d --build bot
+docker compose ps
+docker compose logs --tail=50 bot
 ```
 
-The optional override forwards provider settings without changing the existing
-Compose file. It inherits the existing `TORBOX_API_KEY`, volume, network and
-restart settings. Verify `Bot ready` and restart counts; never recreate the
+The main Compose file forwards the private `.env` file, including optional provider
+credentials and overrides. The older `compose.music-providers.yaml` override is
+retained for compatibility but is not required for this setup. Verify `Bot ready` and restart counts; never recreate the
 data volume. Provider enablement is global configuration; the Music module
 still requires per-guild enablement and existing command permissions.
 
@@ -205,24 +205,24 @@ gate.
   webpki-roots RUSTSEC-2026-0381. Bans, licenses and sources pass. This feature
   adds no dependencies or advisory exceptions. Resolve the dependency gate
   before release.
-- On 2026-11-24, built the integration on Ohio against its existing source
+- On 2026-11-24, built the integration on the deployment host against its existing source
   snapshot, authenticated Easynews and successfully resolved/probed an MP3
   through the Rust fallback path with yt-dlp deliberately unavailable. This
   exposed the regional redirect requirement described above. Workspace tests
   and focused strict Clippy passed after the redirect fix.
-- Deployed to the existing Ohio `bot` service with YouTube first, Easynews
+- Deployed to the existing the deployment host `bot` service with YouTube first, Easynews
   enabled and TorBox music disabled. The production configuration, migration-3
   database and composed registry passed offline validation, startup reached
   `Bot ready`, and the initial automatic restart count was zero. The other
   Compose service was not recreated. The prior image is retained as
-  `momo-music-rollback:pre-easynews-20261124`; an online database backup at
-  `/data/backups/pre-easynews-20261124.db` passed integrity checking. Original
+  `<private-rollback-image>`; an online database backup at
+  `/data/backups/<private-backup>.db` passed integrity checking. Original
   changed source files and Compose configuration are backed up under
-  `/home/goon/momo-music-source-backup-20261124` on Ohio.
+  `<private-source-backup-directory>` on the deployment host.
 - This live probe verifies HTTP retrieval and decoder initialization, not
   audible Discord voice playback. Discord listening/controls acceptance and
   live TorBox music checks remain outstanding. Temporary credentials are kept
-  only in Ohio's private host environment file, never in source or this guide.
+  only in the deployment host's private host environment file, never in source or this guide.
 
 Modified files are the music module's `source.rs`, `player.rs`, `commands.rs`,
 `lib.rs`, new `matching.rs` and `providers/{mod,easynews,torbox}.rs`, core

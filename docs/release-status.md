@@ -42,7 +42,7 @@ Current revision: `0.9.0` pre-1.0 feature release.
 - Created an online SQLite backup and passed `PRAGMA integrity_check`
 - Performed a graceful container restart, reconnected to Discord, and retained
   the migration state
-- On 2026-10-14, restarted only the bot container on `ohio-server`, verified
+- On 2026-10-14, restarted only the bot container on the deployment host, verified
   `Bot ready` and zero automatic restarts, and received operator confirmation
   that a bookmark created before the restart remained in Discord afterward.
   Live playlist/settings persistence and other record types still require
@@ -51,13 +51,13 @@ Current revision: `0.9.0` pre-1.0 feature release.
   the bot was stopped and confirming delivery after startup. This verifies
   live overdue-reminder persistence and recovery; it does not establish
   recurring-reminder or failed-delivery retry acceptance.
-- On 2026-10-14, created an online SQLite backup on `ohio-server` and restored
+- On 2026-10-14, created an online SQLite backup on the deployment host and restored
   it into a separate temporary database while the live bot remained running.
   SQLite integrity and foreign-key checks passed; all snapshot contents matched
   the restored copy, including bookmark #1's operator-created restore-test note.
   The deployed Momo binary's offline `--check` passed against the restored copy,
   and its contents still matched afterward. The backup is retained in the data
-  volume at `/data/backups/restore-test-20261014-4b5a5bcbd2af47e495dfcf2db178507a.db`.
+  volume at `/data/backups/<private-backup>.db`.
 
 ## Required before v1.0.0
 

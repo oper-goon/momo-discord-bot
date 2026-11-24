@@ -1,0 +1,17 @@
+{
+  "registry_entries": 112,
+  "leaf_commands": 96,
+  "command_groups": 16,
+  "slash_entries": 108,
+  "prefix_entries": 95,
+  "context_actions": 4,
+  "modules": 11,
+  "config_fields": 31,
+  "environment_variables": 18,
+  "documented_registry_entries": 112,
+  "documented_config_fields": 31,
+  "limitations": [
+    "Registry cannot express target-dependent hierarchy, DJ checks, omitted-argument behavior or all string parser rules. Curated feature guides and argument notes document those behaviors.",
+    "Coverage checks compare the fresh registry export in CI; Python alone cannot verify runtime composition without that export."
+  ]
+}

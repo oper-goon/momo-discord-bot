@@ -5,6 +5,23 @@ Versioning and Keep a Changelog conventions.
 
 ## [Unreleased]
 
+### Added
+
+- Material for MkDocs documentation with beginner Docker setup, module guides,
+  generated command/configuration references, operations and developer guides.
+- Strict documentation CI, offline registry export, stale-reference and built-site
+  link/asset checks, with approval-gated GitHub Pages deployment.
+- Private configuration setup helper, contribution/security policies and issue
+  templates, third-party notices and a proposed noncommercial licensing review.
+
+### Changed
+
+- Docker Compose forwards optional integration settings from the private env
+  file, uses safer container defaults, bounds logs and rejects missing config
+  mounts. Existing database volume and non-root image behavior are retained.
+- README directs new users to installation and reference guides. Public-site
+  publication, approved artwork and licensing transition remain pending review.
+
 ## [0.9.0] - 2026-10-14
 
 ### Security

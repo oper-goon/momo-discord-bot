@@ -135,6 +135,25 @@ external response.
   backports. Do not replace or edit them casually; their invariants are tested
   in `bot-app` and documented in `vendor/README.md` and `docs/security.md`.
 
+## Documentation maintenance (mandatory)
+
+Every change to a command, feature, integration, configuration/environment
+variable, dependency, deployment/storage requirement, or user-facing behavior
+must update the corresponding public documentation in the same change. Use
+`docs/features/`, `docs/reference/`, `docs/self-hosting/`, and the development
+guides. Update CHANGELOG.md for user-visible release changes. Never describe
+experimental or unverified behavior as released and tested.
+
+Command metadata comes from the offline composed registry exporter, not a live
+Discord bot. Regenerate references using the documented workflow in
+`docs/development/documentation.md`; CI must fail on stale generated files.
+Configuration references must cover every supported field/environment variable.
+Run the strict MkDocs build and generated-site link checker before integration.
+Keep local audit reports, credentials, production details, and unreviewed artwork
+out of the Pages artifact. Approved mascot/logo assets require provenance and
+owner approval; do not invent replacements. Public Pages/image publication and
+license changes remain subject to the user's explicit approval.
+
 ## Verification
 
 Prefer the workspace wrapper on Windows because it configures the checked-in
