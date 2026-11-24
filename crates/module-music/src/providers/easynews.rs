@@ -1,7 +1,7 @@
 //! Unofficial Easynews members 3.0 web interface; see docs/music-providers.md.
 use super::{client, json};
 use crate::{
-    matching::{Metadata, audio_extension, confidence},
+    matching::{Metadata, audio_extension, audio_filename_title, confidence},
     source::{AudioSourceProvider, PlayableTrack, pinned_client, stream_authenticated},
 };
 use anyhow::{Result, anyhow, ensure};
@@ -158,7 +158,8 @@ impl Easynews {
                 .and_then(Value::as_f64)
                 .filter(|s| s.is_finite() && *s > 0.0)
                 .map(|s| (s * 1000.0) as u64);
-            let mut metadata = Metadata::from_title(filename, duration);
+            let normalized_title = audio_filename_title(filename);
+            let mut metadata = Metadata::from_title(&normalized_title, duration);
             metadata.format = Some(ext.into());
             metadata.bitrate = row.get("bps").and_then(Value::as_u64);
             let score = confidence(wanted, &metadata);
@@ -181,7 +182,7 @@ impl Easynews {
                 TrackRef {
                     provider: "easynews".into(),
                     canonical_url: url.into(),
-                    title: filename.chars().take(200).collect(),
+                    title: normalized_title.chars().take(200).collect(),
                     duration_ms: duration,
                     requested_by: user.to_string(),
                 },

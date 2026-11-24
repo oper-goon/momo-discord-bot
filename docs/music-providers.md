@@ -147,6 +147,12 @@ album differences. Accuracy sorts before bitrate. The matching model accepts
 optional album, format and bitrate metadata, but existing persisted `TrackRef`
 does not carry album or separate artist fields. These are inferred conservatively
 from `Artist - Title`; account filenames with insufficient identity are skipped.
+Easynews filenames are normalized before matching: leading track numbers and
+trailing eight-character mixed hexadecimal release checksums are removed, and
+underscore separators are rendered as spaces. The original filename is retained
+only for constructing the private file request. Official music-video labels are
+presentation metadata and do not reduce a match score. Regression coverage
+includes `Conway the machine sarah` and its numbered/checksummed audio files.
 Missing duration/album tags cannot prove recording identity. This is metadata
 matching, not audio fingerprint verification.
 

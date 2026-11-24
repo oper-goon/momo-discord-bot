@@ -22,12 +22,51 @@ pub fn audio_extension(name: &str) -> Option<&str> {
 
 fn words(text: &str) -> HashSet<String> {
     text.to_lowercase()
+        .replace("official music video", "")
+        .replace("official lyric video", "")
         .split(|c: char| !c.is_alphanumeric())
         .filter(|s| {
             !s.is_empty() && !["official", "audio", "video", "lyrics", "hd", "hq"].contains(s)
         })
         .map(str::to_owned)
         .collect()
+}
+
+/// Strip release bookkeeping from standalone audio filenames, preserving identity/version words.
+pub fn audio_filename_title(filename: &str) -> String {
+    let mut title = filename.trim();
+    if let Some(rest) = title.strip_prefix('(').or_else(|| title.strip_prefix('['))
+        && let Some(end) = rest.find([')', ']'])
+        && (1..=3).contains(&end)
+        && rest[..end].bytes().all(|b| b.is_ascii_digit())
+    {
+        title = rest[end + 1..].trim_start();
+    }
+    let digits = title.bytes().take_while(u8::is_ascii_digit).count();
+    if (1..=3).contains(&digits) {
+        let rest = &title[digits..];
+        if let Some(rest) = rest
+            .strip_prefix('-')
+            .or_else(|| rest.strip_prefix('.'))
+            .or_else(|| rest.strip_prefix('_'))
+        {
+            title = rest.trim_start();
+        }
+    }
+    if let Some((name, suffix)) = title.rsplit_once('-')
+        && suffix.len() == 8
+        && suffix.bytes().all(|b| b.is_ascii_hexdigit())
+        && suffix.bytes().any(|b| b.is_ascii_digit())
+        && suffix.bytes().any(|b| b.is_ascii_alphabetic())
+    {
+        title = name;
+    }
+    title
+        .replace('_', " ")
+        .replace('-', " - ")
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ")
 }
 
 impl Metadata {
@@ -118,6 +157,56 @@ pub fn confidence(wanted: &Metadata, candidate: &Metadata) -> f64 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn conway_sarah_query_matches_official_video_and_release_filenames() {
+        let wanted = Metadata::from_title("Conway the machine sarah", None);
+        assert_eq!(
+            confidence(
+                &wanted,
+                &Metadata::from_title(
+                    "Conway the Machine - Sarah! (Official Music Video)",
+                    Some(218_000)
+                )
+            ),
+            1.0
+        );
+        for name in [
+            "04-conway_the_machine-sarah-0f64f40b",
+            "04-conway_the_machine-sarah-888b1943",
+            "04-conway_the_machine-sarah-9754c7d6",
+        ] {
+            let title = audio_filename_title(name);
+            assert_eq!(title, "conway the machine - sarah");
+            assert_eq!(
+                confidence(&wanted, &Metadata::from_title(&title, Some(211_000))),
+                1.0
+            );
+        }
+        assert!(
+            confidence(
+                &wanted,
+                &Metadata::from_title(
+                    &audio_filename_title("04-conway_the_machine-sarah-remix-0f64f40b"),
+                    None
+                )
+            ) < 0.85
+        );
+        assert!(
+            confidence(
+                &wanted,
+                &Metadata::from_title(
+                    &audio_filename_title("04-conway_the_machine-sarah-two-0f64f40b"),
+                    None
+                )
+            ) < 0.85
+        );
+        assert_eq!(audio_filename_title("1979"), "1979");
+        assert_eq!(audio_filename_title("99 Problems"), "99 Problems");
+        assert_eq!(
+            audio_filename_title("(08) [Rick Astley] - Never Gonna Give You Up"),
+            "[Rick Astley] - Never Gonna Give You Up"
+        );
+    }
     #[test]
     fn matching_rejects_versions_artist_and_duration_mismatches() {
         let wanted = Metadata::from_title("Artist - Song", Some(200_000));
