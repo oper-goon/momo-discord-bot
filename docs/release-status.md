@@ -33,6 +33,15 @@ production deployment was performed as part of this dependency follow-up.
 - The TorBox interactive picker is covered by unit and registry tests; its
   Discord select-menu rendering still requires live acceptance testing.
 
+## Release-candidate Linux validation
+
+Private CI passed on 2026-11-24 for commit
+`07e3e558edbd52dfa7b57a3666c287a3ca6a2920`: strict code gates, backend and
+mixed-version DAVE tests, image build, Compose configuration, offline startup,
+persistent-volume reopening, SQLite backup/restore and integrity. The container
+checks used no credentials or network and touched only a disposable CI volume.
+They do not establish live gateway/voice behavior or active-audio shutdown.
+
 ## Verified for v0.2.0
 
 - Exercised the TorBox cached-download flow against the live service, including
@@ -69,7 +78,7 @@ production deployment was performed as part of this dependency follow-up.
   and its contents still matched afterward. The backup is retained in the data
   volume at `/data/backups/<private-backup>.db`.
 
-## Required before v1.0.0
+## Historical detailed live-test checklist
 
 - The operator reports successful live music lifecycle testing. Detailed
   supported-provider playback/seek coverage still needs to be recorded.
@@ -86,4 +95,6 @@ production deployment was performed as part of this dependency follow-up.
 - Run an ARM64 build/test if ARM64 deployment is planned; the security backport
   has a source regression test but its assembly was not executed on this host.
 
-The bot should remain in a private test guild until this checklist is complete.
+The owner's later months-long acceptance above supersedes requiring a repeat of
+this entire checklist. For the new dependency build, record a focused live voice
+smoke test before production release. ARM64 remains unsupported until tested.

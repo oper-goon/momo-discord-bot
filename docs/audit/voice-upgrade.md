@@ -55,7 +55,7 @@ strict workspace Clippy, formatting, offline startup, fresh generated registry,
 three generic-api-key matches in root/new-reference/legacy-reference Cargo.lock.
 Triage verified all three contain only libcrux dependency-name strings, not
 credentials. No real credential was identified in this follow-up scope. Linux
-CI and Docker build results remain pending the branch push.
+CI and Docker validation subsequently passed; see the hosted evidence below.
 
 Linux follow-up identified compiler drift: the prior check used Rust 1.100,
 while local validation used 1.98.1. Poise 0.7's generated optional rest-argument
@@ -69,8 +69,13 @@ The CI container job now validates example-only Compose configuration, starts
 the image twice on a unique test volume without a token or network, backs up
 and restores SQLite into a separate file, checks integrity, and runs offline
 startup on the restored file. It cleans up only the CI-created volume. These
-checks have been implemented but require the new Linux run before being marked
-passed. No production storage is accessed.
+checks all passed on Linux x86_64 for commit
+`07e3e558edbd52dfa7b57a3666c287a3ca6a2920`. The complete Linux code-check job
+also passed, including strict Clippy, workspace/backend tests, mixed-version
+interoperability, offline startup and cargo-deny. The documentation workflow
+passed separately with deployment skipped. See the [private CI run](https://github.com/oper-goon/momo-discord-bot/actions/runs/45471740197).
+No production storage was accessed. This is offline startup and recovery
+validation, not a Discord gateway connection or active-audio shutdown test.
 
 The owner reports months of live Discord testing and accepts that as the
 running bot's 1.0 acceptance. This new dependency build has not been deployed.

@@ -8,7 +8,8 @@ vulnerability without an advisory waiver. All four cargo-deny gates pass.
 Original/upgraded DAVE peers interoperate in both hosting directions, including
 member-add epoch rotation and twelve encrypted packet roundtrips. See
 [voice upgrade](voice-upgrade.md). Earlier findings/counts below describe the
-historical audit. Container/runtime distribution validation remains pending;
+historical audit. Linux container/offline recovery validation passed; complete
+third-party distribution validation remains pending;
 no public release, merge or production deployment occurred.
 
 Follow-up: the owner approved the documentation and generated branding. The
@@ -23,19 +24,16 @@ transition is applied in this candidate, including Cargo/container metadata;
 the prior MIT notice is retained and third-party terms are unchanged. No CLA
 was imposed. Complete binary/image notices remain a release requirement.
 
-Final follow-up checks passed: 81 workspace tests (two live tests ignored),
-strict Clippy, formatting, offline startup, registry freshness, 13 Python tests,
-strict documentation build and 2,883 internal links/assets. The advisory gate
-still reports four failures; license, source and ban checks pass.
-
-Latest dependency pass: patched bundled SQLite removes a fifth original finding.
-Chrono and pin-utils have narrowly documented maintenance exceptions, due for
-review by 2026-12-20. The active DAVE crypto-bigint vulnerability remains
-unwaived and blocks the advisory gate. The owner reports months of live Discord
-testing and accepts the running bot for a planned 1.0 release; a repeat of the
-entire historical live acceptance program is not required. This does not claim
-the new dependency build has been deployed. See the remediation record for
-specific upstream constraints and test results.
+Latest validation: 83 workspace tests (two pre-existing live tests ignored),
+five backend tests, strict Clippy, formatting, offline startup, registry freshness,
+13 Python tests, strict documentation build and 2,884 internal links/assets pass.
+All four cargo-deny gates pass. Linux CI also passed its complete code-check job
+for `07e3e558edbd52dfa7b57a3666c287a3ca6a2920`, along with its isolated Docker
+build/start/storage/backup/restore job. [Hosted CI evidence](https://github.com/oper-goon/momo-discord-bot/actions/runs/45471740197).
+The separate documentation workflow passed with public deployment skipped.
+Chrono and pin-utils have maintenance exceptions due for review by 2026-12-20.
+The owner accepts months of live testing as acceptance of the running bot for
+planned 1.0; this upgraded dependency build has not been deployed.
 
 ## Executive summary
 
@@ -81,7 +79,7 @@ end of implementation and still match the source snapshot.
 | Documentation framework | Implemented and tested | Pinned direct/transitive Python requirements, Material search, tabs, code copy/highlighting, Mermaid, mobile navigation and table of contents |
 | Feature documentation | Completed | Eleven implemented modules, setup, accounts, examples, restrictions, limits and common problems |
 | Commands/configuration | Generated and checked | Offline composed-registry exporter; freshness and coverage gates |
-| Docker preparation | Implemented, runtime test pending | Existing multi-stage/non-root image retained; Compose security/logging/configuration improvements and setup helper |
+| Docker preparation | Implemented, isolated Linux validation passed | Existing multi-stage/non-root image retained; Compose security/logging/configuration improvements and setup helper |
 | Visual theme | Implemented, owner approved | Monochrome responsive theme, hero/cards, focus and reduced-motion support; three generated branding derivatives integrated from supplied references |
 | Pages | Configured, deployment disabled | Official Actions artifact/deploy workflow; PR validation; publication gated by repository variable and default branch |
 | Community | Completed, contact setup pending | README, contribution/security/conduct policies, issue and pull-request templates, branding/credits/license summaries |
@@ -163,13 +161,16 @@ Compose adds init, capability dropping, no-new-privileges, bounded bot logs,
 complete private env forwarding and fail-fast read-only configuration mounts.
 It retains the private token-helper service, no host ports and 20-second shutdown
 grace. The image includes OCI source/version/revision/license metadata and an
-initial notice bundle. It remains MIT-labeled until licensing is approved.
+initial notice bundle. First-party OCI metadata now identifies the approved
+PolyForm license; third-party terms are unchanged.
 
-**Not newly tested:** Docker is unavailable here. The revised Compose build/start,
-volume recovery instructions and container runtime must pass an isolated Linux
-x86_64 test before release. ARM64 is unverified. No measured hardware minimum is
-claimed. There is no application liveness health endpoint, so no misleading
-database-writing health check was added.
+**Isolated Linux x86_64 validation passed:** image build, example Compose
+configuration, two offline startups on the same disposable volume, SQLite
+backup/restore, integrity check and startup from the restored database. No token
+or network was used. Live Discord startup, Compose service lifecycle and shutdown
+during active playback were not exercised by this job. ARM64 is unverified. No
+measured hardware minimum is claimed. There is no application liveness health
+endpoint, so no database-writing health check was added.
 
 ## Container images
 
@@ -264,17 +265,17 @@ See `public-release-review.md` for the redacted evidence and limits.
 | --- | --- |
 | Rust formatting | Passed |
 | Workspace Clippy, all targets/features, warnings denied | Passed; existing vendored ringbuf dependency emits a nonfatal lifetime-style warning |
-| Workspace tests | 81 passed, 2 pre-existing live image-search tests ignored |
+| Workspace tests | 83 passed, 2 pre-existing live image-search tests ignored; five additional backend tests passed |
 | Offline application check | Passed with SQLite in memory; no Discord login |
 | Offline registry export and fresh snapshot comparison | Passed |
 | Python setup/link/reference regression tests | 13 passed |
 | Strict MkDocs build | Passed |
-| Internal HTML links, fragments and assets | 2,812 checks passed |
+| Internal HTML links, fragments and assets | 2,884 checks passed |
 | Desktop/mobile/search/Mermaid | Inspected locally; limits above |
-| cargo-deny | Failed advisory gate; bans/licenses/sources passed |
-| Docker build/start and isolated restore | Not run: Docker unavailable |
+| cargo-deny | All four gates passed; two maintenance exceptions have dated reviews |
+| Docker build/start and isolated restore | Passed Linux x86_64 CI; no credentials/network; Compose configuration validated |
 | Live Discord/provider acceptance | Not run in this initiative |
-| GitHub Actions execution of new workflow | Pending reviewed integration; local checks do not certify hosted execution |
+| GitHub Actions execution | Linux code, Docker and documentation jobs passed on the private branch; Pages deployment skipped |
 
 Material's installed release announces critical/security support ending May 5,
 2027. Review framework support before that date while maintaining the requested
@@ -289,11 +290,13 @@ online checking is supplied separately from the deterministic internal-link gate
 - [x] Docker/source/prebuilt-plan, storage, updates and backups documented.
 - [x] Community files, notices, licensing candidate and maintenance rules prepared.
 - [x] Pages deployment configured without publication or VPS changes.
-- [ ] Remediate or specifically review the eight dependency advisory failures.
-- [ ] Test revised Docker build/start, graceful shutdown and recovery in isolation.
-- [ ] Complete live Discord/voice/provider permission and interaction acceptance.
-- [ ] Integrate approved original art and record credit/redistribution rights.
-- [ ] Complete copyright/contribution review and approve any license transition.
+- [x] Remediate all six vulnerability/unsoundness findings; document two maintenance exceptions.
+- [x] Test revised Docker image build, offline start, storage and recovery in isolation.
+- [ ] Confirm active-audio shutdown in the upgraded build's focused voice smoke test.
+- [x] Record owner-reported months of live acceptance for the running bot.
+- [ ] Perform focused voice acceptance of the upgraded dependency build.
+- [x] Integrate three approved derived branding assets and record owner-confirmed rights.
+- [x] Record owner-confirmed first-party rights and apply the approved PolyForm transition, preserving prior MIT grants.
 - [ ] Complete binary/image third-party attribution/source obligations.
 - [ ] Decide whether historical infrastructure disclosures can become public.
 - [ ] Configure private reporting/contact routes and GitHub release protections.
@@ -302,3 +305,6 @@ online checking is supplied separately from the deterministic internal-link gate
 
 The accompanying changed-file inventory distinguishes inherited files from release
 edits. Review the concrete candidate before approving any publication step.
+
+Distribution follow-up: [notice collection assessment](distribution-notices.md)
+records the remaining exact-image attribution/source work and its limits.

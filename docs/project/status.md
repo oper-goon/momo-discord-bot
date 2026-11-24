@@ -10,7 +10,6 @@ A refreshed cargo-deny run on 2026-11-24 identified eight findings. Compatible
 updates cleared all six vulnerability/unsoundness findings. Two maintenance-only
 findings have dated, documented exceptions. The advisory, license, source and
 ban gates now pass for the candidate dependency graph.
-Dependency bans, licenses and sources passed.
 
 | Package | Advisory |
 | --- | --- |
@@ -26,8 +25,11 @@ obligations; a green dependency scan alone would not validate their source patch
 
 ## Acceptance still needed
 
-- An isolated build/start of the revised Docker deployment and backup/restore
-  commands. Docker was unavailable in the documentation implementation environment.
+- A focused live voice smoke test of the upgraded dependency build, including
+  reconnect and shutdown during playback. Linux x86_64 CI passed the revised
+  image build, Compose configuration, offline startup, persistent storage,
+  SQLite backup/restore and integrity checks. These used disposable storage
+  without credentials or network access.
 - The owner confirmed months of live Discord testing and acceptance for 1.0
   on 2026-11-24. This is operator-reported acceptance of the running bot;
   newly changed dependency binaries have not been deployed by this initiative.
