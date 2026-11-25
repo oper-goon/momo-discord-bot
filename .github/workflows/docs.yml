@@ -36,7 +36,7 @@ jobs:
       - run: python scripts/check_docs.py
       - name: Upload Pages artifact after release approval
         if: github.event_name != 'pull_request' && github.ref_name == github.event.repository.default_branch && vars.PAGES_ENABLED == 'true'
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: site
   deploy:
