@@ -18,11 +18,11 @@ needs specification-level detail.
 
 1. Start with this file and the relevant crate.
 2. Read `README.md` for setup, commands, operations, and release policy.
-3. Read `docs/specification.md` only for behavioral contracts or ambiguous
-   product requirements. Use its table of contents/search; do not load it all.
+3. Read `docs/development/architecture.md` and the relevant feature guide for
+   behavior and architecture; verify ambiguous requirements against source.
 4. Read `docs/security.md` before dependency, network, media, secret, or
    trust-boundary changes.
-5. Read `docs/release-status.md` for known validation gaps.
+5. Read `docs/project/status.md` for supported deployment scope and limitations.
 
 Use `rg`/`rg --files` to locate code. Do not scan `target/`, `.tools/`, or the
 crate registry unless checking a dependency API.
@@ -194,3 +194,15 @@ CI (`.github/workflows/ci.yml`) runs formatting, workspace Clippy/tests,
   successful startup logs `Bot ready`.
 - Do not delete/recreate the data volume or restore a database unless the user
   explicitly requests it and a verified backup exists.
+
+
+## Public repository hygiene
+
+Keep personal review reports, deployment inventories, host-specific test scripts,
+raw logs, screenshots of private interfaces, database snapshots and scratch
+exports outside Git. Use ignored `.cache/` for disposable local work; keep private
+maintenance records outside the checkout. Do not add audit reports or conversation
+transcripts to public documentation. Preserve useful automated tests, CI tooling,
+required license notices and non-sensitive contributor documentation. Removing
+tracked material does not remove earlier Git history; history rewriting needs
+explicit owner approval.

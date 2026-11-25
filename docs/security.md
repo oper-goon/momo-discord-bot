@@ -17,7 +17,8 @@ Poise's chrono feature is retained because existing picker sessions use its
 feature-gated `Context::id`. Two maintenance-only exceptions are reviewed below.
 The coordinated voice-backend upgrade replaces crypto-bigint 0.5.5 with patched
 0.7.11; the advisory gate passes without a vulnerability exception.
-See `docs/audit/dependency-remediation.md` for the full dependency record.
+The dependency decisions and review deadlines below are the maintained public
+record; private release-review reports are not required for installation.
 
 - `chrono` 0.4.45 remains through Poise/Serenity timestamps and Songbird 0.6.1 →
   serde-aux defaults. Removing Poise's feature was compile-tested and rejected

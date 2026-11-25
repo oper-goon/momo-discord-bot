@@ -20,3 +20,8 @@
 !.env.example
 *.pem
 *.key
+
+# Personal maintenance/review material must stay outside the public tree.
+/private-maintenance/
+/docs/audit/
+/REVIEW.md
