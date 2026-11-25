@@ -2621,7 +2621,7 @@ dependencies = [
  "bot-database",
  "futures-util",
  "poise",
- "rand 0.9.5",
+ "rand 0.10.3",
  "reqwest",
  "serde",
  "serde_json",
@@ -2670,7 +2670,7 @@ dependencies = [
  "bot-core",
  "bot-database",
  "poise",
- "rand 0.9.5",
+ "rand 0.10.3",
  "serenity",
  "tokio",
 ]
