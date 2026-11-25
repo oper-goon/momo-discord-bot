@@ -5,13 +5,16 @@ exclude = [
     "vendor/libcrux-chacha20poly1305",
     "vendor/libcrux-secrets",
     "vendor/ringbuf",
+    "vendor/davey",
+    "vendor/openmls_basic_credential",
+    "vendor/openmls_rust_crypto",
 ]
 
 [workspace.package]
 version = "0.9.0"
 edition = "2024"
-rust-version = "1.88"
-license = "MIT"
+rust-version = "1.94"
+license = "PolyForm-Noncommercial-1.0.0"
 
 [workspace.dependencies]
 anyhow = "1"
@@ -37,6 +40,7 @@ symphonia = { version = "0.5", features = ["all"] }
 bot-module-api = { version = "0.9.0", path = "crates/bot-module-api" }
 bot-database = { version = "0.9.0", path = "crates/bot-database" }
 bot-core = { version = "0.9.0", path = "crates/bot-core" }
+module-media = { version = "0.9.0", path = "crates/module-media" }
 module-general = { version = "0.9.0", path = "crates/module-general" }
 module-admin = { version = "0.9.0", path = "crates/module-admin" }
 module-moderation = { version = "0.9.0", path = "crates/module-moderation" }
@@ -55,15 +59,14 @@ lto = "thin"
 strip = true
 
 [patch.crates-io]
-# Backport the upstream overlong-output-buffer panic fix while HPKE pins 0.0.7.
-# See vendor/README.md for exact provenance, scope, and the regression guard.
-libcrux-chacha20poly1305 = { path = "vendor/libcrux-chacha20poly1305" }
-# Backport the upstream AArch64 selector mask fix to the API-compatible release.
-# See vendor/README.md for exact provenance and the four-line patch.
-libcrux-secrets = { path = "vendor/libcrux-secrets" }
 # Backport ringbuf's panic-safe consumer removal while Songbird requires 0.4.
 # See vendor/README.md for provenance, scope, and removal conditions.
 ringbuf = { path = "vendor/ringbuf" }
+# Keep the existing DAVE/OpenMLS APIs while using patched P-256/HPKE backends.
+# See vendor/README.md for provenance, interoperability tests and removal criteria.
+davey = { path = "vendor/davey" }
+openmls_basic_credential = { path = "vendor/openmls_basic_credential" }
+openmls_rust_crypto = { path = "vendor/openmls_rust_crypto" }
 
 
 

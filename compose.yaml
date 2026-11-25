@@ -1,21 +1,38 @@
 services:
   bot:
     build: .
+    init: true
     restart: unless-stopped
     depends_on:
       - pot-provider
+    # Compose .env interpolation alone does not forward optional provider settings.
+    # This private file is also passed into the container; never commit it.
+    env_file: .env
     environment:
-      DISCORD_TOKEN: ${DISCORD_TOKEN:?Set DISCORD_TOKEN in your shell or private .env file}
-      TORBOX_API_KEY: ${TORBOX_API_KEY:-}
+      DISCORD_TOKEN: ${DISCORD_TOKEN:?Set DISCORD_TOKEN in your private .env file}
       DATABASE_URL: sqlite:///data/bot.db
-      RUST_LOG: info,serenity=warn,songbird=warn,sqlx=warn
+      RUST_LOG: ${RUST_LOG:-info,serenity=warn,songbird=warn,sqlx=warn}
     command: ["--config", "/app/config/config.toml"]
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     volumes:
       - momo-data:/data
-      - ./config/config.toml:/app/config/config.toml:ro
+      - type: bind
+        source: ./config/config.toml
+        target: /app/config/config.toml
+        read_only: true
+        bind:
+          create_host_path: false
     stop_grace_period: 20s
   pot-provider:
-    image: brainicism/bgutil-ytdlp-pot-provider:2.0.0-deno
+    image: brainicism/bgutil-ytdlp-pot-provider:2.0.2-deno
     init: true
     logging:
       driver: none

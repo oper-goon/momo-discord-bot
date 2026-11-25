@@ -22,6 +22,10 @@ Core is required and always enabled.
 | `/module info <module>` | Show a module's version and health. |
 | `/module enable <module>` | Enable an optional module; requires Manage Server. |
 | `/module disable <module>` | Disable an optional module; requires Manage Server. |
+| `/module channels add <module> <channel>` | Restrict a module to allowed channels; requires Manage Server. |
+| `/module channels remove <module> <channel>` | Remove an allowed channel; the last removal restores access everywhere. |
+| `/module channels list <module>` | Show allowed channels; requires Manage Server. |
+| `/module channels reset <module>` | Restore access everywhere; requires Manage Server. |
 | `/permissions list [target]` | List custom command or module permission rules. |
 | `/permissions set <target> <effect> <subject>` | Add an allow or deny rule; requires Manage Server. |
 | `/permissions reset <target> <subject>` | Remove a custom rule; requires Manage Server. |
@@ -204,3 +208,37 @@ context-menu actions when their module is enabled:
 | `Remind Me in 1 Hour` | Utility | Create a one-hour reminder pointing back to the message. |
 | `Download Media` | Download | Download and reupload supported media from the selected message. |
 | `Repair Social Embed` | Social Embeds | Manually retry supported social links; other users' messages require Manage Messages. |
+
+## Media (`media`)
+
+Enable with `/module enable media`. Supports `/anime <query>`, `/movie <query>`,
+and `/tv <query>`, or `!anime Cowboy Bebop`, `!movie The Matrix`, and
+`!tv Breaking Bad` when `!` is the configured prefix and Message Content is enabled.
+Returns the provider-ranked best match with synopsis, score, studio/production
+company, genres, status, and an available trailer. Missing metadata is marked
+unavailable. Scores use AniList’s /100 and TMDB’s /10 scales.
+
+Anime uses AniList without credentials. Movies and TV require the operator to
+set `TMDB_READ_ACCESS_TOKEN` to a TMDB API Read Access Token in the environment
+or private Compose `.env` file; never put it in TOML or Git. Obtain it from
+https://www.themoviedb.org/settings/api. AniList filters adult titles; TMDB
+search excludes adult results. Provider classification does not guarantee
+suitability for every audience. Searches have a five-second per-user cooldown
+and at most two concurrent requests. Slash responses are ephemeral; prefix
+responses are visible in the channel. Queries are sent to the chosen provider.
+
+Provider documentation: [AniList](https://docs.anilist.co/guide/graphql/) and
+[TMDB](https://developer.themoviedb.org/docs/getting-started).
+
+Alternatively set TMDB_API_KEY to a TMDB v3 API key. A read access token takes precedence.
+
+All media results include a provider cover/poster when available. Missing artwork
+does not prevent a lookup. Use `/animesearch <query>`, `/moviesearch <query>`, or
+`/tvsearch <query>` (also `!animesearch Naruto`, `!moviesearch Dune`, and
+`!tvsearch The Office`) to choose from up to ten matches. Menus show titles and
+years, with a preview of the first match. Each menu is owned by its invoker,
+expires after five minutes, and permits one selection. The selected full result
+is sent privately, including when the original search used a prefix command.
+Run the search again to choose another title. Current module activation and
+permission policy are checked again when selecting. Search menus are kept only
+in memory, with at most 64 active menus; a restart expires them all.

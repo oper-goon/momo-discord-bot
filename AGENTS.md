@@ -134,6 +134,30 @@ external response.
 - `vendor/libcrux-secrets` and `vendor/ringbuf` contain intentional security
   backports. Do not replace or edit them casually; their invariants are tested
   in `bot-app` and documented in `vendor/README.md` and `docs/security.md`.
+- `vendor/davey`, `vendor/openmls_basic_credential`, and
+  `vendor/openmls_rust_crypto` adapt existing DAVE/OpenMLS APIs to patched
+  upstream P-256/HPKE releases. Preserve key formats and protocol behavior;
+  never edit cryptographic arithmetic locally. Run their package tests and
+  mixed-version interoperability checks when changing these adapters.
+
+## Documentation maintenance (mandatory)
+
+Every change to a command, feature, integration, configuration/environment
+variable, dependency, deployment/storage requirement, or user-facing behavior
+must update the corresponding public documentation in the same change. Use
+`docs/features/`, `docs/reference/`, `docs/self-hosting/`, and the development
+guides. Update CHANGELOG.md for user-visible release changes. Never describe
+experimental or unverified behavior as released and tested.
+
+Command metadata comes from the offline composed registry exporter, not a live
+Discord bot. Regenerate references using the documented workflow in
+`docs/development/documentation.md`; CI must fail on stale generated files.
+Configuration references must cover every supported field/environment variable.
+Run the strict MkDocs build and generated-site link checker before integration.
+Keep local audit reports, credentials, production details, and unreviewed artwork
+out of the Pages artifact. Approved mascot/logo assets require provenance and
+owner approval; do not invent replacements. Public Pages/image publication and
+license changes remain subject to the user's explicit approval.
 
 ## Verification
 

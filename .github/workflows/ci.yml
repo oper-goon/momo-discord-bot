@@ -4,6 +4,10 @@ on:
   pull_request:
 permissions:
   contents: read
+concurrency:
+  # Keep a requested source-acquisition run alive while ordinary review changes land.
+  group: ci-${{ github.ref }}${{ contains(github.event.head_commit.message, '[collect-source]') && format('-source-{0}', github.sha) || '' }}
+  cancel-in-progress: true
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -11,17 +15,120 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
+          toolchain: '1.98.1'
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
       - run: sudo apt-get update && sudo apt-get install -y cmake pkg-config libopus-dev libssl-dev
       - run: cargo fmt --check
       - run: cargo clippy --locked --workspace --all-targets --all-features -- -D warnings
       - run: cargo test --locked --workspace
+      - name: Test adapted voice backends and offline DAVE handshake
+        run: cargo test --locked -p davey -p openmls_rust_crypto -p openmls_basic_credential
+      - name: Check original and upgraded DAVE wire interoperability
+        env:
+          CARGO_TARGET_DIR: ${{ github.workspace }}/target
+        run: |
+          cargo build --locked --manifest-path tests/voice-interop/new/Cargo.toml
+          cargo build --locked --manifest-path tests/voice-interop/legacy/Cargo.toml
+          python3 tests/voice-interop/check_interop.py --new target/debug/dave-interop-new --old target/debug/dave-interop-old
       - run: cargo run --locked -p bot-app -- --check
       - uses: EmbarkStudios/cargo-deny-action@v2
   container:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: docker build -t momo:test .
-
+      - run: docker build --build-arg REVISION=${{ github.sha }} -t momo:test .
+      - name: Extract private distribution evidence
+        run: |
+          mkdir -p outputs/distribution
+          container=$(docker create momo:test)
+          docker cp "$container:/usr/share/doc/momokun/." outputs/distribution/
+          docker rm "$container"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: distribution-evidence-${{ github.run_id }}
+          path: outputs/distribution
+          retention-days: 7
+          if-no-files-found: error
+      - name: Validate standalone Compose configuration
+        run: |
+          cp .env.example .env
+          cp config/example.toml config/config.toml
+          # Configuration validation only: never start Compose with the placeholder token.
+          docker compose config --quiet
+      - name: Check offline startup, persistent storage, backup and restore
+        env:
+          MOMO_TEST_VOLUME: momo-ci-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          docker volume create "$MOMO_TEST_VOLUME"
+          # No token, external network, published port or production volume is used.
+          docker run --rm --network none \
+            --volume "$MOMO_TEST_VOLUME:/data" \
+            --env DATABASE_URL=sqlite:///data/bot.db \
+            momo:test --check
+          docker run --rm --network none \
+            --volume "$MOMO_TEST_VOLUME:/data" \
+            --env DATABASE_URL=sqlite:///data/bot.db \
+            momo:test --check
+          docker run --rm --network none \
+            --volume "$MOMO_TEST_VOLUME:/data" \
+            --entrypoint sqlite3 momo:test /data/bot.db ".backup '/data/backup.db'"
+          docker run --rm --network none \
+            --volume "$MOMO_TEST_VOLUME:/data" \
+            --entrypoint sqlite3 momo:test /data/restored.db ".restore '/data/backup.db'"
+          integrity=$(docker run --rm --network none \
+            --volume "$MOMO_TEST_VOLUME:/data" \
+            --entrypoint sqlite3 momo:test /data/restored.db 'PRAGMA integrity_check;')
+          test "$integrity" = "ok"
+          docker run --rm --network none \
+            --volume "$MOMO_TEST_VOLUME:/data" \
+            --env DATABASE_URL=sqlite:///data/restored.db \
+            momo:test --check
+      - name: Remove isolated smoke-test volume
+        if: always()
+        env:
+          MOMO_TEST_VOLUME: momo-ci-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          if docker volume inspect "$MOMO_TEST_VOLUME" >/dev/null 2>&1; then
+            docker volume rm "$MOMO_TEST_VOLUME"
+          fi
+      # Opt-in private evidence collection; normal PR/build checks stay small.
+      - name: Collect exact runtime source materials
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[collect-source]')
+        timeout-minutes: 90
+        run: |
+          mkdir -p outputs/runtime-sources
+          docker run --rm --user 0 --entrypoint /bin/sh \
+            --mount "type=bind,source=$PWD/scripts,target=/audit,readonly" \
+            --mount "type=bind,source=$PWD/outputs/runtime-sources,target=/source-output" \
+            momo:test -ec '
+              sed -i "s/^Types: deb$/Types: deb deb-src/" /etc/apt/sources.list.d/debian.sources
+              apt-get update
+              python3 /audit/collect_distribution_sources.py \
+                --inventory /usr/share/doc/momokun/image-notices/inventory.json \
+                --output /source-output
+            '
+      - name: Retain private runtime source evidence
+        if: always() && github.event_name == 'push' && contains(github.event.head_commit.message, '[collect-source]')
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-source-evidence-${{ github.run_id }}
+          path: outputs/runtime-sources
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: error
+      - name: Collect exact Deno dependency evidence
+        if: always() && github.event_name == 'push' && contains(github.event.head_commit.message, '[collect-source]')
+        timeout-minutes: 45
+        run: |
+          python3 scripts/collect_deno_notices.py --cache /tmp/momo-deno-source-cache \
+            --output outputs/deno-evidence --all-rust --native-dependencies --native-sources
+      - name: Retain private Deno source and notice evidence
+        if: always() && github.event_name == 'push' && contains(github.event.head_commit.message, '[collect-source]')
+        uses: actions/upload-artifact@v4
+        with:
+          name: deno-source-evidence-${{ github.run_id }}
+          path: outputs/deno-evidence
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: error

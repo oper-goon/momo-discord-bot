@@ -2,6 +2,22 @@
 
 Current revision: `0.9.0` pre-1.0 feature release.
 
+## Operator acceptance for 1.0
+
+On 2026-11-24 the owner confirmed months of live Discord testing and confidence
+in a 1.0 release. This is accepted as operator-reported live acceptance of the
+running bot; repeating the whole historical live-test program is not a release
+requirement. It does not mean every individual scenario below was separately
+observed or that the newly updated dependency build has been deployed.
+Dependency/security and packaging checks remain separate release gates. No
+permanent production upgrade was performed. A later explicitly authorized
+20-minute trial reached readiness and automatically restored the original image.
+The first window supplied no audible result. A second expressly approved
+window passed operator-observed direct-YouTube audio, pause/resume, skip,
+clean active-audio shutdown and audio after restart. Restored-copy backup
+validation and original readiness passed. A partial-title search issue found
+in that window has a separate local regression fix, not yet live-tested.
+
 ## Verified locally
 
 - Workspace format check
@@ -23,6 +39,15 @@ Current revision: `0.9.0` pre-1.0 feature release.
 - The TorBox interactive picker is covered by unit and registry tests; its
   Discord select-menu rendering still requires live acceptance testing.
 
+## Release-candidate Linux validation
+
+Private CI passed on 2026-11-24 for commit
+`07e3e558edbd52dfa7b57a3666c287a3ca6a2920`: strict code gates, backend and
+mixed-version DAVE tests, image build, Compose configuration, offline startup,
+persistent-volume reopening, SQLite backup/restore and integrity. The container
+checks used no credentials or network and touched only a disposable CI volume.
+They do not establish live gateway/voice behavior or active-audio shutdown.
+
 ## Verified for v0.2.0
 
 - Exercised the TorBox cached-download flow against the live service, including
@@ -42,7 +67,7 @@ Current revision: `0.9.0` pre-1.0 feature release.
 - Created an online SQLite backup and passed `PRAGMA integrity_check`
 - Performed a graceful container restart, reconnected to Discord, and retained
   the migration state
-- On 2026-10-14, restarted only the bot container on `ohio-server`, verified
+- On 2026-10-14, restarted only the bot container on the deployment host, verified
   `Bot ready` and zero automatic restarts, and received operator confirmation
   that a bookmark created before the restart remained in Discord afterward.
   Live playlist/settings persistence and other record types still require
@@ -51,15 +76,15 @@ Current revision: `0.9.0` pre-1.0 feature release.
   the bot was stopped and confirming delivery after startup. This verifies
   live overdue-reminder persistence and recovery; it does not establish
   recurring-reminder or failed-delivery retry acceptance.
-- On 2026-10-14, created an online SQLite backup on `ohio-server` and restored
+- On 2026-10-14, created an online SQLite backup on the deployment host and restored
   it into a separate temporary database while the live bot remained running.
   SQLite integrity and foreign-key checks passed; all snapshot contents matched
   the restored copy, including bookmark #1's operator-created restore-test note.
   The deployed Momo binary's offline `--check` passed against the restored copy,
   and its contents still matched afterward. The backup is retained in the data
-  volume at `/data/backups/restore-test-20261014-4b5a5bcbd2af47e495dfcf2db178507a.db`.
+  volume at `/data/backups/<private-backup>.db`.
 
-## Required before v1.0.0
+## Historical detailed live-test checklist
 
 - The operator reports successful live music lifecycle testing. Detailed
   supported-provider playback/seek coverage still needs to be recorded.
@@ -76,4 +101,6 @@ Current revision: `0.9.0` pre-1.0 feature release.
 - Run an ARM64 build/test if ARM64 deployment is planned; the security backport
   has a source regression test but its assembly was not executed on this host.
 
-The bot should remain in a private test guild until this checklist is complete.
+The owner's later months-long acceptance above supersedes requiring a repeat of
+this entire checklist. For the new dependency build, record a focused live voice
+smoke test before production release. ARM64 remains unsupported until tested.

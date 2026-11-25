@@ -1,0 +1,108 @@
+site_name: Momokun
+site_description: A modular Discord bot you can host yourself. Setup, commands, integrations, and operations.
+site_url: https://oper-goon.github.io/momo-discord-bot/
+repo_url: https://github.com/oper-goon/momo-discord-bot
+repo_name: oper-goon/momo-discord-bot
+edit_uri: edit/main/docs/
+strict: true
+hooks:
+  - scripts/docs_hooks.py
+theme:
+  name: material
+  custom_dir: docs/overrides
+  language: en
+  font: false
+  icon:
+    logo: material/console
+    repo: fontawesome/brands/github
+  palette:
+    scheme: slate
+    primary: black
+    accent: cyan
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+    - content.action.edit
+plugins:
+  - search
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+extra_css:
+  - stylesheets/momokun.css
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/oper-goon/momo-discord-bot
+      name: Momokun on GitHub
+  generator: false
+exclude_docs: |
+  /audit/
+  /overrides/
+  /commands.md
+  /specification.md
+  /release-status.md
+  /music-providers.md
+  /persistence-testing.md
+  /reference/commands.json
+nav:
+  - Home: index.md
+  - Get started: getting-started/index.md
+  - Self-hosting:
+      - self-hosting/index.md
+      - Operations: self-hosting/operations.md
+      - Native installation: self-hosting/native.md
+      - Container images: self-hosting/images.md
+  - Features:
+      - features/index.md
+      - Core: features/core.md
+      - General: features/general.md
+      - Utility: features/utility.md
+      - Administration: features/admin.md
+      - Moderation: features/moderation.md
+      - Music: features/music.md
+      - Downloads and conversions: features/download.md
+      - Anime, films and TV: features/media.md
+      - Image search: features/image.md
+      - TorBox: features/torbox.md
+      - Social embeds: features/social-embeds.md
+  - Reference:
+      - Commands: reference/commands.md
+      - Configuration: reference/configuration.md
+      - Troubleshooting: troubleshooting.md
+  - Develop:
+      - Architecture: development/architecture.md
+      - Development guide: development/index.md
+      - Documentation: development/documentation.md
+      - Releases and Pages: development/releases.md
+  - Project:
+      - FAQ: project/faq.md
+      - Contributing: project/contributing.md
+      - Security: project/security.md
+      - Release readiness: project/status.md
+      - Engineering security policy: security.md
+      - License: project/license.md
+      - Branding: project/branding.md
+      - Credits: project/credits.md
+      - Changelog: project/changelog.md

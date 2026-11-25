@@ -1,6 +1,10 @@
 #![forbid(unsafe_code)]
 mod commands;
+#[cfg(test)]
+mod log_capture;
+pub mod matching;
 pub mod player;
+mod providers;
 pub mod source;
 use anyhow::Result;
 use async_trait::async_trait;
@@ -136,7 +140,7 @@ impl Lifecycle for MusicLifecycle {
             if self.service.sources.health().await {
                 "healthy"
             } else {
-                "degraded: yt-dlp unavailable"
+                "degraded: music providers unavailable"
             },
             self.service.count().await
         ))

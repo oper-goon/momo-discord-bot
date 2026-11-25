@@ -21,6 +21,7 @@ pub fn commands() -> Vec<Command> {
         repeat(),
         shuffle(),
         playlist(),
+        music(),
     ]
 }
 fn service(ctx: Context<'_>) -> Result<Arc<MusicService>> {
@@ -226,6 +227,9 @@ fn describe(snapshot: &Snapshot) -> String {
             ""
         }
     )];
+    if let Some(provider) = &snapshot.active_provider {
+        lines.push(format!("Provider: {provider}"));
+    }
     for (i, t) in snapshot.queue.iter().take(15).enumerate() {
         lines.push(format!("{}. {}", i + 1, t.title));
     }
@@ -338,13 +342,38 @@ async fn nowplaying(ctx: Context<'_>) -> Result<()> {
     .collect();
     ctx.send(
         poise::CreateReply::default()
-            .content(describe(&snapshot).chars().take(1900).collect::<String>())
+            .embed(
+                serenity::CreateEmbed::new()
+                    .title("Now Playing")
+                    .description(describe(&snapshot).chars().take(1900).collect::<String>()),
+            )
             .ephemeral(true)
             .components(vec![serenity::CreateActionRow::Buttons(buttons)])
             .allowed_mentions(serenity::CreateAllowedMentions::new()),
     )
     .await?;
     Ok(())
+}
+/// Inspect enabled music providers and their circuit breakers.
+#[poise::command(
+    slash_command,
+    prefix_command,
+    guild_only,
+    subcommands("music_providers", "music_status"),
+    subcommand_required
+)]
+async fn music(ctx: Context<'_>) -> Result<()> {
+    reply(ctx, "Use /music providers or /music status.").await
+}
+/// Show enabled providers in configured priority order.
+#[poise::command(slash_command, prefix_command, guild_only, rename = "providers")]
+async fn music_providers(ctx: Context<'_>) -> Result<()> {
+    reply(ctx, service(ctx)?.sources.status().await).await
+}
+/// Show provider availability and safe failure categories.
+#[poise::command(slash_command, prefix_command, guild_only, rename = "status")]
+async fn music_status(ctx: Context<'_>) -> Result<()> {
+    reply(ctx, service(ctx)?.sources.status().await).await
 }
 /// View or edit the pending queue.
 #[poise::command(

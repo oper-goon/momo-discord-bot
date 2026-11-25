@@ -1,4 +1,4 @@
-use crate::source::{PlayableTrack, Sources};
+use crate::source::{PlayableTrack, ProviderError, Sources};
 use anyhow::{Context, Error, Result, ensure};
 use async_trait::async_trait;
 use bot_core::serenity;
@@ -11,6 +11,7 @@ use tokio::{
     time::Instant,
 };
 use tokio_util::sync::CancellationToken;
+use tracing::Instrument;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, poise::ChoiceParameter)]
 pub enum RepeatMode {
@@ -20,6 +21,7 @@ pub enum RepeatMode {
 }
 #[derive(Clone, Debug)]
 pub struct Snapshot {
+    pub active_provider: Option<String>,
     pub channel: Option<u64>,
     pub current: Option<TrackRef>,
     pub queue: Vec<TrackRef>,
@@ -105,16 +107,36 @@ pub trait VoiceBackend: Send + Sync {
 }
 #[async_trait]
 pub trait Resolver: Send + Sync {
+    async fn initialization_failed(&self, _provider: &str) {}
     async fn resolve(&self, track: &TrackRef) -> Result<PlayableTrack>;
+    async fn resolve_excluding(
+        &self,
+        track: &TrackRef,
+        excluded: &[String],
+    ) -> Result<PlayableTrack> {
+        anyhow::ensure!(excluded.is_empty(), "No alternative provider available");
+        self.resolve(track).await
+    }
 }
 #[async_trait]
 impl Resolver for Sources {
+    async fn initialization_failed(&self, provider: &str) {
+        self.initialization_failed(provider).await;
+    }
     async fn resolve(&self, track: &TrackRef) -> Result<PlayableTrack> {
         self.resolve(track).await
+    }
+    async fn resolve_excluding(
+        &self,
+        track: &TrackRef,
+        excluded: &[String],
+    ) -> Result<PlayableTrack> {
+        self.resolve_excluding(track, excluded).await
     }
 }
 
 pub struct PlayerState {
+    pub active_provider: Option<String>,
     pub current: Option<TrackRef>,
     pub queue: VecDeque<TrackRef>,
     pub generation: u64,
@@ -128,6 +150,7 @@ pub struct PlayerState {
 impl PlayerState {
     pub fn new(volume: u16) -> Self {
         Self {
+            active_provider: None,
             current: None,
             queue: VecDeque::new(),
             generation: 0,
@@ -141,6 +164,7 @@ impl PlayerState {
     }
     pub fn snapshot(&self) -> Snapshot {
         Snapshot {
+            active_provider: self.active_provider.clone(),
             current: self.current.clone(),
             queue: self.queue.iter().cloned().collect(),
             generation: self.generation,
@@ -152,6 +176,7 @@ impl PlayerState {
         }
     }
     fn invalidate(&mut self) {
+        self.active_provider = None;
         self.generation = self.generation.wrapping_add(1);
         self.paused = false;
     }
@@ -196,6 +221,9 @@ impl PlayerState {
 }
 
 pub struct Player {
+    playback_id: uuid::Uuid,
+    attempted: Vec<String>,
+    started: bool,
     id: uuid::Uuid,
     pub state: PlayerState,
     settings: MusicSettings,
@@ -227,6 +255,9 @@ impl Player {
         };
         (
             Self {
+                playback_id: uuid::Uuid::new_v4(),
+                attempted: vec![],
+                started: false,
                 id: handle.id,
                 state: PlayerState::new(settings.default_volume_percent),
                 settings,
@@ -245,13 +276,29 @@ impl Player {
         )
     }
     fn resolve_current(&mut self) {
+        self.playback_id = uuid::Uuid::new_v4();
+        self.attempted.clear();
+        self.started = false;
+        self.state.active_provider = None;
+        self.resolve_next_provider();
+    }
+    fn resolve_next_provider(&mut self) {
         self.resolvers.abort_all();
         if let Some(track) = self.state.current.clone() {
             let resolver = self.resolver.clone();
             let generation = self.state.generation;
+            let excluded = self.attempted.clone();
             self.idle_since = None;
-            self.resolvers
-                .spawn(async move { (generation, resolver.resolve(&track).await) });
+            let span = tracing::info_span!("music_playback", player_id = %self.id, playback_id = %self.playback_id, generation);
+            self.resolvers.spawn(
+                async move {
+                    (
+                        generation,
+                        resolver.resolve_excluding(&track, &excluded).await,
+                    )
+                }
+                .instrument(span),
+            );
         } else {
             self.idle_since.get_or_insert_with(Instant::now);
         }
@@ -270,17 +317,44 @@ impl Player {
             .await;
         }
     }
+    fn record_playback_started(&mut self, generation: u64) {
+        if !self.started {
+            tracing::info!(player_id = %self.id, playback_id = %self.playback_id, generation,
+                provider = self.state.active_provider.as_deref().unwrap_or("unknown"), "Music playback started");
+        }
+        self.started = true;
+    }
+    #[tracing::instrument(name = "music_player_failure", skip_all, fields(player_id = %self.id, playback_id = %self.playback_id, generation, stage))]
     async fn failed(&mut self, generation: u64, stage: &'static str, error: Option<&Error>) {
+        if generation != self.state.generation {
+            return;
+        }
+        if stage != "resolve"
+            && !self.started
+            && !self.attempted.is_empty()
+            && self.attempted.len() < 4
+        {
+            tracing::info!(provider = self.state.active_provider.as_deref().unwrap_or("unknown"), reason = ?error.map(ProviderError::classify).unwrap_or(ProviderError::Unavailable), "Music playback initialization failed; trying another provider");
+            if let Some(id) = self.attempted.last() {
+                self.resolver.initialization_failed(id).await;
+            }
+            self.backend.stop();
+            self.state.active_provider = None;
+            // Invalidate pending voice events from the failed initialization.
+            self.state.generation = self.state.generation.wrapping_add(1);
+            self.resolve_next_provider();
+            return;
+        }
         let reason = error
-            .map(ToString::to_string)
-            .filter(|text| !text.contains("http") && !text.contains("token") && text.len() <= 250)
-            .unwrap_or_else(|| "external media operation failed".into());
+            .map(ProviderError::classify)
+            .unwrap_or(ProviderError::Unavailable);
         tracing::warn!(
             player_id = %self.id,
+            playback_id = %self.playback_id,
             generation,
             provider = self.state.current.as_ref().map(|track| track.provider.as_str()).unwrap_or("unknown"),
             stage,
-            reason = %reason,
+            ?reason,
             "Audio playback failed"
         );
         if self.state.failed(generation) {
@@ -407,8 +481,9 @@ impl Player {
                 biased;
                 _=self.cancel.cancelled()=>break,
                 request=self.rx.recv()=>{let Some(request)=request else{break};let result=self.command(request.action).await;let done=result.as_ref().is_ok_and(|done|*done);let _=request.reply.send(result.map(|_|self.state.snapshot()));if done{break;}},
-                Some(result)=self.resolvers.join_next(),if !self.resolvers.is_empty()=>{match result{Ok((generation,result)) if generation==self.state.generation&&self.state.current.is_some()=>{match result{Ok(input)=>{if let Err(error)=self.backend.play(input,generation,self.events_tx.clone(),self.state.volume).await{self.failed(generation,"backend_play",Some(&error)).await;}},Err(error)=>self.failed(generation,"resolve",Some(&error)).await}},_=>{}}},
-                Some(event)=self.events.recv()=>{match event{PlayerEvent::Started(g)if g==self.state.generation=>{self.state.failures=0;if self.settings.announce_now_playing&& let Some(track)=&self.state.current{self.notify(&format!("Now playing: {}",track.title)).await;}},PlayerEvent::Ended(g)if g==self.state.generation&&self.state.current.is_some()=>{self.state.advance(true);self.resolve_current();},PlayerEvent::Failed(g)=>self.failed(g,"track_event",None).await,_=>{}}},
+                Some(result)=self.resolvers.join_next(),if !self.resolvers.is_empty()=>{match result{Ok((generation,result)) if generation==self.state.generation&&self.state.current.is_some()=>{match result{Ok(input)=>{self.state.active_provider=input.provider.clone();if let Some(id)=&input.provider{self.attempted.push(id.clone());}
+                            if let Err(error)=self.backend.play(input,generation,self.events_tx.clone(),self.state.volume).await{self.failed(generation,"backend_play",Some(&error)).await;}},Err(error)=>self.failed(generation,"resolve",Some(&error)).await}},_=>{}}},
+                Some(event)=self.events.recv()=>{match event{PlayerEvent::Started(g)if g==self.state.generation=>{self.record_playback_started(g);self.state.failures=0;if self.settings.announce_now_playing&& let Some(track)=&self.state.current{self.notify(&format!("Now playing: {}",track.title)).await;}},PlayerEvent::Ended(g)if g==self.state.generation&&self.state.current.is_some()=>{self.state.advance(true);self.resolve_current();},PlayerEvent::Failed(g)=>self.failed(g,"track_event",None).await,_=>{}}},
                 _=timer.tick()=>{if self.idle_since.is_some_and(|t|t.elapsed()>=Duration::from_secs(self.settings.idle_disconnect_seconds))||self.empty_since.is_some_and(|t|t.elapsed()>=Duration::from_secs(self.settings.empty_channel_disconnect_seconds)){break;}}
             }
         }
@@ -531,6 +606,7 @@ impl VoiceBackend for SongbirdBackend {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use tracing::instrument::WithSubscriber;
     fn track(title: &str) -> TrackRef {
         TrackRef {
             provider: "fake".into(),
@@ -593,6 +669,115 @@ mod tests {
         }
     }
     struct SlowResolver;
+    struct FallbackResolver;
+    #[async_trait]
+    impl Resolver for FallbackResolver {
+        async fn resolve(&self, _: &TrackRef) -> Result<PlayableTrack> {
+            let mut input = crate::source::mock_playable();
+            input.provider = Some("yt-dlp".into());
+            Ok(input)
+        }
+        async fn resolve_excluding(
+            &self,
+            track: &TrackRef,
+            excluded: &[String],
+        ) -> Result<PlayableTrack> {
+            if excluded.is_empty() {
+                return self.resolve(track).await;
+            }
+            let mut input = crate::source::mock_playable();
+            input.provider = Some("easynews".into());
+            Ok(input)
+        }
+    }
+    struct InitializationBackend;
+    #[async_trait]
+    impl VoiceBackend for InitializationBackend {
+        async fn join(&mut self, _: u64) -> Result<()> {
+            Ok(())
+        }
+        async fn play(
+            &mut self,
+            input: PlayableTrack,
+            generation: u64,
+            events: mpsc::Sender<PlayerEvent>,
+            _: u16,
+        ) -> Result<()> {
+            if input.provider.as_deref() == Some("yt-dlp") {
+                anyhow::bail!("Playback initialization failed");
+            }
+            events.send(PlayerEvent::Started(generation)).await.unwrap();
+            Ok(())
+        }
+        fn pause(&mut self) -> Result<()> {
+            Ok(())
+        }
+        fn resume(&mut self) -> Result<()> {
+            Ok(())
+        }
+        fn stop(&mut self) {}
+        fn volume(&mut self, _: u16) -> Result<()> {
+            Ok(())
+        }
+        async fn seek(&mut self, _: u64) -> Result<()> {
+            Ok(())
+        }
+        async fn disconnect(&mut self) -> Result<()> {
+            Ok(())
+        }
+    }
+    #[tokio::test]
+    async fn initialization_fallback_keeps_current_and_queue_without_duplicates() {
+        let capture = crate::log_capture::Capture::default();
+        let cancel = CancellationToken::new();
+        let (player, handle) = Player::new(
+            MusicSettings::default(),
+            Box::new(InitializationBackend),
+            Arc::new(FallbackResolver),
+            cancel.clone(),
+            None,
+        );
+        let task = tokio::spawn(player.run().with_subscriber(capture.clone()));
+        handle
+            .send(Action::Join {
+                channel: 1,
+                allow_move: false,
+            })
+            .await
+            .unwrap();
+        handle
+            .send(Action::Enqueue(vec![
+                track("PRIVATE_TRACK_CANARY"),
+                track("b"),
+            ]))
+            .await
+            .unwrap();
+        tokio::time::timeout(Duration::from_secs(3), async {
+            loop {
+                let snapshot = handle.send(Action::Snapshot).await.unwrap();
+                if snapshot.active_provider.as_deref() == Some("easynews")
+                    && capture.snapshot().contains("Music playback started")
+                {
+                    assert_eq!(snapshot.current.unwrap().title, "PRIVATE_TRACK_CANARY");
+                    assert_eq!(snapshot.queue.len(), 1);
+                    assert_eq!(snapshot.queue[0].title, "b");
+                    break;
+                }
+                tokio::task::yield_now().await;
+            }
+        })
+        .await
+        .unwrap();
+        cancel.cancel();
+        task.await.unwrap().unwrap();
+        let logs = capture.snapshot();
+        assert!(
+            logs.contains("playback_id")
+                && logs.contains("easynews")
+                && logs.contains("Music playback initialization failed")
+        );
+        assert!(!logs.contains("PRIVATE_TRACK_CANARY"));
+    }
     #[async_trait]
     impl Resolver for SlowResolver {
         async fn resolve(&self, _: &TrackRef) -> Result<PlayableTrack> {

@@ -1,0 +1,32 @@
+{
+  "package": "mkdocs-material",
+  "version": "9.8.2",
+  "scope": "Original theme/icon-set notices; icon-set superset, not a claim every icon is used.",
+  "files": [
+    {
+      "file": "fontawesome-LICENSE.txt",
+      "package_path": "material/templates/.icons/fontawesome/LICENSE.txt",
+      "sha256": "329f24fdba0c57714d7d202d30a74767feac6907685ee24f0abbf1bd47581a07"
+    },
+    {
+      "file": "material-icons-LICENSE.txt",
+      "package_path": "material/templates/.icons/material/LICENSE",
+      "sha256": "3bae6305bcaa6d10219b999f65c342034c2d40b1c0e8567fa08605e73ccba829"
+    },
+    {
+      "file": "mkdocs-material-LICENSE.txt",
+      "package_path": "mkdocs_material-9.8.2.dist-info/licenses/LICENSE",
+      "sha256": "e1150f26b4c0f872627b39fda49ae3bd850304f2f7f3171ae0531c1f8f4dd078"
+    },
+    {
+      "file": "octicons-LICENSE.txt",
+      "package_path": "material/templates/.icons/octicons/LICENSE",
+      "sha256": "3d8b9d9254e7aa7517ed5abc8df3a4bc230081a613e8e872fb6558e8759c9040"
+    },
+    {
+      "file": "simple-icons-LICENSE.txt",
+      "package_path": "material/templates/.icons/simple/LICENSE.md",
+      "sha256": "9046848b63a5c92bff14e4accca80bd987e0623b74adf9226ce5198d312b79d5"
+    }
+  ]
+}

@@ -5,6 +5,70 @@ Versioning and Keep a Changelog conventions.
 
 ## [Unreleased]
 
+### Fixed
+
+- Accept natural music discovery queries containing the full artist and a partial
+  title, such as `tyler the creator sugar`, without weakening explicit
+  `Artist - Title` or playback fallback matching. Keep discovery cache entries
+  distinct from explicit recording requests and reject unrequested versions.
+  Check up to five YouTube discovery candidates instead of rejecting a query
+  solely because its first upstream result is unrelated. Preserve matching
+  YouTube creator context for title-only results only when that complete
+  channel name was explicitly requested; never infer an artist from an uploader.
+
+### Added
+
+- Preserve Rust standard-library and Deno dependency notice bundles, recover
+  yt-dlp-ejs component notices, and provide opt-in exact runtime-source collection
+  for release evidence. Pin yt-dlp-ejs alongside its reviewed notices.
+- Collect exact-image Debian/Python inventories and Rust dependency notices with
+  checksum-verified upstream source archives. Retain unresolved attribution and
+  source requirements for review before binary/image publication.
+
+- Material for MkDocs documentation with beginner Docker setup, module guides,
+  generated command/configuration references, operations and developer guides.
+- Strict documentation CI, offline registry export, stale-reference and built-site
+  link/asset checks, with approval-gated GitHub Pages deployment.
+- Private configuration setup helper, contribution/security policies and issue
+  templates, third-party notices and a proposed noncommercial licensing review.
+
+### Changed
+
+- Enforce canonical LF migration files across checkouts and exclude local audit
+  caches from Docker build contexts. A restored-copy trial caught checksum
+  mismatches in a Windows-created source archive before any live switch.
+
+- Pin tested Rust 1.98.1 consistently across tooling, CI and Docker; avoid
+  compiler drift triggering Poise's generated rest-argument lint on Rust 1.100.
+
+- Upgrade the DAVE P-256/HPKE backends through narrowly scoped, MIT-licensed
+  adapters, preserving OpenMLS protocol/storage APIs. Replace vulnerable
+  crypto-bigint with patched upstream 0.7.11 and remove obsolete SHA3 exceptions.
+  Add offline handshake, epoch rotation, signature and mixed-version wire tests.
+- Correct the workspace's minimum Rust requirement to 1.94, matching SQLx 0.9.1;
+  the existing pinned toolchain and Docker builder already satisfy it.
+
+- Update bundled SQLite to 3.54.1 through compatible libsqlite3-sys 0.39.1,
+  with a linked-runtime security-version regression check. Record two dated
+  maintenance exceptions while preserving picker IDs. The subsequent voice
+  backend upgrade clears the remaining cryptography advisory.
+- Record the owner's months of live Discord testing as operator acceptance
+  for the planned 1.0 release.
+
+- Apply PolyForm Noncommercial 1.0.0 to first-party release-candidate code after
+  owner confirmation of rights; preserve earlier MIT grants and third-party terms.
+
+- Update Tokio, TLS certificate verification/trust roots and URL parsing to
+  patched compatible releases, clearing four release-audit findings. Subsequent
+  SQLite and voice updates clear the other vulnerability/unsoundness findings;
+  two maintenance findings have dated exceptions.
+
+- Docker Compose forwards optional integration settings from the private env
+  file, uses safer container defaults, bounds logs and rejects missing config
+  mounts. Existing database volume and non-root image behavior are retained.
+- README directs new users to installation and reference guides. Public-site
+  publication, approved artwork and licensing transition remain pending review.
+
 ## [0.9.0] - 2026-10-14
 
 ### Security

@@ -5,8 +5,8 @@ all-features = true
 unmaintained = "all"
 yanked = "deny"
 ignore = [
-  { id = "RUSTSEC-2026-0207", reason = "Only consumer hpke-rs 0.6.1 uses one-shot shake256::<32/64>, never repeated incremental squeeze. Review on any dependency change and by 2026-12-20; see docs/security.md." },
-  { id = "RUSTSEC-2026-0208", reason = "Only consumer hpke-rs 0.6.1 requests fixed 32/64-byte outputs, both divisible by 8; affected AVX2 output lengths are unreachable. Review on dependency change and by 2026-12-20; see docs/security.md." },
+  { id = "RUSTSEC-2026-0543", reason = "Maintenance-only: chrono 0.4.45 retained by Poise Context::id/Serenity timestamps and Songbird 0.6.1 serde-aux defaults. Removing the Poise feature breaks existing picker IDs. No patched release or vulnerability reported by this advisory. Review parent features on change and by 2026-12-20; see docs/security.md." },
+  { id = "RUSTSEC-2026-0441", reason = "Maintenance-only: pin-utils 0.1.1 is retained by Davey/OpenMLS js via fluvio-wasm-timer. OpenMLS native lifetime uses std::time and its fluvio import is wasm32-only. Native targets only; no patched release. Review dependency/target changes and by 2026-12-20; see docs/security.md." },
   { id = "RUSTSEC-2024-0388", reason = "Songbird 0.6 requires derivative at build time; no runtime vulnerability reported. Review by 2026-12-20; see docs/security.md." },
   { id = "RUSTSEC-2024-0384", reason = "OpenMLS via Songbird requires instant; only native std::time implementation is deployed. Review by 2026-12-20; see docs/security.md." },
   { id = "RUSTSEC-2026-0173", reason = "Transitive hax build macro dependency has no compatible maintained release; no runtime vulnerability reported. Review by 2026-12-20; see docs/security.md." },
@@ -15,6 +15,63 @@ ignore = [
 [licenses]
 allow = ["MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "ISC", "Zlib", "Unicode-3.0", "MPL-2.0", "CDLA-Permissive-2.0"]
 confidence-threshold = 0.8
+
+# Owner-approved first-party license only; dependency allowlist stays unchanged.
+[[licenses.exceptions]]
+name = "bot-app"
+allow = ["PolyForm-Noncommercial-1.0.0"]
+
+[[licenses.exceptions]]
+name = "bot-core"
+allow = ["PolyForm-Noncommercial-1.0.0"]
+
+[[licenses.exceptions]]
+name = "bot-database"
+allow = ["PolyForm-Noncommercial-1.0.0"]
+
+[[licenses.exceptions]]
+name = "bot-module-api"
+allow = ["PolyForm-Noncommercial-1.0.0"]
+
+[[licenses.exceptions]]
+name = "module-admin"
+allow = ["PolyForm-Noncommercial-1.0.0"]
+
+[[licenses.exceptions]]
+name = "module-download"
+allow = ["PolyForm-Noncommercial-1.0.0"]
+
+[[licenses.exceptions]]
+name = "module-general"
+allow = ["PolyForm-Noncommercial-1.0.0"]
+
+[[licenses.exceptions]]
+name = "module-image"
+allow = ["PolyForm-Noncommercial-1.0.0"]
+
+[[licenses.exceptions]]
+name = "module-media"
+allow = ["PolyForm-Noncommercial-1.0.0"]
+
+[[licenses.exceptions]]
+name = "module-moderation"
+allow = ["PolyForm-Noncommercial-1.0.0"]
+
+[[licenses.exceptions]]
+name = "module-music"
+allow = ["PolyForm-Noncommercial-1.0.0"]
+
+[[licenses.exceptions]]
+name = "module-social-embeds"
+allow = ["PolyForm-Noncommercial-1.0.0"]
+
+[[licenses.exceptions]]
+name = "module-torbox"
+allow = ["PolyForm-Noncommercial-1.0.0"]
+
+[[licenses.exceptions]]
+name = "module-utility"
+allow = ["PolyForm-Noncommercial-1.0.0"]
 
 [bans]
 multiple-versions = "allow"

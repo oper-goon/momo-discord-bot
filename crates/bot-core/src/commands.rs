@@ -74,6 +74,12 @@ pub async fn help(ctx: Context<'_>, #[rest] command: Option<String>) -> Result<(
             continue;
         }
         let owner = ctx.data().modules.owner(&path)?;
+        if crate::channel_policy::blocked_channels(ctx, owner)
+            .await?
+            .is_some()
+        {
+            continue;
+        }
         if c.guild_only && ctx.guild_id().is_none() {
             continue;
         }
@@ -161,10 +167,155 @@ async fn about(ctx: Context<'_>) -> Result<()> {
     prefix_command,
     guild_only,
     rename = "module",
-    subcommands("module_list", "module_info", "module_enable", "module_disable")
+    subcommands(
+        "module_list",
+        "module_info",
+        "module_enable",
+        "module_disable",
+        "module_channels"
+    )
 )]
 async fn modules(ctx: Context<'_>) -> Result<()> {
-    reply(ctx, "Use /module list, info, enable, or disable.").await
+    reply(ctx, "Use /module list, info, enable, disable, or channels.").await
+}
+
+/// Manage module channel allowlists (slash-only configuration).
+#[poise::command(
+    slash_command,
+    guild_only,
+    rename = "channels",
+    required_permissions = "MANAGE_GUILD",
+    subcommands(
+        "module_channels_add",
+        "module_channels_remove",
+        "module_channels_list",
+        "module_channels_reset"
+    )
+)]
+async fn module_channels(ctx: Context<'_>) -> Result<()> {
+    reply(ctx, "Use /module channels add, remove, list, or reset.").await
+}
+
+fn validate_channel_module(ctx: Context<'_>, module: &str) -> Result<()> {
+    ctx.data().modules.module(module)?;
+    ensure!(
+        module != "core",
+        "Core commands remain available in every channel"
+    );
+    Ok(())
+}
+
+/// Allow a module in a channel; the first entry restricts use elsewhere.
+#[poise::command(
+    slash_command,
+    guild_only,
+    rename = "add",
+    required_permissions = "MANAGE_GUILD"
+)]
+async fn module_channels_add(
+    ctx: Context<'_>,
+    module: String,
+    channel: serenity::GuildChannel,
+) -> Result<()> {
+    validate_channel_module(ctx, &module)?;
+    ensure!(
+        channel.guild_id == guild_id(ctx)?,
+        "Choose a channel in this server"
+    );
+    ensure!(
+        channel.kind != serenity::ChannelType::Category,
+        "Choose a channel, not a category"
+    );
+    ctx.data()
+        .database
+        .add_module_channel(guild_id(ctx)?.get(), &module, channel.id.get())
+        .await?;
+    reply(
+        ctx,
+        format!(
+            "{module} is allowed in <#{}>. Administrators always bypass channel limits.",
+            channel.id
+        ),
+    )
+    .await
+}
+
+/// Remove an allowed channel; the last removal restores access everywhere.
+#[poise::command(
+    slash_command,
+    guild_only,
+    rename = "remove",
+    required_permissions = "MANAGE_GUILD"
+)]
+async fn module_channels_remove(
+    ctx: Context<'_>,
+    module: String,
+    channel: serenity::GuildChannel,
+) -> Result<()> {
+    validate_channel_module(ctx, &module)?;
+    ensure!(
+        channel.guild_id == guild_id(ctx)?,
+        "Choose a channel in this server"
+    );
+    ctx.data()
+        .database
+        .remove_module_channel(guild_id(ctx)?.get(), &module, channel.id.get())
+        .await?;
+    reply_channel_list(ctx, &module).await
+}
+
+async fn reply_channel_list(ctx: Context<'_>, module: &str) -> Result<()> {
+    ctx.data().modules.module(module)?;
+    let channels = ctx
+        .data()
+        .database
+        .module_channels(guild_id(ctx)?.get(), module)
+        .await?;
+    let status = if channels.is_empty() {
+        "all channels".to_owned()
+    } else {
+        channels
+            .iter()
+            .map(|id| format!("<#{id}>"))
+            .collect::<Vec<_>>()
+            .join(", ")
+    };
+    reply(
+        ctx,
+        format!("{module}: {status}. Administrators always bypass channel limits."),
+    )
+    .await
+}
+
+/// Show a module's allowed channels.
+#[poise::command(
+    slash_command,
+    guild_only,
+    rename = "list",
+    required_permissions = "MANAGE_GUILD"
+)]
+async fn module_channels_list(ctx: Context<'_>, module: String) -> Result<()> {
+    reply_channel_list(ctx, &module).await
+}
+
+/// Restore a module's access to all channels.
+#[poise::command(
+    slash_command,
+    guild_only,
+    rename = "reset",
+    required_permissions = "MANAGE_GUILD"
+)]
+async fn module_channels_reset(ctx: Context<'_>, module: String) -> Result<()> {
+    validate_channel_module(ctx, &module)?;
+    ctx.data()
+        .database
+        .reset_module_channels(guild_id(ctx)?.get(), &module)
+        .await?;
+    reply(
+        ctx,
+        format!("{module} commands are allowed in all channels."),
+    )
+    .await
 }
 /// List module activation.
 #[poise::command(slash_command, prefix_command, guild_only, rename = "list")]

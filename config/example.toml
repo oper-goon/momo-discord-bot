@@ -20,6 +20,13 @@ empty_channel_disconnect_seconds = 120
 default_volume_percent = 100
 max_queue_length = 500
 max_playlist_import = 100
+easynews_enabled = false # EASYNEWS_ENABLED; credentials: EASYNEWS_USERNAME / EASYNEWS_PASSWORD (environment only)
+torbox_enabled = false # TORBOX_ENABLED; credential: TORBOX_API_KEY (environment only)
+torbox_cached_only = true # Mandatory; TORBOX_CACHED_ONLY=false is rejected
+provider_priority = ["youtube", "easynews", "torbox"] # MUSIC_PROVIDER_PRIORITY (comma separated)
+provider_timeout_seconds = 30 # MUSIC_PROVIDER_TIMEOUT; each search/resolution attempt
+provider_cooldown_seconds = 120 # MUSIC_PROVIDER_COOLDOWN; shared circuit breaker
+match_min_confidence = 0.85 # MUSIC_MATCH_MIN_CONFIDENCE; 0.5–1.0
 
 [download]
 yt_dlp_path = "yt-dlp"

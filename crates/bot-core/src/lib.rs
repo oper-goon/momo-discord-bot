@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+pub mod channel_policy;
 pub mod commands;
 pub mod config;
 pub mod permissions;

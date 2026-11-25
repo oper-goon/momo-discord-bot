@@ -1,0 +1,6 @@
+# Preserve exact downloaded upstream notice bytes and their recorded digests.
+licenses/upstream/** -text
+docs/assets/notices/** -text
+licenses/MPL-2.0.txt -text
+# SQLx hashes exact migration bytes; Docker builds must agree across platforms.
+migrations/*.sql text eol=lf

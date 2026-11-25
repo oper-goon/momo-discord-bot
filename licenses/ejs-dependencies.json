@@ -1,0 +1,41 @@
+{
+  "parent": {
+    "name": "yt-dlp-ejs",
+    "version": "0.8.0",
+    "source_url": "https://files.pythonhosted.org/packages/d3/e6/cceb9530e8f4e5940f6f7822d90e9d94f1b85343329a16baaf47bbbb3de1/yt_dlp_ejs-0.8.0.tar.gz",
+    "source_sha256": "d5fa1639f63b5c4af8d932495f60689d5370f1a095782c944f7f62a303eb104e",
+    "package_lock_sha256": "dd1660d8db3804297a11e1769015e7a2b1390697cdf81c2a6905bd1dae292837"
+  },
+  "dependencies": [
+    {
+      "name": "meriyah",
+      "version": "6.1.4",
+      "url": "https://registry.npmjs.org/meriyah/-/meriyah-6.1.4.tgz",
+      "integrity": "sha512-Sz8FzjzI0kN13GK/6MVEsVzMZEPvOhnmmI1lU5+/1cGOiK3QUahntrNNtdVeihrO7t9JpoH75iMNXg6R6uWflQ==",
+      "archive_sha256": "c0f105d9fb01bb48c76ea6ee382e6099277b95e3f351fb99b67ddfb79d6088b8",
+      "notices": [
+        {
+          "file": "LICENSE.md",
+          "archive_path": "package/LICENSE.md",
+          "sha256": "e9a5df5a6ae5cd51ca430715f4c62fb5424946e8da07b7caa058a1ba0582a848"
+        }
+      ],
+      "scope": "Exact dependency declared by yt-dlp-ejs 0.8.0 source package-lock.json; no claim of reproduced bundled JS build."
+    },
+    {
+      "name": "astring",
+      "version": "1.9.0",
+      "url": "https://registry.npmjs.org/astring/-/astring-1.9.0.tgz",
+      "integrity": "sha512-LElXdjswlqjWrPpJFg1Fx4wpkOCxj1TDHlSV4PlaRxHGWko024xICaa97ZkMfs6DRKlCguiAI+rbXv5GWwXIkg==",
+      "archive_sha256": "422cca9707aca293e85eb54fdbbc5a0a167ad415236a325ff342e720e67afb49",
+      "notices": [
+        {
+          "file": "LICENSE",
+          "archive_path": "package/LICENSE",
+          "sha256": "d7e882d386050a13b3244078d95b1e3d943b4741fb1b2d7d936cf39a08f52a09"
+        }
+      ],
+      "scope": "Exact dependency declared by yt-dlp-ejs 0.8.0 source package-lock.json; no claim of reproduced bundled JS build."
+    }
+  ]
+}

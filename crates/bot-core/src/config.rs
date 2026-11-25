@@ -61,6 +61,13 @@ impl Default for DatabaseConfig {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields)]
 pub struct MusicConfig {
+    pub easynews_enabled: bool,
+    pub torbox_enabled: bool,
+    pub torbox_cached_only: bool,
+    pub provider_priority: Vec<String>,
+    pub provider_timeout_seconds: u64,
+    pub provider_cooldown_seconds: u64,
+    pub match_min_confidence: f64,
     pub yt_dlp_path: String,
     pub resolver_timeout_seconds: u64,
     pub idle_disconnect_seconds: u64,
@@ -72,6 +79,13 @@ pub struct MusicConfig {
 impl Default for MusicConfig {
     fn default() -> Self {
         Self {
+            easynews_enabled: false,
+            torbox_enabled: false,
+            torbox_cached_only: true,
+            provider_priority: vec!["youtube".into(), "easynews".into(), "torbox".into()],
+            provider_timeout_seconds: 30,
+            provider_cooldown_seconds: 120,
+            match_min_confidence: 0.85,
             yt_dlp_path: "yt-dlp".into(),
             resolver_timeout_seconds: 30,
             idle_disconnect_seconds: 300,
@@ -82,6 +96,80 @@ impl Default for MusicConfig {
         }
     }
 }
+impl MusicConfig {
+    fn provider_environment(&mut self) -> Result<()> {
+        for (name, field) in [
+            ("EASYNEWS_ENABLED", &mut self.easynews_enabled),
+            ("TORBOX_ENABLED", &mut self.torbox_enabled),
+            ("TORBOX_CACHED_ONLY", &mut self.torbox_cached_only),
+        ] {
+            if let Ok(value) = std::env::var(name) {
+                *field = value
+                    .parse()
+                    .map_err(|_| anyhow::anyhow!("Invalid {name}"))?;
+            }
+        }
+        for (name, field) in [
+            ("MUSIC_PROVIDER_TIMEOUT", &mut self.provider_timeout_seconds),
+            (
+                "MUSIC_PROVIDER_COOLDOWN",
+                &mut self.provider_cooldown_seconds,
+            ),
+        ] {
+            if let Ok(value) = std::env::var(name) {
+                *field = value
+                    .parse()
+                    .map_err(|_| anyhow::anyhow!("Invalid {name}"))?;
+            }
+        }
+        if let Ok(value) = std::env::var("MUSIC_MATCH_MIN_CONFIDENCE") {
+            self.match_min_confidence = value
+                .parse()
+                .map_err(|_| anyhow::anyhow!("Invalid MUSIC_MATCH_MIN_CONFIDENCE"))?;
+        }
+        if let Ok(value) = std::env::var("MUSIC_PROVIDER_PRIORITY") {
+            self.provider_priority = value
+                .split(',')
+                .map(|s| s.trim().to_ascii_lowercase())
+                .collect();
+        }
+        Ok(())
+    }
+
+    fn validate_providers(&self) -> Result<()> {
+        ensure!(
+            self.torbox_cached_only,
+            "Music TorBox cached-only mode cannot be disabled"
+        );
+        ensure!(
+            (1..=120).contains(&self.provider_timeout_seconds),
+            "Music provider timeout must be 1–120 seconds"
+        );
+        ensure!(
+            (1..=3600).contains(&self.provider_cooldown_seconds),
+            "Music provider cooldown must be 1–3600 seconds"
+        );
+        ensure!(
+            self.match_min_confidence.is_finite()
+                && (0.5..=1.0).contains(&self.match_min_confidence),
+            "Music match confidence must be 0.5–1.0"
+        );
+        let mut seen = std::collections::HashSet::new();
+        ensure!(
+            !self.provider_priority.is_empty()
+                && self
+                    .provider_priority
+                    .iter()
+                    .all(
+                        |id| ["youtube", "easynews", "torbox"].contains(&id.as_str())
+                            && seen.insert(id)
+                    ),
+            "Music provider priority must contain unique known providers"
+        );
+        Ok(())
+    }
+}
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(default, deny_unknown_fields)]
 pub struct DownloadConfig {
@@ -159,10 +247,12 @@ impl AppConfig {
             c.music.yt_dlp_path = path.clone();
             c.download.yt_dlp_path = path;
         }
+        c.music.provider_environment()?;
         c.validate()?;
         Ok(c)
     }
     pub fn validate(&self) -> Result<()> {
+        self.music.validate_providers()?;
         ensure!(
             !self.discord.default_prefix.trim().is_empty()
                 && self.discord.default_prefix.chars().count() <= 16,
@@ -268,6 +358,24 @@ impl AppConfig {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn provider_configuration_is_bounded_and_cached_only() {
+        let mut c = AppConfig::default();
+        assert!(c.validate().is_ok());
+        c.music.torbox_cached_only = false;
+        assert!(c.validate().is_err());
+        c.music.torbox_cached_only = true;
+        c.music.provider_priority = vec!["youtube".into(), "youtube".into()];
+        assert!(c.validate().is_err());
+        c.music.provider_priority = vec!["unknown".into()];
+        assert!(c.validate().is_err());
+        c.music.provider_priority = vec!["youtube".into()];
+        c.music.match_min_confidence = f64::NAN;
+        assert!(c.validate().is_err());
+        c.music.match_min_confidence = 0.85;
+        c.music.provider_timeout_seconds = 0;
+        assert!(c.validate().is_err());
+    }
     #[test]
     fn validates_complete_configuration() {
         let mut c: AppConfig = toml::from_str("[discord]\ndefault_prefix='?'\n").unwrap();

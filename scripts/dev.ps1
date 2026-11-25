@@ -16,5 +16,11 @@ if ($cmake) {
     $env:CMAKE_GENERATOR = 'Ninja'
 }
 $env:PATH = "$env:CARGO_HOME\bin;$env:PATH"
-& cargo +stable-x86_64-pc-windows-gnullvm @CargoArgs
+$toolchainFile = Get-Content -LiteralPath (Join-Path $root 'rust-toolchain.toml') -Raw
+$toolchainMatch = [regex]::Match($toolchainFile, '(?m)^\s*channel\s*=\s*"([^"]+)"')
+if (-not $toolchainMatch.Success) {
+    throw 'rust-toolchain.toml must declare the Rust channel.'
+}
+$windowsToolchain = "$($toolchainMatch.Groups[1].Value)-x86_64-pc-windows-gnullvm"
+& cargo "+$windowsToolchain" @CargoArgs
 exit $LASTEXITCODE

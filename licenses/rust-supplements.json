@@ -1,0 +1,490 @@
+{
+  "from_map-0.1.0": {
+    "files": [
+      {
+        "file": "upstream/Luro02--shorthand/c024f6840d1acd913fb04cf13aea97bc024dfc39/LICENSE-APACHE",
+        "sha256": "6b6b05df6d03b090185fa113dafaf4aceda484373214b49e2c4c31427b67ffd4",
+        "url": "https://github.com/Luro02/shorthand/blob/c024f6840d1acd913fb04cf13aea97bc024dfc39/LICENSE-APACHE"
+      },
+      {
+        "file": "upstream/Luro02--shorthand/c024f6840d1acd913fb04cf13aea97bc024dfc39/LICENSE-MIT",
+        "sha256": "ec013f688595c83037049f3f8dd111c1ff6f7417a688a698c7fb38ef294be8a7",
+        "url": "https://github.com/Luro02/shorthand/blob/c024f6840d1acd913fb04cf13aea97bc024dfc39/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "c024f6840d1acd913fb04cf13aea97bc024dfc39"
+  },
+  "hashmap_derive-0.1.0": {
+    "files": [
+      {
+        "file": "upstream/Luro02--shorthand/50f44721a4eebeefef085e68135b9545a590bf79/LICENSE-APACHE",
+        "sha256": "6b6b05df6d03b090185fa113dafaf4aceda484373214b49e2c4c31427b67ffd4",
+        "url": "https://github.com/Luro02/shorthand/blob/50f44721a4eebeefef085e68135b9545a590bf79/LICENSE-APACHE"
+      },
+      {
+        "file": "upstream/Luro02--shorthand/50f44721a4eebeefef085e68135b9545a590bf79/LICENSE-MIT",
+        "sha256": "ec013f688595c83037049f3f8dd111c1ff6f7417a688a698c7fb38ef294be8a7",
+        "url": "https://github.com/Luro02/shorthand/blob/50f44721a4eebeefef085e68135b9545a590bf79/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "50f44721a4eebeefef085e68135b9545a590bf79"
+  },
+  "libcrux-aead-0.0.11": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "libcrux-aes-0.0.11": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "libcrux-chacha20poly1305-0.0.11": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "libcrux-curve25519-0.0.10": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "libcrux-ecdh-0.0.10": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "libcrux-hacl-rs-0.0.7": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "libcrux-hkdf-0.0.10": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "libcrux-hmac-0.0.10": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "libcrux-hmac-drbg-0.0.3": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "libcrux-intrinsics-0.0.10": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "libcrux-kem-0.0.11": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "libcrux-macros-0.0.4": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/42d68bd49b244b09bd02626c6ffa95e54dc64f91/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/42d68bd49b244b09bd02626c6ffa95e54dc64f91/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/42d68bd49b244b09bd02626c6ffa95e54dc64f91/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/42d68bd49b244b09bd02626c6ffa95e54dc64f91/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "42d68bd49b244b09bd02626c6ffa95e54dc64f91"
+  },
+  "libcrux-ml-kem-0.0.12": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "libcrux-p256-0.0.10": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "libcrux-platform-0.0.4": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/42d68bd49b244b09bd02626c6ffa95e54dc64f91/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/42d68bd49b244b09bd02626c6ffa95e54dc64f91/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/42d68bd49b244b09bd02626c6ffa95e54dc64f91/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/42d68bd49b244b09bd02626c6ffa95e54dc64f91/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "42d68bd49b244b09bd02626c6ffa95e54dc64f91"
+  },
+  "libcrux-poly1305-0.0.8": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "libcrux-secrets-0.0.8": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "libcrux-sha2-0.0.10": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "libcrux-sha3-0.0.12": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "libcrux-traits-0.0.10": {
+    "files": [
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE",
+        "sha256": "c517c468fc7f8d83319dd8b3743923f6891e0dfbaf7c57a874758c8f39b98564",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE"
+      },
+      {
+        "file": "upstream/cryspen--libcrux/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT",
+        "sha256": "e40d41f94826514279cc7648088180e19621f7acd281dd394a0534d535da51fd",
+        "url": "https://github.com/cryspen/libcrux/blob/24330863b3d1d4179e4bcea8cef6bf6fa313057e/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "24330863b3d1d4179e4bcea8cef6bf6fa313057e"
+  },
+  "openmls-0.8.3": {
+    "files": [
+      {
+        "file": "upstream/openmls--openmls/1f4b2f14da510c2fdada5d1bbf2cdbe20dd2cf73/LICENSE",
+        "sha256": "43e5e3c4b5cca67f9ea912f7e1929702a848aa765d3b3e14f25d3838a5a5565d",
+        "url": "https://github.com/openmls/openmls/blob/1f4b2f14da510c2fdada5d1bbf2cdbe20dd2cf73/LICENSE"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "1f4b2f14da510c2fdada5d1bbf2cdbe20dd2cf73"
+  },
+  "openmls_memory_storage-0.5.0": {
+    "files": [
+      {
+        "file": "upstream/openmls--openmls/6b85f0edc560b4fe0f5b9266092947a774614f3f/LICENSE",
+        "sha256": "43e5e3c4b5cca67f9ea912f7e1929702a848aa765d3b3e14f25d3838a5a5565d",
+        "url": "https://github.com/openmls/openmls/blob/6b85f0edc560b4fe0f5b9266092947a774614f3f/LICENSE"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "6b85f0edc560b4fe0f5b9266092947a774614f3f"
+  },
+  "openmls_traits-0.5.0": {
+    "files": [
+      {
+        "file": "upstream/openmls--openmls/6b85f0edc560b4fe0f5b9266092947a774614f3f/LICENSE",
+        "sha256": "43e5e3c4b5cca67f9ea912f7e1929702a848aa765d3b3e14f25d3838a5a5565d",
+        "url": "https://github.com/openmls/openmls/blob/6b85f0edc560b4fe0f5b9266092947a774614f3f/LICENSE"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "6b85f0edc560b4fe0f5b9266092947a774614f3f"
+  },
+  "poise_macros-0.7.0": {
+    "files": [
+      {
+        "file": "upstream/serenity-rs--poise/9dee0a4887bb9d6c0bccc60a1bc2e10ac87097e5/LICENSE",
+        "sha256": "fab1432539c8b12502b8d232f5103b2884d051486b7a3c7a26e7e9075185606e",
+        "url": "https://github.com/serenity-rs/poise/blob/9dee0a4887bb9d6c0bccc60a1bc2e10ac87097e5/LICENSE"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "9dee0a4887bb9d6c0bccc60a1bc2e10ac87097e5"
+  },
+  "songbird-0.6.1": {
+    "files": [
+      {
+        "file": "upstream/serenity-rs--songbird/957e17fcbc687cd88979c90b76bdf79017803b09/LICENSE.md",
+        "sha256": "df3eb9c29e4d94076101b9af68bc41434285f3646d77901e3a12e5adf1115daf",
+        "url": "https://github.com/serenity-rs/songbird/blob/957e17fcbc687cd88979c90b76bdf79017803b09/LICENSE.md"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "957e17fcbc687cd88979c90b76bdf79017803b09"
+  },
+  "stream_lib-0.5.2": {
+    "files": [
+      {
+        "file": "upstream/Erk---rsget/342e78a27dd2fca5da99d07ad083406cdbc2bd52/LICENSE",
+        "sha256": "b0c1ea550c5ee1a604e9e405e47457b14a030400794acec33e91d2cb0e973fc9",
+        "url": "https://github.com/Erk-/rsget/blob/342e78a27dd2fca5da99d07ad083406cdbc2bd52/LICENSE"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "342e78a27dd2fca5da99d07ad083406cdbc2bd52"
+  },
+  "streamcatcher-1.0.1": {
+    "files": [
+      {
+        "file": "upstream/FelixMcFelix--streamcatcher/bfc9825a5b9f39e20a9aa824ba2e4e302e485f90/LICENSE-APACHE",
+        "sha256": "0a52b287da67537d11637a515417b82eed5031c1218989bed183aa6909c01e2f",
+        "url": "https://github.com/FelixMcFelix/streamcatcher/blob/bfc9825a5b9f39e20a9aa824ba2e4e302e485f90/LICENSE-APACHE"
+      },
+      {
+        "file": "upstream/FelixMcFelix--streamcatcher/bfc9825a5b9f39e20a9aa824ba2e4e302e485f90/LICENSE-MIT",
+        "sha256": "9e2c67d409850fffb73632c48320ab8f09a2b3714f7838773c64de6d170f3810",
+        "url": "https://github.com/FelixMcFelix/streamcatcher/blob/bfc9825a5b9f39e20a9aa824ba2e4e302e485f90/LICENSE-MIT"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "bfc9825a5b9f39e20a9aa824ba2e4e302e485f90"
+  },
+  "twilight-gateway-0.17.1": {
+    "files": [
+      {
+        "file": "upstream/twilight-rs--twilight/b4ce13b727e7731b917576ad977300ab6926bb6b/LICENSE.md",
+        "sha256": "843a965df5c7157d273a84cc4c4b78b6e2b5a9dc814eb0de11ba0a0aed772726",
+        "url": "https://github.com/twilight-rs/twilight/blob/b4ce13b727e7731b917576ad977300ab6926bb6b/LICENSE.md"
+      },
+      {
+        "file": "upstream/twilight-rs--twilight/b4ce13b727e7731b917576ad977300ab6926bb6b/twilight-gateway/LICENSE.md",
+        "sha256": "1c6a32cdd30a9804551a5c02283cd56f5c09b8363b04bc8a883c3ceb3275dbff",
+        "url": "https://github.com/twilight-rs/twilight/blob/b4ce13b727e7731b917576ad977300ab6926bb6b/twilight-gateway/LICENSE.md"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "b4ce13b727e7731b917576ad977300ab6926bb6b"
+  },
+  "twilight-gateway-queue-0.17.0": {
+    "files": [
+      {
+        "file": "upstream/twilight-rs--twilight/007889d01731d75a0dadcee106795de21235acb4/LICENSE.md",
+        "sha256": "843a965df5c7157d273a84cc4c4b78b6e2b5a9dc814eb0de11ba0a0aed772726",
+        "url": "https://github.com/twilight-rs/twilight/blob/007889d01731d75a0dadcee106795de21235acb4/LICENSE.md"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "007889d01731d75a0dadcee106795de21235acb4"
+  },
+  "twilight-model-0.17.1": {
+    "files": [
+      {
+        "file": "upstream/twilight-rs--twilight/b4ce13b727e7731b917576ad977300ab6926bb6b/LICENSE.md",
+        "sha256": "843a965df5c7157d273a84cc4c4b78b6e2b5a9dc814eb0de11ba0a0aed772726",
+        "url": "https://github.com/twilight-rs/twilight/blob/b4ce13b727e7731b917576ad977300ab6926bb6b/LICENSE.md"
+      },
+      {
+        "file": "upstream/twilight-rs--twilight/b4ce13b727e7731b917576ad977300ab6926bb6b/twilight-model/LICENSE.md",
+        "sha256": "1c6a32cdd30a9804551a5c02283cd56f5c09b8363b04bc8a883c3ceb3275dbff",
+        "url": "https://github.com/twilight-rs/twilight/blob/b4ce13b727e7731b917576ad977300ab6926bb6b/twilight-model/LICENSE.md"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "b4ce13b727e7731b917576ad977300ab6926bb6b"
+  },
+  "typesize-derive-0.1.11": {
+    "files": [
+      {
+        "file": "upstream/GnomedDev--typesize/87ee70113c5689ca009e38ce663f9905c90a7a7c/LICENCE",
+        "sha256": "9567caf17d2e5690c826388407613be63657bcc77fcb46de760f30f1ed0ea65c",
+        "url": "https://github.com/GnomedDev/typesize/blob/87ee70113c5689ca009e38ce663f9905c90a7a7c/LICENCE"
+      }
+    ],
+    "review": "Exact upstream release files retained; applicability and combined-license obligations require distribution review.",
+    "revision": "87ee70113c5689ca009e38ce663f9905c90a7a7c"
+  }
+}

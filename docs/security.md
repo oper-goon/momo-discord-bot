@@ -1,11 +1,51 @@
 # Dependency and media security policy
 
-Review date: 2026-10-14. Next required exception review: 2026-12-20.
+Review date: 2026-11-24. Next required exception review: 2026-12-20.
 Every dependency change must re-evaluate these conclusions. CI blocks new
 vulnerabilities, yanked dependencies, unmaintained packages, and unapproved
 licenses unless a specific reviewed exception is in `deny.toml`.
 
 ## Dependency decisions
+
+The 2026-11-24 release follow-up updates the lockfile to Tokio 1.54.1,
+rustls-webpki 0.103.17, webpki-roots 1.0.12 and url 2.5.9 (with
+form_urlencoded 1.2.3). These remove RUSTSEC-2026-0386, -0382, -0381 and
+-0592 from the advisory gate. The next follow-up updates bundled libsqlite3-sys
+to 0.39.1 (SQLite 3.54.1), within SQLx 0.9.1's supported range. A database test
+checks the actual linked SQLite version against the 3.54.0 security floor.
+Poise's chrono feature is retained because existing picker sessions use its
+feature-gated `Context::id`. Two maintenance-only exceptions are reviewed below.
+The coordinated voice-backend upgrade replaces crypto-bigint 0.5.5 with patched
+0.7.11; the advisory gate passes without a vulnerability exception.
+See `docs/audit/dependency-remediation.md` for the full dependency record.
+
+- `chrono` 0.4.45 remains through Poise/Serenity timestamps and Songbird 0.6.1 →
+  serde-aux defaults. Removing Poise's feature was compile-tested and rejected
+  because it removes `Context::id`, used by image, media and TorBox pickers.
+  Existing behavior is preserved. Songbird's
+  FFprobe code uses numeric/bool helpers, not serde-aux's date helpers. There is
+  no patched Chrono release. RUSTSEC-2026-0543 is accepted as maintenance debt,
+  not a claim that Chrono is maintained or free of vulnerabilities. Recheck
+  on parent/feature changes and by 2026-12-20; prefer upstream removal of the
+  unused default feature over a large local fork.
+- `pin-utils` 0.1.1 remains through Davey → OpenMLS's `js` feature →
+  fluvio-wasm-timer. OpenMLS 0.8.3 uses `std::time` on native platforms;
+  its Fluvio lifetime import is wasm32-only. RUSTSEC-2026-0441 is accepted as
+  maintenance debt for this native bot. Recheck on dependency/target changes
+  and by 2026-12-20. This is not an approval of WebAssembly deployment.
+- Three MIT-licensed adapters (`vendor/davey`, `vendor/openmls_basic_credential`,
+  `vendor/openmls_rust_crypto`) retain the DAVE 1/OpenMLS 0.8 protocol, traits and
+  storage APIs while updating P-256 to 0.14 and HPKE to 0.8. Upstream
+  crypto-bigint 0.7.11 and ctutils 0.4.8 supply the arithmetic fixes for
+  RUSTSEC-2026-0387. No cryptographic arithmetic was patched locally. Keep
+  raw 32-byte private keys, uncompressed SEC1 public keys and DER signatures
+  compatible. Tests cover the prior RFC6979 vector, malformed inputs, HPKE
+  encryption/export, and DAVE handshakes/epoch rotation. Original and upgraded
+  peers interoperate in both hosting directions with encrypted packet exchange
+  and tamper rejection. These are offline protocol tests, not live Discord/RTP
+  or decoded Opus playback. See `vendor/README.md` for exact provenance and
+  `tests/voice-interop/README.md` for reproduction. Prefer upstream compatible
+  releases when available, then remove adapters and their patches together.
 
 - Serenity and Songbird use native TLS, removing Serenity 0.12.5's old
   rustls-webpki 0.102 chain. Linux deployments must keep system OpenSSL updated.
@@ -13,28 +53,25 @@ licenses unless a specific reviewed exception is in `deny.toml`.
   release updates Rustls from 0.23.45 to the advisory-patched 0.23.46; existing
   vendored backports and reviewed exceptions remain unchanged. The yanked
   yoke-derive 0.8.3 is replaced with compatible 0.8.4.
-- `libcrux-chacha20poly1305` 0.0.7 is vendored with the upstream 0.0.8
+- Historical `libcrux-chacha20poly1305` 0.0.7 was vendored with the upstream 0.0.8
   overlong-output-buffer panic fix for RUSTSEC-2026-0124 because Songbird 0.6's
   HPKE chain pins the older API. See `vendor/README.md`. The public API and
-  cryptographic output are unchanged. Cargo-deny cannot associate registry
-  advisories with path dependencies, so the regression guard remains required.
-- `libcrux-secrets` 0.0.5 is vendored with the upstream four-instruction fix for
+  cryptographic output are unchanged. HPKE 0.8 now resolves newer upstream
+  libcrux packages; this old patch is no longer active. Sources remain for provenance.
+- Historical `libcrux-secrets` 0.0.5 was vendored with the upstream four-instruction fix for
   RUSTSEC-2026-0212. See `vendor/README.md`. No affected instruction remains.
   Cargo-deny does not scan this path dependency as a registry package; review
   its provenance and the regression guard separately. Local tests do not
-  execute the ARM assembly.
+  execute the ARM assembly. This old patch is no longer active after the HPKE
+  upgrade; the historical source guard is retained as provenance protection.
 - `ringbuf` 0.4.8 is vendored with the upstream 0.5.2 panic-safe consumer
   removal guard for RUSTSEC-2026-0293 because Songbird 0.6 still requires the
   0.4 API. See `vendor/README.md`. Cargo-deny cannot associate registry
   advisories with path dependencies, so the source regression guard and
   provenance review are mandatory until Songbird supports 0.5.2 or later.
-- RUSTSEC-2026-0207 and RUSTSEC-2026-0208 in libcrux-sha3 0.0.8 have narrow
-  reachability exceptions: its only active consumer, hpke-rs 0.6.1
-  `src/kem.rs` lines 154 and 158, calls the one-shot `shake256::<32>` and
-  `shake256::<64>` functions. It does not use repeated incremental squeezes,
-  and both fixed output sizes are divisible by eight. The affected APIs and
-  output sizes cannot be requested by bot users. A dependency update or new
-  consumer invalidates this review; do not broaden these exceptions.
+- The prior RUSTSEC-2026-0207/0208 exceptions for libcrux-sha3 0.0.8 are
+  removed: HPKE 0.8 resolves libcrux-sha3 0.0.12. Do not restore those old
+  reachability exceptions for a different package graph.
 - Unmaintained `derivative` and `proc-macro-error2` are transitive build-time
   macros. `instant` is required through OpenMLS/parking_lot and uses native
   time on supported deployments. These are maintenance risks, not claims
@@ -146,3 +183,22 @@ deleted only after a successful repost; if deletion fails, Momo removes the
 new webhook message to avoid duplicates. Messages with attachments, stickers,
 or polls are not reposted. The module requires Message Content plus Discord's
 Manage Messages and Manage Webhooks permissions and is disabled by default.
+
+Media lookup sends bounded title queries only to fixed HTTPS AniList and TMDB
+API origins. It disables proxies and redirects, bounds each response to 512 KiB,
+limits total lookup time to 25 seconds and concurrent lookups to two, and never
+logs or persists queries, provider payloads, or TMDB_READ_ACCESS_TOKEN. Only
+numeric provider IDs and validated trailer IDs form external links. Provider
+HTML is stripped and Discord markdown is escaped and length-bounded. The bot
+does not fetch trailers or artwork. TMDB read tokens use Authorization headers; TMDB_API_KEY uses the provider's
+required api_key query parameter. HTTP errors are replaced with safe messages
+so credential-bearing URLs are never returned or logged. Missing credentials disable movie/TV lookup without affecting
+anime or offline startup validation. No dependencies were added to the workspace.
+
+Media cover artwork is referenced in Discord embeds, never fetched by Momo.
+Only HTTPS AniList cover URLs on s4.anilist.co and validated TMDB poster paths
+on image.tmdb.org are accepted. Search selection menus retain at most ten
+bounded result previews per session, with 64 sessions and a five-minute expiry.
+Selections are single-use and bound to the invoking user, guild, and channel;
+module activation and the originating search command's current permission policy
+are rechecked. Selected details share the normal provider concurrency limits.

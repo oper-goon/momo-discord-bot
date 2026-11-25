@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security reporting
+    url: https://github.com/oper-goon/momo-discord-bot/security
+    about: Check SECURITY.md and request a private channel before sharing sensitive details.
