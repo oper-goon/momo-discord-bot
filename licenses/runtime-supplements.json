@@ -22,7 +22,7 @@
       "file": "upstream/brainicism--bgutil-ytdlp-pot-provider/26475e9d3665b972c4aeb83b4dbaafcf64b88438/source.tar.gz",
       "sha256": "a8144eab6a4f38f320063688531f461afe18c0a58be2dd3152b780f4851e954d",
       "url": "https://codeload.github.com/brainicism/bgutil-ytdlp-pot-provider/tar.gz/26475e9d3665b972c4aeb83b4dbaafcf64b88438",
-      "scope": "Unmodified upstream repository archive; plugin reports version 2.0.2. Installed wheel equivalence and complete corresponding-source obligations are not yet verified."
+      "scope": "Unmodified upstream repository archive. All three Python files match the PyPI 2.0.2 wheel; each Docker build repeats the comparison. Complete corresponding-source obligations require separate review."
     }
   }
 ]

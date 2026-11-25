@@ -6,10 +6,12 @@ COPY crates ./crates
 COPY migrations ./migrations
 COPY vendor ./vendor
 COPY scripts/collect_rust_notices.py ./scripts/collect_rust_notices.py
+COPY scripts/collect_toolchain_notices.py ./scripts/collect_toolchain_notices.py
 COPY LICENSE ./LICENSE
 COPY licenses ./licenses
 ARG REVISION=unknown
 RUN cargo build --locked --release -p bot-app
+RUN python3 scripts/collect_toolchain_notices.py --expected-release 1.98.1 --output /build-toolchain-notices
 RUN target=$(rustc -vV | sed -n 's/^host: //p') && \
     cargo metadata --locked --format-version 1 --filter-platform "$target" > /tmp/cargo-metadata.json && \
     python3 scripts/collect_rust_notices.py --metadata /tmp/cargo-metadata.json \
@@ -53,6 +55,7 @@ RUN /opt/ytdlp/bin/python /usr/local/libexec/momokun/verify_bgutils_source.py \
     --output /usr/share/doc/momokun/licenses/BgUtils-source-verification.json
 COPY licenses/MPL-2.0.txt /usr/share/doc/momokun/bundle/licenses/MPL-2.0.txt
 COPY --from=builder /build-notices /usr/share/doc/momokun/bundle
+COPY --from=builder /build-toolchain-notices /usr/share/doc/momokun/toolchain-notices
 COPY vendor/davey/LICENSE /usr/share/doc/momokun/licenses/davey-MIT.txt
 COPY vendor/openmls_basic_credential/LICENSE /usr/share/doc/momokun/licenses/openmls-basic-credential-MIT.txt
 COPY vendor/openmls_rust_crypto/LICENSE /usr/share/doc/momokun/licenses/openmls-rust-crypto-MIT.txt

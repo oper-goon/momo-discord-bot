@@ -268,3 +268,27 @@ or guessed source download URLs are provided.
 | zeromq3 | `4.3.4-6` | libzmq5:amd64 | Yes |
 | zimg | `3.0.4+ds1-1` | libzimg2:amd64 | Yes |
 | zvbi | `0.2.41-1+deb12u1` | libzvbi-common, libzvbi0:amd64 | No |
+
+
+## Exact-source acquisition — 2026-11-25
+
+`scripts/collect_distribution_sources.py` acquires all installed Debian source
+packages at their recorded source versions, including their Debian patches and
+build recipes. It uses authenticated apt source indexes and verifies descriptor
+identity and every SHA-256/size in each `.dsc`. It also downloads each installed
+Python distribution's exact-version upstream sdist from PyPI, verifies its API
+SHA-256/size, and retains the original metadata. Sources are not extracted, built
+or executed. Missing versions fail the collection and remain in `source-index.json`.
+An upstream Python sdist is not proof of native-wheel or Debian-patch equivalence.
+
+The CI container job runs this larger download only for push commits containing
+`[collect-source]` in their message. Normal pull requests and container builds do
+not download the source set. Its separate private `runtime-source-evidence-*`
+artifact expires after seven days. Before any public binary/image release, retain
+and publish the matching source and notice artifacts with that release; an
+expiring private CI artifact is not recipient source delivery or a written offer.
+No public artifact or image publication is performed by this job.
+
+The latest completed Linux run at `f535afb` passed the BgUtils source-equivalence
+check and Debian common-license collection. The new source-collection and Rust
+standard-library notice integration still require their own Linux validation.

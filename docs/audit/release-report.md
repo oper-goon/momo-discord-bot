@@ -397,3 +397,15 @@ tests cover source mismatches, checksum failures, traversal and common-license
 retention. The changed Dockerfile has not yet passed a new Linux build; no local
 Docker engine is available. Deno embedded notices, Rust standard-library notices,
 the three Rust notice gaps, and Debian/Python corresponding-source work remain.
+
+
+### Combined runtime notice/source preparation
+
+The Rust builder now collects its actual pinned sysroot's generated standard-
+library/toolchain copyright reports, license texts and component metadata, with
+hashes and release/target provenance. Local toolchain collection succeeded.
+A separate opt-in CI source-download step is implemented for exact Debian source
+versions and Python sdists; it preserves a checksum inventory and fails on gaps.
+These changes need Linux validation and matching artifacts must be retained for
+recipient delivery before public binary/image publication. See the toolchain
+and system-source audit reports. No production service was changed.

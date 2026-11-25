@@ -93,3 +93,16 @@ permission to publish it and its derivatives on 2026-11-24. Three AI-generated
 derivatives are integrated and owner-approved. Creator attribution, if required
 by the original agreement, should be supplied before public publication. No
 third-party mascot has been substituted.
+
+
+## Runtime release materials
+
+The Docker builder preserves the installed Rust toolchain's generated
+`COPYRIGHT-library.html`, `COPYRIGHT.html`, license directory and provenance
+under `/usr/share/doc/momokun/toolchain-notices`. This is a conservative notice
+superset, not a claim that every listed compiler component is linked into Momo.
+The separate private CI runtime-source artifact collects exact Debian source
+packages and upstream Python source distributions. It must be retained and
+delivered as applicable with any public binary/image release; a seven-day private
+CI artifact alone does not fulfill recipient source access. Third-party source
+retains its own terms and is not restricted by Momokun's PolyForm license.

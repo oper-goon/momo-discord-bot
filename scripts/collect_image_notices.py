@@ -18,6 +18,7 @@ import sys
 
 NOTICE = re.compile(r"^(?:licen[cs]e|copying|copyright|notice|authors)(?:[._-].*)?$", re.I)
 TOOLS = {
+    "ffmpeg_linkage": ["ldd", "/usr/bin/ffmpeg"],
     "ffmpeg_license": ["ffmpeg", "-L"],
     "ffmpeg": ["ffmpeg", "-version"],
     "ffmpeg_build": ["ffmpeg", "-buildconf"],

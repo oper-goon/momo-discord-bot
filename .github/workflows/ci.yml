@@ -91,3 +91,28 @@ jobs:
           if docker volume inspect "$MOMO_TEST_VOLUME" >/dev/null 2>&1; then
             docker volume rm "$MOMO_TEST_VOLUME"
           fi
+      # Opt-in private evidence collection; normal PR/build checks stay small.
+      - name: Collect exact runtime source materials
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[collect-source]')
+        timeout-minutes: 90
+        run: |
+          mkdir -p outputs/runtime-sources
+          docker run --rm --user 0 --entrypoint /bin/sh \
+            --mount "type=bind,source=$PWD/scripts,target=/audit,readonly" \
+            --mount "type=bind,source=$PWD/outputs/runtime-sources,target=/source-output" \
+            momo:test -ec '
+              sed -i "s/^Types: deb$/Types: deb deb-src/" /etc/apt/sources.list.d/debian.sources
+              apt-get update
+              python3 /audit/collect_distribution_sources.py \
+                --inventory /usr/share/doc/momokun/image-notices/inventory.json \
+                --output /source-output
+            '
+      - name: Retain private runtime source evidence
+        if: always() && github.event_name == 'push' && contains(github.event.head_commit.message, '[collect-source]')
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-source-evidence-${{ github.run_id }}
+          path: outputs/runtime-sources
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: error
