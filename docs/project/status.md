@@ -77,3 +77,11 @@ The search correction passed Linux CI and the Docker build at commit `c1c2a33`.
 It has not been deployed to the live bot. The exact BgUtils upstream source
 archive is now retained with checksum provenance; installed-wheel equivalence
 and the remaining runtime distribution obligations still require review.
+
+
+The final Deno/npm image integration passed Linux CI at `0d2b550`. Exact source
+collection completed for 216 Debian source packages, 14 Python sdists, 1,042
+Deno registry archives and 20 pinned native sources. The matching notices and
+source identities were inspected; the site now preserves its original theme/
+icon license files too. Recorded attribution/scope review items and publication
+approval remain separate from these completed engineering checks.

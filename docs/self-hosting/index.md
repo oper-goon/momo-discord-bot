@@ -3,7 +3,7 @@
 Docker Compose is the recommended method. It runs the bot and a private YouTube PO-token provider. The provider has no published host port and receives no Discord credentials. SQLite storage is created and migrated automatically before the bot connects to Discord. You do not need PostgreSQL, Redis, a reverse proxy, or a web server.
 
 !!! warning "Release validation"
-    The files are prepared for source builds. Docker is unavailable in the implementation environment, so this revised installation has not been built or started here. Prebuilt public images have not been published.
+    The Linux x86_64 source-build candidate passed container startup, persistent storage, backup and restoration checks. Prebuilt public images have not been published.
 
 ## Quick start
 

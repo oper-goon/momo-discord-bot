@@ -6,7 +6,7 @@ Momokun is the public project name; the source, executable, and volume names sti
 
 You need a Discord account, permission to add a bot to your server, Git, and Docker with the Compose plugin. Docker Desktop includes Compose on Windows and macOS; on Linux install Docker Engine and its Compose plugin. Start Docker before continuing.
 
-The current release is pre-1.0. Linux x86_64 has previously been deployed; this documentation change has not received an isolated container acceptance test. ARM64 support is unverified. No measured minimum RAM/CPU specification exists: source compilation needs substantially more memory and disk than running the bot. Monitor your host, especially when downloading or converting media.
+The current release is pre-1.0. The Linux x86_64 candidate passed isolated container startup, persistence, backup and restoration checks, plus a focused live YouTube voice trial. ARM64 support is unverified. No measured minimum RAM/CPU specification exists: source compilation needs substantially more memory and disk than running the bot. Monitor your host, especially when downloading or converting media.
 
 Only Discord credentials are required. Easynews and TorBox need separate paid service accounts when enabled; movie/TV lookup needs TMDB credentials. YouTube, AniList, and the other credential-free integrations still need working outbound Internet access.
 

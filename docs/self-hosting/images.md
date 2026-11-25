@@ -33,5 +33,14 @@ under MPL 2.0; extract an included crate with `tar -xzf PACKAGE.crate`.
 Debian/Python packages and tool build information, with packaged notices beside
 it. These are review evidence, not a declaration that every redistribution
 obligation is complete. Missing upstream notices, system corresponding source,
-Deno and optional-provider materials remain release checks. Personal source
+Final combined-license and optional-provider review remain release checks. Personal source
 builds do not require a public registry image.
+
+
+The image also retains Rust's generated standard-library/toolchain reports under
+`toolchain-notices/` and a verified Deno notice bundle under
+`licenses/deno-2.9.4/` in the same documentation directory. The bundle preserves
+original TypeScript and dependency notices with source provenance. Original
+Meriyah/Astring notices and source archives accompany yt-dlp-ejs under
+`licenses/npm/`. Exact Debian/Python and larger Deno source collections are
+separate release materials, not an assertion of a reproducible upstream build.

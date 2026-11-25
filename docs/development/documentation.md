@@ -49,6 +49,7 @@ feature limitations when they change. Never put credentials into fixtures.
 
 ```sh
 python scripts/generate_reference.py --registry docs/reference/commands.json --check
+python scripts/collect_docs_notices.py --check
 python -m unittest discover -s scripts -p 'test_*.py'
 python -m mkdocs build --strict
 python scripts/check_docs.py
