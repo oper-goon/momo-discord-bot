@@ -29,7 +29,7 @@ flowchart TD
 | `config/example.toml` | Non-secret configuration example |
 | `vendor` | Reviewed compatibility/security backports and original notices |
 | `scripts` | Development, setup, and documentation tooling |
-| `docs` | Public MkDocs sources plus explicitly excluded internal audit/legacy notes |
+| `docs` | Public MkDocs website and contributor documentation |
 
 Feature modules depend inward on core, database, and API crates. They do not
 depend on each other. `bot-app` assembles the system; feature behavior belongs in

@@ -58,13 +58,7 @@ extra:
       name: Momokun on GitHub
   generator: false
 exclude_docs: |
-  /audit/
   /overrides/
-  /commands.md
-  /specification.md
-  /release-status.md
-  /music-providers.md
-  /persistence-testing.md
   /reference/commands.json
 nav:
   - Home: index.md
@@ -100,7 +94,7 @@ nav:
       - FAQ: project/faq.md
       - Contributing: project/contributing.md
       - Security: project/security.md
-      - Release readiness: project/status.md
+      - Project status: project/status.md
       - Engineering security policy: security.md
       - License: project/license.md
       - Branding: project/branding.md

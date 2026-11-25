@@ -5,6 +5,12 @@ Versioning and Keep a Changelog conventions.
 
 ## [Unreleased]
 
+### Documentation
+
+- Remove internal release-review reports and obsolete draft guides from the
+  public tree, retain maintained contributor tooling, and clarify project status
+  and public Actions artifact handling.
+
 ### Fixed
 
 - Accept natural music discovery queries containing the full artist and a partial

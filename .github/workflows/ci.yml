@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: docker build --build-arg REVISION=${{ github.sha }} -t momo:test .
-      - name: Extract private distribution evidence
+      - name: Extract distribution evidence
         run: |
           mkdir -p outputs/distribution
           container=$(docker create momo:test)
@@ -92,7 +92,7 @@ jobs:
           if docker volume inspect "$MOMO_TEST_VOLUME" >/dev/null 2>&1; then
             docker volume rm "$MOMO_TEST_VOLUME"
           fi
-      # Opt-in private evidence collection; normal PR/build checks stay small.
+      # Opt-in source evidence collection; normal PR/build checks stay small.
       - name: Collect exact runtime source materials
         if: github.event_name == 'push' && contains(github.event.head_commit.message, '[collect-source]')
         timeout-minutes: 90
@@ -108,7 +108,7 @@ jobs:
                 --inventory /usr/share/doc/momokun/image-notices/inventory.json \
                 --output /source-output
             '
-      - name: Retain private runtime source evidence
+      - name: Retain runtime source evidence
         if: always() && github.event_name == 'push' && contains(github.event.head_commit.message, '[collect-source]')
         uses: actions/upload-artifact@v4
         with:
@@ -123,7 +123,7 @@ jobs:
         run: |
           python3 scripts/collect_deno_notices.py --cache /tmp/momo-deno-source-cache \
             --output outputs/deno-evidence --all-rust --native-dependencies --native-sources
-      - name: Retain private Deno source and notice evidence
+      - name: Retain Deno source and notice evidence
         if: always() && github.event_name == 'push' && contains(github.event.head_commit.message, '[collect-source]')
         uses: actions/upload-artifact@v4
         with:

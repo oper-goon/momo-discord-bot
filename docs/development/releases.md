@@ -6,13 +6,10 @@ Repository actions build the site and upload the generated Pages artifact.
 
 ## Current status
 
-The workflow is prepared but publication is deliberately disabled.
-`PAGES_ENABLED` must equal `true` before artifact upload and deployment are allowed.
-No deployment is performed merely by building or previewing these files.
-The intended URL is
-`https://oper-goon.github.io/momo-discord-bot/`; it is not a claim that the site is
-already online. Relative navigation, assets and the link checker support this
-repository-specific path.
+The website is live at <https://oper-goon.github.io/momo-discord-bot/>.
+Validated changes on the default branch deploy automatically when the repository
+variable `PAGES_ENABLED` equals `true`. Pull requests validate without deployment.
+Relative navigation, assets and the link checker support the repository path.
 
 ## Configure Pages after approval
 
@@ -76,7 +73,7 @@ image. Supplement file hashes and packaged Git revisions must match.
 
 The runtime stage runs `scripts/collect_image_notices.py` after installing its
 tools. It captures Debian/Python versions, packaged notices and FFmpeg build
-configuration. CI extracts `/usr/share/doc/momokun/` as a private seven-day
+configuration. CI extracts `/usr/share/doc/momokun/` as a seven-day
 artifact for review. Neither collection script accesses bot configuration,
 credentials or production storage.
 
@@ -93,11 +90,21 @@ Deno's separate notice bundle and original Meriyah/Astring notices accompany its
 media tools. Update their pinned versions, provenance, sources and notices
 together; an image tool upgrade must not silently reuse another version's notices.
 
-For a private source-evidence run, use a reviewed feature-branch commit message
+For an opt-in source-evidence run, use a reviewed feature-branch commit message
 containing `[collect-source]`. The push CI run downloads exact Debian sources,
-Python sdists and Deno dependency sources into separate seven-day private
+Python sdists and Deno dependency sources into separate seven-day
 artifacts. Normal PR checks skip these larger downloads. Review each source index
 for gaps and retain the matching artifacts before their expiry. Public recipient
 source delivery remains part of the separately approved image release; these
-private artifacts do not publish an image, create a source offer or establish
+artifacts do not publish an image, create a source offer or establish
 complete licensing compliance.
+
+
+## Public artifacts and private maintenance records
+
+Actions logs and artifacts in this public repository must be treated as public.
+Never upload production configuration, credentials, database copies, private host
+inventories or operator screenshots. Dependency/source evidence collectors read
+package metadata and upstream sources; they must not access production inputs.
+Keep personal release reviews and host-specific test scripts outside the Git
+checkout. Maintain only reusable build, test and documentation tooling here.

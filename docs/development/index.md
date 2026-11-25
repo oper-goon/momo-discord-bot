@@ -5,12 +5,12 @@ Read `docs/security.md` before dependency, network, media, or credential changes
 The DAVE/OpenMLS adapters have dedicated package tests and a mixed-version
 offline harness documented in `tests/voice-interop/README.md`. Run both when
 changing voice crypto dependencies; keep the legacy reference test-only.
-The technical specification is an engineering contract, not a list of completed
-features. The source registry and feature guides describe implemented behavior.
+The source registry, architecture guide and feature guides describe implemented
+behavior. Internal release-review notes are maintained separately.
 
 ## Set up a development environment
 
-Install stable Rust (the workspace requires at least Rust 1.88), Git, CMake,
+Install the Rust version pinned in `rust-toolchain.toml`, Git, CMake,
 pkg-config and the platform's OpenSSL/Opus development libraries. Linux CI uses:
 
 ```sh

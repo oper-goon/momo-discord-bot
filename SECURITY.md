@@ -18,6 +18,5 @@ configuration and SQLite backups. Rotate a credential at its provider if it
 was exposed; deleting a file or commit does not revoke it.
 
 See `docs/security.md` for dependency exceptions, vendored backport requirements
-and network/media trust boundaries. Public release is pending the findings in
-`docs/audit/public-release-review.md`; there is no supported-version security
-guarantee at this stage.
+and network/media trust boundaries. See `docs/project/status.md` for deployment
+scope and current limitations. Report new findings privately.
