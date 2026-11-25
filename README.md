@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://oper-goon.github.io/momo-discord-bot/">
+    <img src="docs/assets/brand/momokun-readme-banner.png" alt="Momokun - self-hosted Discord bot" width="100%">
+  </a>
+</p>
+
 # Momokun
 
 A modular Discord bot you host yourself. Music queues and playlists, moderation
