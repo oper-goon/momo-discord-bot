@@ -13,6 +13,10 @@ Versioning and Keep a Changelog conventions.
 
 ### Fixed
 
+- Avoid music resolver output-limit failures on videos with large caption
+  metadata by requesting only required fields. Preserve the 2 MiB output cap,
+  bounded playlist/search entries, timeouts and provider cooldowns.
+
 - Accept natural music discovery queries containing the full artist and a partial
   title, such as `tyler the creator sugar`, without weakening explicit
   `Artist - Title` or playback fallback matching. Keep discovery cache entries

@@ -29,6 +29,10 @@ use url::Url;
 
 const MAX_AUDIO_BYTES: u64 = 64 * 1024 * 1024;
 const MAX_SEARCH_RESULTS: usize = 5;
+const MAX_RESOLVER_OUTPUT_BYTES: u64 = 2 * 1024 * 1024;
+// Do not serialize captions, format lists or other unused extractor payloads.
+// Even one YouTube video can carry several MiB of automatic-caption metadata.
+const RESOLVER_METADATA_TEMPLATE: &str = "%(.{title,url,webpage_url,duration,channel})j";
 
 fn classify_resolver_diagnostics(diagnostics: &[u8]) -> &'static str {
     let text = String::from_utf8_lossy(diagnostics).to_ascii_lowercase();
@@ -439,7 +443,9 @@ impl YtDlpSource {
             "--no-warnings",
             "--no-progress",
             "--skip-download",
-            "--dump-single-json",
+            "--simulate",
+            "--print",
+            RESOLVER_METADATA_TEMPLATE,
             "--socket-timeout",
             "10",
             "--retries",
@@ -472,11 +478,11 @@ impl YtDlpSource {
             let out = async {
                 let mut bytes = vec![];
                 stdout
-                    .take(2 * 1024 * 1024 + 1)
+                    .take(MAX_RESOLVER_OUTPUT_BYTES + 1)
                     .read_to_end(&mut bytes)
                     .await?;
                 ensure!(
-                    bytes.len() <= 2 * 1024 * 1024,
+                    bytes.len() as u64 <= MAX_RESOLVER_OUTPUT_BYTES,
                     "Resolver output exceeded limit"
                 );
                 Ok::<_, anyhow::Error>(bytes)
@@ -496,7 +502,7 @@ impl YtDlpSource {
                     classify_resolver_diagnostics(&diagnostics)
                 );
             }
-            serde_json::from_slice::<Value>(&out).context("Resolver returned invalid metadata")
+            Self::parse_resolver_output(&out, entry_limit)
         };
         let result = tokio::time::timeout(
             Duration::from_secs(self.config.resolver_timeout_seconds),
@@ -513,6 +519,24 @@ impl YtDlpSource {
                 let _ = child.kill().await;
                 anyhow::bail!("Media resolver timed out")
             }
+        }
+    }
+    fn parse_resolver_output(bytes: &[u8], entry_limit: Option<usize>) -> Result<Value> {
+        // --print emits one JSON object per entry, including flat playlist/search
+        // results. Rebuild only the envelope expected by the existing parsers.
+        let limit = entry_limit.unwrap_or(1);
+        let mut entries = Vec::new();
+        for value in serde_json::Deserializer::from_slice(bytes).into_iter::<Value>() {
+            let value = value.context("Resolver returned invalid metadata")?;
+            ensure!(value.is_object(), "Resolver returned invalid metadata");
+            ensure!(entries.len() < limit, "Resolver returned too many entries");
+            entries.push(value);
+        }
+        ensure!(!entries.is_empty(), "Resolver returned no metadata");
+        if entry_limit.is_some() {
+            Ok(serde_json::json!({ "entries": entries }))
+        } else {
+            Ok(entries.remove(0))
         }
     }
     pub fn parse_entries(value: Value, user: u64, limit: usize) -> Result<Vec<TrackRef>> {
@@ -1389,6 +1413,52 @@ mod tests {
         }
         assert!(public_ip("8.8.8.8".parse().unwrap()));
         assert!(public_ip("2606:4700:4700::1111".parse().unwrap()));
+    }
+    #[test]
+    fn compact_resolver_records_preserve_track_and_search_metadata() {
+        let record = serde_json::json!({
+            "title": "Example song", "channel": "Example artist", "duration": 12.5,
+            "webpage_url": "https://www.youtube.com/watch?v=example",
+            "url": "https://media.example/audio"
+        });
+        let bytes = serde_json::to_vec(&record).unwrap();
+        assert_eq!(
+            YtDlpSource::parse_resolver_output(&bytes, None).unwrap(),
+            record
+        );
+        let mut records = bytes.clone();
+        records.extend_from_slice(b"\n\n");
+        records.extend_from_slice(&bytes);
+        records.extend_from_slice(b"\n");
+        let playlist = YtDlpSource::parse_resolver_output(&records, Some(2)).unwrap();
+        assert_eq!(playlist["entries"][0]["channel"], "Example artist");
+        let tracks = YtDlpSource::parse_entries(playlist, 42, 2).unwrap();
+        assert_eq!(tracks.len(), 2);
+        assert_eq!(
+            tracks[0].canonical_url,
+            record["webpage_url"].as_str().unwrap()
+        );
+        assert_eq!(tracks[0].duration_ms, Some(12_500));
+        assert_eq!(tracks[0].requested_by, "42");
+        // A video's selected audio URL must not replace its canonical page URL.
+        assert_ne!(tracks[0].canonical_url, record["url"].as_str().unwrap());
+    }
+    #[test]
+    fn compact_resolver_rejects_empty_malformed_and_excess_records() {
+        for bytes in [
+            &b""[..],
+            &b" \n "[..],
+            &b"null"[..],
+            &b"[]"[..],
+            &b"{\"title\":\"Example\"}\nnot json"[..],
+        ] {
+            assert!(YtDlpSource::parse_resolver_output(bytes, None).is_err());
+        }
+        let records = b"{\"title\":\"One\"}\n{\"title\":\"Two\"}\n";
+        assert!(YtDlpSource::parse_resolver_output(records, None).is_err());
+        assert!(YtDlpSource::parse_resolver_output(records, Some(1)).is_err());
+        assert!(YtDlpSource::parse_resolver_output(records, Some(0)).is_err());
+        assert!(YtDlpSource::parse_resolver_output(records, Some(2)).is_ok());
     }
     #[test]
     fn validates_urls_and_bounded_metadata() {

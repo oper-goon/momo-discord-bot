@@ -46,3 +46,11 @@ Playback uses Songbird directly with bounded public HTTP streams; there is no pe
 If nothing plays, check voice permissions, caller voice-channel membership, the bot's queue and `/music status`. Check outbound voice UDP and provider HTTPS access. Docker supplies yt-dlp and Deno; native installations must install those tools themselves. YouTube challenges or unavailable formats can fail despite a working bot. Account credentials being configured does not prove subscription validity. Try a precise authorized text query instead of an uninspectable video URL. Audible voice playback, seek behavior and live TorBox music remain release acceptance checks; do not treat mocked provider tests as complete voice validation.
 
 
+
+
+YouTube inspection requests only the title, canonical/selected URLs, duration and
+channel needed by the music resolver. Unused captions and format inventories are
+not included in its output. JSON output remains limited to 2 MiB, with bounded
+entry counts and a resolver timeout. A provider failure can temporarily trigger
+`Provider cooling down`; wait for the configured cooldown (120 seconds by
+default) before retrying. Repeated retries do not bypass that protection.

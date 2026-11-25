@@ -120,3 +120,18 @@ canonical migration hashes with the database's applied hashes on a restored
 copy before switching services. If an older installation applied different
 bytes, retain its matching original build and review recovery separately; do
 not force the new build to accept altered history.
+
+
+## Music reports resolver output exceeded limit
+
+This refers to yt-dlp metadata, not the audio file size. Some YouTube videos
+include several megabytes of automatic-caption metadata. Current music resolver
+code requests only the fields needed for playback, while preserving the 2 MiB
+output limit. Update an older installation rather than increasing or removing
+the safety limit. If the error persists, report the bot version, command and a
+public video link; never post signed playback URLs or raw resolver output.
+
+`Provider cooling down` means a previous attempt triggered temporary provider
+backoff. Wait for `music.provider_cooldown_seconds` (120 seconds by default,
+possibly overridden by `MUSIC_PROVIDER_COOLDOWN`) and retry once. A cooldown
+is not a ban, and does not establish that account credentials are invalid.
