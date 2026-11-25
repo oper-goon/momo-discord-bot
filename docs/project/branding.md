@@ -17,6 +17,7 @@ The website supports these integration points:
 | momokun-banner.webp | Home hero artwork |
 | momokun-wordmark.webp or momokun-wordmark.png | Navigation logo |
 | favicon.png | Small recognizable browser icon |
+| momokun-readme-banner.png | Owner-supplied original README banner |
 | momokun-social.png | Social sharing image and home banner fallback |
 | momokun-mascot.webp | Reserved mascot artwork integration |
 
