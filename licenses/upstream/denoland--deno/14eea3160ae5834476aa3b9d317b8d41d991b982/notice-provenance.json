@@ -1,0 +1,30 @@
+[
+  {
+    "file": "LICENSE.md",
+    "git_blob": "b641c75c0b04ccfddcb1145d2554ab49b6ca9411",
+    "sha256": "f62497fffecc0852960c8d3e6934b9db86d16396e9b604072e923892cae3a588",
+    "revision": "14eea3160ae5834476aa3b9d317b8d41d991b982",
+    "url": "https://raw.githubusercontent.com/denoland/deno/14eea3160ae5834476aa3b9d317b8d41d991b982/LICENSE.md"
+  },
+  {
+    "file": "cli/tsc/dts/node/LICENSE",
+    "git_blob": "9e841e7a26e4eb057b24511e7b92d42b257a80e5",
+    "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+    "revision": "14eea3160ae5834476aa3b9d317b8d41d991b982",
+    "url": "https://raw.githubusercontent.com/denoland/deno/14eea3160ae5834476aa3b9d317b8d41d991b982/cli/tsc/dts/node/LICENSE"
+  },
+  {
+    "file": "cli/tsc/dts/node/undici/LICENSE",
+    "git_blob": "e7323bb52ec35279e2df7d728a6dd5a10b99afd8",
+    "sha256": "a6db8096b2707bc0102d256917d4d33f298ba36d8c3f25de067a2b5bb379db27",
+    "revision": "14eea3160ae5834476aa3b9d317b8d41d991b982",
+    "url": "https://raw.githubusercontent.com/denoland/deno/14eea3160ae5834476aa3b9d317b8d41d991b982/cli/tsc/dts/node/undici/LICENSE"
+  },
+  {
+    "file": "ext/webgpu/LICENSE.md",
+    "git_blob": "b641c75c0b04ccfddcb1145d2554ab49b6ca9411",
+    "sha256": "f62497fffecc0852960c8d3e6934b9db86d16396e9b604072e923892cae3a588",
+    "revision": "14eea3160ae5834476aa3b9d317b8d41d991b982",
+    "url": "https://raw.githubusercontent.com/denoland/deno/14eea3160ae5834476aa3b9d317b8d41d991b982/ext/webgpu/LICENSE.md"
+  }
+]

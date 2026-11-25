@@ -106,3 +106,16 @@ packages and upstream Python source distributions. It must be retained and
 delivered as applicable with any public binary/image release; a seven-day private
 CI artifact alone does not fulfill recipient source access. Third-party source
 retains its own terms and is not restricted by Momokun's PolyForm license.
+
+
+Deno 2.9.4's conservative exact-source notice bundle is verified and unpacked
+under `licenses/deno-2.9.4` in the image notice directory. Its index records
+original notice hashes, source URLs and remaining scope limits. Complete Deno
+dependency source archives are retained separately by the opt-in CI source job.
+
+The yt-dlp-ejs tool is pinned to 0.8.0. Its verified source lockfile declares
+Meriyah 6.1.4 (ISC) and Astring 1.9.0 (MIT). Their original notices and complete
+SHA-512-verified npm archives accompany the image under `licenses/npm`;
+`licenses/ejs-dependencies.json` records parent-source and archive provenance.
+This preserves their supplied notices without asserting reproduction of the
+bundled JavaScript build.

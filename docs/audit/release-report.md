@@ -1,18 +1,41 @@
 # Momokun public-release preparation report
 
-Review date: 2026-11-24. Branch: `feature/public-release-docs`.
+Review date: 2026-11-25. Branch: `feature/public-release-docs`.
 Worktree: `work/public-release` inside the original repository.
 
-Current dependency status: the voice-backend adapters remove the last
-vulnerability without an advisory waiver. All four cargo-deny gates pass.
-Original/upgraded DAVE peers interoperate in both hosting directions, including
-member-add epoch rotation and twelve encrypted packet roundtrips. See
-[voice upgrade](voice-upgrade.md). Earlier findings/counts below describe the
-historical audit. Linux container/offline recovery validation passed; complete
-third-party distribution validation remains pending;
-no public release or merge occurred. A later explicitly authorized 20-minute
-production-identity trial reached readiness and restored the original image;
-no playback was recorded. See [trial evidence](voice-smoke.md).
+## Current executive summary
+
+The documentation, community files, approved branding, source-available licensing
+materials and Docker self-hosting workflow are implemented in private draft PR
+#10. References cover 112 command registry nodes, 11 modules, 31 configuration
+fields and 18 environment variables. Strict documentation builds and 2,899
+internal links/assets pass. Local Python checks pass 43 tests with two Windows
+symlink skips.
+
+The dependency vulnerability fixes and voice adapters pass Linux quality gates
+and preserve original/upgraded DAVE interoperability. The latest tested Linux
+image includes Rust standard-library notices, all 17 Debian common-license texts
+and verified BgUtils source. Offline persistence, backup and restoration pass.
+Its exact Debian/Python source acquisition is running; final Deno/npm notice
+integration is prepared locally and still needs a new Linux image run.
+
+The owner accepted the running bot after months of live use. A separate candidate
+trial confirmed audible YouTube URL playback, controls, active shutdown and audio
+after restart. The original production image/configuration was restored. The
+later partial-title search fix passed regression tests and CI; it is not deployed.
+
+Deno source/notice acquisition retains all 1,042 locked registry archives and
+20 native source archives. Its 1,704-file notice bundle and exact Meriyah/Astring
+notices are prepared. Three bot dependency attribution/provenance gaps and the
+recorded conservative Deno scope limits remain review items. Source acquisition
+and private expiring artifacts are not automatic license clearance or recipient
+source delivery.
+
+No merge, repository visibility change, public Pages deployment, public image
+publication or permanent production upgrade has occurred. These remain subject
+to explicit approval after the final reviewable candidate is validated.
+
+## Historical discovery and follow-up notes
 
 Follow-up: the owner approved the documentation and generated branding. The
 candidate was pushed privately as draft PR #10. Compatible dependency updates
@@ -409,3 +432,22 @@ versions and Python sdists; it preserves a checksum inventory and fails on gaps.
 These changes need Linux validation and matching artifacts must be retained for
 recipient delivery before public binary/image publication. See the toolchain
 and system-source audit reports. No production service was changed.
+
+
+Deno acquisition now retains all 1,042 locked registry archives and 20 exact
+native source archives with no failed downloads. A verified 1,704-file
+notice/provenance bundle is integrated into the Dockerfile. All 14 earlier-image
+Python sdists passed local acquisition checks; exact Meriyah/Astring source
+archives and missing original notices are now retained. Local validation passes
+43 Python tests with two Windows symlink skips, strict MkDocs and 2,899 internal
+links/assets. The current Linux run is validating the first sysroot/source-
+collection commit; the final Deno/npm image integration still needs its own run.
+
+
+Linux image evidence for `fc3859f` confirms Rust 1.98.1 on
+`x86_64-unknown-linux-gnu`: 19 original toolchain notice/metadata files including
+both generated COPYRIGHT reports. The image inventory records all 17 Debian
+common-license texts with no collection issues, 311 Debian packages and 14 Python
+distributions. Its three BgUtils Python files match retained source. Docker build,
+offline persistence and isolated backup/restore checks passed; exact runtime
+source downloads are still running. This artifact is retained locally for review.

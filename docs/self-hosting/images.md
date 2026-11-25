@@ -12,8 +12,8 @@ After an actual image exists, updates use `docker compose pull` followed by `doc
 
 The image now accepts VERSION and REVISION build arguments for OCI metadata (defaults: development/unknown). Release builders must supply the reviewed tag and commit. The first-party license label is PolyForm-Noncommercial-1.0.0; application license and third-party notices are included under /usr/share/doc/momokun/. Full transitive binary-license collection remains a release gate.
 
-Other image build arguments are `YT_DLP_VERSION=2026.10.26` and
-`BGUTIL_PROVIDER_VERSION=2.0.2`; change these only with compatibility/security
+Other image build arguments are `YT_DLP_VERSION=2026.10.26`,
+`YT_DLP_EJS_VERSION=0.8.0` and `BGUTIL_PROVIDER_VERSION=2.0.2`; change these only with compatibility/security
 testing. The Deno image stage is pinned to `2.9.4`. Runtime image settings
 `DENO_NO_UPDATE_CHECK=1` and `DENO_NO_PROMPT=1` disable Deno update checks and prompts;
 they are media-tool settings, not bot configuration fields. `PATH` includes

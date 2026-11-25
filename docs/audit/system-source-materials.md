@@ -292,3 +292,20 @@ No public artifact or image publication is performed by this job.
 The latest completed Linux run at `f535afb` passed the BgUtils source-equivalence
 check and Debian common-license collection. The new source-collection and Rust
 standard-library notice integration still require their own Linux validation.
+
+
+All 14 Python sdists from the earlier audited image have also been downloaded
+and SHA-256/size verified locally with zero acquisition issues. This is separate
+from the current Linux image's pending source run. The yt-dlp-ejs source identified
+Meriyah 6.1.4 and Astring 1.9.0; their original ISC/MIT notices and complete npm
+archives were recovered, verified against package-lock SHA-512 integrity, and
+added with provenance. The Dockerfile now pins yt-dlp-ejs 0.8.0 so those notices
+cannot silently accompany a different tool version.
+
+
+The `fc3859f` Linux image now records `ffmpeg -L` reporting GPL-2.0-or-later,
+and `ldd` confirms its shared dependency chain includes libcdio, libcdio-cdda
+and libcdio-paranoia. Their own preserved terms remain applicable; the FFmpeg
+banner alone is not the complete component inventory. All 17 Debian common-
+license files were collected without issues. The exact source-package download
+step is running separately after successful image/offline recovery validation.

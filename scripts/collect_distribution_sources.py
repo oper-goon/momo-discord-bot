@@ -142,6 +142,19 @@ def collect(inventory, output):
         report["python"].append(record)
         print(f"Python {name}: {'incomplete' if 'issue' in record else 'verified'}", flush=True)
     (output / "source-index.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    (output / "README.txt").write_text(
+        "Momokun runtime source materials\n\n"
+        "source-index.json maps installed binary packages to exact Debian source versions and file hashes.\n"
+        "Debian directories retain .dsc descriptors, upstream archives, patches and build recipes.\n"
+        "On a development machine with dpkg-dev, extract a Debian source package using: dpkg-source -x PACKAGE.dsc\n"
+        "Its debian/rules and debian/README.source (where supplied) describe the Debian build.\n"
+        "Python directories retain exact-version upstream sdists and original PyPI metadata.\n"
+        "Python sdists alone are not a wheel-equivalence or native-build attestation.\n"
+        "Archives are retained unmodified and were not extracted, built or executed by this collector.\n"
+        "Third-party source retains its own notices and terms; Momokun PolyForm restrictions do not apply to it.\n"
+        "Retain this bundle with its matching image/revision and notice bundle for recipient delivery.\n"
+        "Review source-index.json issues; an incomplete bundle must not be presented as complete.\n",
+        encoding="utf-8")
     return report
 
 

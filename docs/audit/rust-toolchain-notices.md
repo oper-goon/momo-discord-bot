@@ -54,3 +54,15 @@ python3 -B -m unittest discover -s scripts -p test_collect_toolchain_notices.py 
 ```
 
 Linux image acceptance must build the integrated Dockerfile and inspect the final-image toolchain manifest/COPYRIGHT/license files. No Linux container was started by this task. A successful future image build should record its actual Linux target and evidence counts rather than reuse the Windows values above.
+
+
+### Linux acceptance
+
+The `fc3859f` Linux Docker build passed. Its extracted image manifest confirms
+Rust 1.98.1, compiler commit `48a229ceaefd4985c50990b14116b6d856af0985`, target
+`x86_64-unknown-linux-gnu`, and **19 notice/metadata files** including both
+generated COPYRIGHT reports and the bundled license directory. The offline
+startup, persistent volume, backup and isolated restore checks also passed.
+This closes the collector's Linux integration test; the source-material job is
+separate. The full toolchain superset still does not imply every compiler
+component is linked into the application.

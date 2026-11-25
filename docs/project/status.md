@@ -1,8 +1,8 @@
 # Release readiness
 
-Momokun is currently version **0.9.0, pre-1.0**. The source implements the features
-in the module guides; some live integrations and deployment procedures still
-require acceptance testing. Preparation is not a claim of production readiness.
+Momokun is currently version **0.9.0, pre-1.0**. The owner has accepted the running
+bot after months of live use, and the dependency candidate passed a focused
+voice trial. Public release and image distribution preparation remain in progress.
 
 ## Security gate
 
@@ -23,12 +23,13 @@ maintenance exceptions expire for review on 2026-12-20. See the
 Existing [vendored backports and exceptions](../security.md) remain separate
 obligations; a green dependency scan alone would not validate their source patches.
 
-## Acceptance still needed
+## Validation and limits
 
 - A focused existing-bot trial passed operator-observed YouTube playback,
   pause/resume, skip, active-audio shutdown and playback after restart; the
   original image was restored afterward. The partial-title search fix found
-  during that trial still needs final CI/live verification. Linux x86_64 CI passed the revised
+  during that trial passed regression tests and Linux CI; it has not been deployed
+  live. Linux x86_64 CI passed the revised
   image build, Compose configuration, offline startup, persistent storage,
   SQLite backup/restore and integrity checks. These used disposable storage
   without credentials or network access.
@@ -36,12 +37,13 @@ obligations; a green dependency scan alone would not validate their source patch
   on 2026-11-24. This is operator-reported acceptance of the running bot;
   the new dependency build passed a second operator-observed voice trial
   and was rolled back afterward.
-- Account-backed Easynews and TorBox behavior across supported plans. Local
-  metadata/configured status is not proof of successful authentication.
+- The focused voice trial did not cover every Easynews or TorBox subscription
+  plan. Local configured status alone is not proof of account authentication.
 - ARM64 build, runtime and vendored assembly tests before advertising that target.
-- Full transitive binary/image notice collection and any required artist credit.
-  The owner confirmed code and artwork rights; three generated derivatives have
-  been integrated and approved.
+- The owner confirmed code/artwork rights and approved the three integrated
+  branding derivatives. Binary distribution review retains three Rust attribution
+  gaps and Deno linked-component scope limits. Source/notice acquisition and
+  recipient source delivery are tracked separately from application acceptance.
 
 ## Publication status
 

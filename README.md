@@ -7,9 +7,8 @@ Written in Rust; internal crate and executable names still use Momo.
 [![CI](https://github.com/oper-goon/momo-discord-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/oper-goon/momo-discord-bot/actions/workflows/ci.yml)
 [![Documentation](https://github.com/oper-goon/momo-discord-bot/actions/workflows/docs.yml/badge.svg)](https://github.com/oper-goon/momo-discord-bot/actions/workflows/docs.yml)
 
-**0.9.0, pre-1.0.** Public release preparation is in progress. Live Discord,
-container, dependency-security, artwork, and licensing acceptance remain release
-gates. No public website or container image was published by this initiative.
+**0.9.0, pre-1.0.** Public release preparation is in progress. The owner has accepted the running bot and approved its branding. Final
+container/source-distribution validation and licensing review remain release gates. No public website or container image was published by this initiative.
 
 [Documentation sources](docs/index.md) ·
 [Documentation website (after approval)](https://oper-goon.github.io/momo-discord-bot/) ·

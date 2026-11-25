@@ -18,6 +18,9 @@ Versioning and Keep a Changelog conventions.
 
 ### Added
 
+- Preserve Rust standard-library and Deno dependency notice bundles, recover
+  yt-dlp-ejs component notices, and provide opt-in exact runtime-source collection
+  for release evidence. Pin yt-dlp-ejs alongside its reviewed notices.
 - Collect exact-image Debian/Python inventories and Rust dependency notices with
   checksum-verified upstream source archives. Retain unresolved attribution and
   source requirements for review before binary/image publication.

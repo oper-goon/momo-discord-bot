@@ -32,9 +32,11 @@ LABEL org.opencontainers.image.title="Momokun" \
       org.opencontainers.image.licenses="PolyForm-Noncommercial-1.0.0"
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates ffmpeg libssl3 libopus0 python3 python3-venv sqlite3 && rm -rf /var/lib/apt/lists/*
 ARG YT_DLP_VERSION=2026.10.26
+ARG YT_DLP_EJS_VERSION=0.8.0
 ARG BGUTIL_PROVIDER_VERSION=2.0.2
 RUN python3 -m venv /opt/ytdlp && /opt/ytdlp/bin/pip install --no-cache-dir \
     "yt-dlp[default]==${YT_DLP_VERSION}" \
+    "yt-dlp-ejs==${YT_DLP_EJS_VERSION}" \
     "bgutil-ytdlp-pot-provider==${BGUTIL_PROVIDER_VERSION}"
 COPY --from=deno /deno /usr/local/bin/deno
 RUN useradd --system --uid 10001 --create-home bot && mkdir -p /data/backups /app/config && chown -R bot:bot /data /app
@@ -46,6 +48,13 @@ COPY licenses/MIT-legacy.txt /usr/share/doc/momokun/licenses/MIT-legacy.txt
 COPY licenses/upstream/denoland--deno/14eea3160ae5834476aa3b9d317b8d41d991b982/LICENSE.md /usr/share/doc/momokun/licenses/Deno-2.9.4-MIT.txt
 COPY licenses/upstream/brainicism--bgutil-ytdlp-pot-provider/26475e9d3665b972c4aeb83b4dbaafcf64b88438/LICENSE /usr/share/doc/momokun/licenses/BgUtils-2.0.2-GPL-3.0.txt
 COPY licenses/runtime-supplements.json /usr/share/doc/momokun/licenses/runtime-supplements.json
+COPY licenses/upstream/npm /usr/share/doc/momokun/licenses/npm
+COPY licenses/ejs-dependencies.json /usr/share/doc/momokun/licenses/ejs-dependencies.json
+COPY licenses/deno-2.9.4-notices.tar.gz licenses/deno-2.9.4-notices.tar.gz.sha256 /usr/share/doc/momokun/licenses/
+RUN cd /usr/share/doc/momokun/licenses && \
+    sha256sum -c deno-2.9.4-notices.tar.gz.sha256 && \
+    mkdir deno-2.9.4 && tar --no-same-owner -xzf deno-2.9.4-notices.tar.gz -C deno-2.9.4 && \
+    rm deno-2.9.4-notices.tar.gz
 COPY licenses/upstream/brainicism--bgutil-ytdlp-pot-provider/26475e9d3665b972c4aeb83b4dbaafcf64b88438/source.tar.gz /usr/share/doc/momokun/licenses/BgUtils-2.0.2-source.tar.gz
 COPY scripts/verify_bgutils_source.py /usr/local/libexec/momokun/verify_bgutils_source.py
 RUN /opt/ytdlp/bin/python /usr/local/libexec/momokun/verify_bgutils_source.py \

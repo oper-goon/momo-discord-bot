@@ -86,3 +86,18 @@ collector's `--require-reviewed` flag fails when its unresolved list is nonempty
 even a zero list does not replace final image/distribution review. Keep any
 reviewed binary's matching evidence/source materials with that release rather
 than relying on the short-lived CI artifact.
+
+
+The builder also preserves generated Rust standard-library/toolchain reports.
+Deno's separate notice bundle and original Meriyah/Astring notices accompany its
+media tools. Update their pinned versions, provenance, sources and notices
+together; an image tool upgrade must not silently reuse another version's notices.
+
+For a private source-evidence run, use a reviewed feature-branch commit message
+containing `[collect-source]`. The push CI run downloads exact Debian sources,
+Python sdists and Deno dependency sources into separate seven-day private
+artifacts. Normal PR checks skip these larger downloads. Review each source index
+for gaps and retain the matching artifacts before their expiry. Public recipient
+source delivery remains part of the separately approved image release; these
+private artifacts do not publish an image, create a source offer or establish
+complete licensing compliance.

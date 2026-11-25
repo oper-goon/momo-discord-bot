@@ -5,7 +5,8 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: ci-${{ github.ref }}
+  # Keep a requested source-acquisition run alive while ordinary review changes land.
+  group: ci-${{ github.ref }}${{ contains(github.event.head_commit.message, '[collect-source]') && format('-source-{0}', github.sha) || '' }}
   cancel-in-progress: true
 jobs:
   check:
@@ -113,6 +114,21 @@ jobs:
         with:
           name: runtime-source-evidence-${{ github.run_id }}
           path: outputs/runtime-sources
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: error
+      - name: Collect exact Deno dependency evidence
+        if: always() && github.event_name == 'push' && contains(github.event.head_commit.message, '[collect-source]')
+        timeout-minutes: 45
+        run: |
+          python3 scripts/collect_deno_notices.py --cache /tmp/momo-deno-source-cache \
+            --output outputs/deno-evidence --all-rust --native-dependencies --native-sources
+      - name: Retain private Deno source and notice evidence
+        if: always() && github.event_name == 'push' && contains(github.event.head_commit.message, '[collect-source]')
+        uses: actions/upload-artifact@v4
+        with:
+          name: deno-source-evidence-${{ github.run_id }}
+          path: outputs/deno-evidence
           retention-days: 7
           compression-level: 0
           if-no-files-found: error
