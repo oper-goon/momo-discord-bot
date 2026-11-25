@@ -140,3 +140,41 @@ realfft 3.5.0 exact upstream trees contain no matching standalone notice; the
 serenity-voice-model 0.3.0 recorded commit could not be resolved in its declared
 repository. These are not silently filled using unrelated later notices.
 No final distribution clearance is asserted.
+
+## Final three gaps: second packaged-source review
+
+A second, read-only review examined every packaged file in the metadata-declared directories for `convert_case 0.4.0`, `realfft 3.5.0`, and `serenity-voice-model 0.3.0`. This included original and normalized manifests, VCS metadata, all Rust source/tests/examples/benchmarks, README text where present, dotfiles and packaged workflows. No additional software copyright/permission block was found. No external repository was queried in this review; the earlier upstream retrieval results above remain the coordinating agent's recorded evidence.
+
+### `convert_case 0.4.0`
+
+- `Cargo.toml.orig:7` explicitly declares `MIT`; `Cargo.toml.orig:11` declares `https://github.com/rutrum/convert-case`.
+- `README.md` and `src/lib.rs:3–7` document the move of the `ccase` command-line application into a separate crate. The packaged source here is the library, not that separate application. A notice for `ccase` alone cannot be assumed to be this release's notice.
+- The package contains `src/case.rs`, `src/lib.rs`, `src/words.rs`, the README and manifest/VCS metadata, but no license file or copyright/permission header. The author entry in `Cargo.toml.orig:4` supplies author metadata, not a copyright year or an entire MIT permission notice.
+- `.cargo_vcs_info.json` records commit `300d9eef9e8c970e15f324afbc3df8b6a4ebbf71` but **does not contain a `path_in_vcs` field**. Earlier table wording that treated this omitted field as a proved repository-root path should not be relied upon. The source subdirectory is not recorded by this old package metadata.
+- The supplied resolved dependency graph identifies the direct consumer as `derive_more 0.99.20`.
+
+Safe resolution: retain the checksum-verified original archive and the manifest MIT declaration as evidence; request an exact-release licensing/attribution clarification from upstream, or obtain authoritative evidence explicitly covering this release. A later library release's or the CLI crate's copyright notice is not automatically proof for 0.4.0. Replacing/upgrading the parent dependency is another possible engineering route, requiring separate compatibility checks rather than an unreviewed notice substitution.
+
+### `realfft 3.5.0`
+
+- `Cargo.toml.orig:7` declares `MIT`; line 8 identifies `https://github.com/HEnquist/realfft`.
+- `README.md:184` explicitly states `License: MIT`. `src/lib.rs:1` embeds this README with `include_str!`, so the MIT declaration is also incorporated into the crate's documentation. This is additional affirmative license-label evidence, but it is not a full copyright/permission notice.
+- No additional notice appears in the library, `examples/concurrency.rs`, `benches/realfft.rs`, or the two packaged GitHub workflows. No standalone license is packaged. The manifest author identity does not establish a copyright year.
+- `.cargo_vcs_info.json` records commit `d0d4eee0525fd27c96c8a046d6d107acd5ed84a6` and explicitly records `path_in_vcs` as the empty string. Unlike the convert_case metadata, this is a recorded repository-root package path.
+- The supplied resolved graph identifies the direct consumer as `rubato 0.16.2`.
+
+Safe resolution: preserve the original README declaration and source archive, and seek exact-release notice clarification from upstream. Do not copy RustFFT's notice just because RealFFT wraps RustFFT: they are separate packages. Do not manufacture a `Copyright` line from the manifest author and release date. A separately supplied full MIT license text can be identified as standard license terms, but must not be mislabeled as a recovered upstream release notice or used to conceal the attribution uncertainty.
+
+### `serenity-voice-model 0.3.0`
+
+- `Cargo.toml.orig:13` declares `ISC`. Lines 9–11 explicitly use Serenity's documentation, homepage and `https://github.com/serenity-rs/serenity.git` repository addresses; these fields are present directly in the published original manifest, not merely synthesized by this project's dependency metadata.
+- `Cargo.toml.orig:7` restricts the package include list to `src/**/*.rs` and `Cargo.toml`; the README declaration is commented out at line 6. Thus an upstream root-level license/notice would not be included by that stated source include list. This explains a packaging omission mechanism, but does **not** prove which upstream license file existed or its exact contents.
+- All packaged Rust files, including `src/event/tests.rs`, lack a located software copyright/permission notice. The author entry at `Cargo.toml.orig:4` is not substituted for an ISC copyright line.
+- `.cargo_vcs_info.json` explicitly records a root package path (`path_in_vcs: ""`) at commit `cef32674d5ad6c539b1ee2ff9dcda39b6d71e18f`. The earlier retrieval could not resolve that commit in the declared Serenity repository. Local package evidence contains no alternative repository address identifying the actual origin of this commit. A similarly named separate repository, a different Serenity branch, or a later Serenity license is therefore not established provenance for this release by the evidence available here.
+- The supplied resolved graph identifies the direct consumer as `songbird 0.6.1`.
+
+Safe resolution: have the upstream maintainer identify the repository/ref corresponding to this exact published crate and confirm which license/notice covers it, then retain the response and any retrieved file's immutable revision/path/hash. Alternatively, select a compatible release with verified provenance after the necessary voice integration checks. Do not describe the unreachable recorded commit as proof that the package is unlicensed or malicious; it is a source-provenance gap. Do not relabel a different Serenity release's ISC notice as the missing exact-release notice.
+
+### Remaining uncertainty and release decision
+
+All three packages affirmatively declare permissive license identifiers, and RealFFT repeats its identifier in embedded documentation. The outstanding question is the authoritative exact-release copyright/permission notice or confirmation that no additional upstream notice exists; for serenity-voice-model there is also an unresolved repository/commit binding. Packaged author metadata, a guessed year, a current branch's unrelated notice, and a sibling project's license do not resolve those questions. No new notice recovery or distribution clearance resulted from this second review. Keep these three exceptions visible until the release owner has reviewed authoritative clarification or a validated dependency replacement.

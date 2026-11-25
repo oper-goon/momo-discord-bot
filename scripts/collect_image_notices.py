@@ -18,6 +18,7 @@ import sys
 
 NOTICE = re.compile(r"^(?:licen[cs]e|copying|copyright|notice|authors)(?:[._-].*)?$", re.I)
 TOOLS = {
+    "ffmpeg_license": ["ffmpeg", "-L"],
     "ffmpeg": ["ffmpeg", "-version"],
     "ffmpeg_build": ["ffmpeg", "-buildconf"],
     "ffprobe": ["ffprobe", "-version"],
@@ -161,6 +162,19 @@ def collect_python(output: Path, paths: list[str]) -> dict:
     return {"status": "ok", "packages": sorted(packages, key=lambda p: (p["name"], p["version"], json.dumps(p, sort_keys=True)))}
 
 
+def collect_common_licenses(output: Path, source: Path = Path("/usr/share/common-licenses")) -> dict:
+    """Preserve full texts referenced by Debian copyright files."""
+    notices, issues = [], []
+    if not source.is_dir():
+        return {"notices": [], "issues": ["common-license directory unavailable"]}
+    for entry in sorted(source.iterdir()):
+        try:
+            notices.append(copy_notice(entry, source, Path("common-licenses") / entry.name, output))
+        except (OSError, ValueError) as error:
+            issues.append({"file": entry.name, "reason": type(error).__name__})
+    return {"notices": notices, "issues": issues}
+
+
 def collect(output: Path, paths: list[str]) -> dict:
     if output.exists() and (output.is_symlink() or not output.is_dir() or any(output.iterdir())):
         raise ValueError("output must be a new or empty real directory")
@@ -168,6 +182,7 @@ def collect(output: Path, paths: list[str]) -> dict:
     inventory = {"schema_version": 1, "legal_clearance": False,
                  "scope": "installed Debian and discovered Python distributions in this running image",
                  "debian": collect_dpkg(output), "python": collect_python(output, paths),
+                 "common_licenses": collect_common_licenses(output),
                  "tools": {name: run(command) for name, command in sorted(TOOLS.items())},
                  "review_required": [
                      "Missing notices and package metadata require review; matching files do not prove compliance.",

@@ -44,6 +44,13 @@ COPY licenses/MIT-legacy.txt /usr/share/doc/momokun/licenses/MIT-legacy.txt
 COPY licenses/upstream/denoland--deno/14eea3160ae5834476aa3b9d317b8d41d991b982/LICENSE.md /usr/share/doc/momokun/licenses/Deno-2.9.4-MIT.txt
 COPY licenses/upstream/brainicism--bgutil-ytdlp-pot-provider/26475e9d3665b972c4aeb83b4dbaafcf64b88438/LICENSE /usr/share/doc/momokun/licenses/BgUtils-2.0.2-GPL-3.0.txt
 COPY licenses/runtime-supplements.json /usr/share/doc/momokun/licenses/runtime-supplements.json
+COPY licenses/upstream/brainicism--bgutil-ytdlp-pot-provider/26475e9d3665b972c4aeb83b4dbaafcf64b88438/source.tar.gz /usr/share/doc/momokun/licenses/BgUtils-2.0.2-source.tar.gz
+COPY scripts/verify_bgutils_source.py /usr/local/libexec/momokun/verify_bgutils_source.py
+RUN /opt/ytdlp/bin/python /usr/local/libexec/momokun/verify_bgutils_source.py \
+    --archive /usr/share/doc/momokun/licenses/BgUtils-2.0.2-source.tar.gz \
+    --sha256 a8144eab6a4f38f320063688531f461afe18c0a58be2dd3152b780f4851e954d \
+    --installed /opt/ytdlp --version "${BGUTIL_PROVIDER_VERSION}" \
+    --output /usr/share/doc/momokun/licenses/BgUtils-source-verification.json
 COPY licenses/MPL-2.0.txt /usr/share/doc/momokun/bundle/licenses/MPL-2.0.txt
 COPY --from=builder /build-notices /usr/share/doc/momokun/bundle
 COPY vendor/davey/LICENSE /usr/share/doc/momokun/licenses/davey-MIT.txt

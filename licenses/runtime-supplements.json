@@ -17,6 +17,12 @@
     "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
     "url": "https://github.com/brainicism/bgutil-ytdlp-pot-provider/blob/26475e9d3665b972c4aeb83b4dbaafcf64b88438/LICENSE",
     "scope": "Root license text only; embedded third-party/source obligations require separate review.",
-    "image_file": "licenses/BgUtils-2.0.2-GPL-3.0.txt"
+    "image_file": "licenses/BgUtils-2.0.2-GPL-3.0.txt",
+    "source_archive": {
+      "file": "upstream/brainicism--bgutil-ytdlp-pot-provider/26475e9d3665b972c4aeb83b4dbaafcf64b88438/source.tar.gz",
+      "sha256": "a8144eab6a4f38f320063688531f461afe18c0a58be2dd3152b780f4851e954d",
+      "url": "https://codeload.github.com/brainicism/bgutil-ytdlp-pot-provider/tar.gz/26475e9d3665b972c4aeb83b4dbaafcf64b88438",
+      "scope": "Unmodified upstream repository archive; plugin reports version 2.0.2. Installed wheel equivalence and complete corresponding-source obligations are not yet verified."
+    }
   }
 ]

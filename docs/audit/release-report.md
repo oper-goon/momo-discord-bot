@@ -359,3 +359,41 @@ offline startup. Python ran 23 tests with one Windows symlink skip; strict
 MkDocs and 2,899 internal links/assets passed. No dependency or registry tree
 change was introduced. Hosted validation of this latest source commit follows
 the private branch push.
+
+
+## Distribution evidence follow-up — 2026-11-25
+
+The earlier source-download block is superseded: the exact BgUtils upstream
+commit archive was downloaded successfully without executing its contents. The
+unmodified archive is retained under `licenses/upstream/brainicism--bgutil-ytdlp-pot-provider/`
+with provenance and SHA-256 in `licenses/runtime-supplements.json`. Its plugin
+version is 2.0.2. Archive paths and member types were inspected without extraction.
+This establishes retained upstream source, not equivalence to the installed wheel
+or complete corresponding-source compliance for the image. Deno embedded notices,
+Rust standard-library notices, and three Rust package notice/provenance gaps remain.
+
+The completed image inventory is mapped to exact Debian source package versions in
+`docs/audit/system-source-materials.md`. Those source packages have not yet been
+collected. Public image publishing remains blocked on distribution review.
+
+Commit `c1c2a33` passed Linux CI run 45512240211, including the Docker build,
+and documentation run 45512240295. The song-search fix has not been deployed to
+the production bot. The original bot build remains restored after the voice test.
+
+
+### Plugin source equivalence and image notice follow-up
+
+A separately downloaded PyPI BgUtils 2.0.2 wheel was inspected without importing
+or executing plugin code: all three installed Python files match the retained
+upstream archive byte for byte. A new build-time verifier checks the archive
+checksum, version, bounded archive members, complete Python file sets and bytes.
+The Dockerfile retains the archive and verification result in its notice folder.
+It fails the build if that comparison fails. This is limited source equivalence,
+not a legal-clearance conclusion for the complete image.
+
+The image notice collector now preserves Debian common-license texts referenced
+by package copyright files and records `ffmpeg -L`. Local Python regression
+tests cover source mismatches, checksum failures, traversal and common-license
+retention. The changed Dockerfile has not yet passed a new Linux build; no local
+Docker engine is available. Deno embedded notices, Rust standard-library notices,
+the three Rust notice gaps, and Debian/Python corresponding-source work remain.

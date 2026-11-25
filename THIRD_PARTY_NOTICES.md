@@ -62,8 +62,12 @@ Exact-release supplements also retain Deno 2.9.4's MIT notice at upstream commit
 `14eea3160ae5834476aa3b9d317b8d41d991b982` and BgUtils 2.0.2's GPL 3.0 text at
 `26475e9d3665b972c4aeb83b4dbaafcf64b88438`. Their original files are under
 `licenses/upstream/` and copied into the image notice directory. BgUtils source
-distribution remains outstanding; the proposed exact-source download was
-declined. Do not assume a GPL license-text copy alone completes its obligations.
+distribution remains outstanding. The exact upstream source archive is now
+retained beside its license with SHA-256 provenance in
+`licenses/runtime-supplements.json`. All three plugin Python files in the
+PyPI 2.0.2 wheel match the retained upstream source byte for byte. The Docker
+build now verifies this comparison and retains the archive and its result.
+These build changes still require Linux CI validation. Do not assume a GPL license-text copy alone completes its obligations.
 Deno's root MIT notice likewise does not establish that all its embedded
 third-party notices have been collected. Debian's installed FFmpeg build has
 GPL enabled; preserve its package notices and address corresponding source

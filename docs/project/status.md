@@ -69,3 +69,9 @@ operator-observed YouTube audio, controls, active shutdown and post-restart
 audio. Restored backup startup and post-rollback readiness passed. A Windows
 archive line-ending issue was caught on the disposable copy and corrected
 before any switch. The text-search follow-up is separate from that tested build.
+
+
+The search correction passed Linux CI and the Docker build at commit `c1c2a33`.
+It has not been deployed to the live bot. The exact BgUtils upstream source
+archive is now retained with checksum provenance; installed-wheel equivalence
+and the remaining runtime distribution obligations still require review.

@@ -92,5 +92,19 @@ class NoticeCollectionTests(unittest.TestCase):
             self.assertEqual((root / "existing").read_text(), "retain")
 
 
+class CommonLicenseTests(unittest.TestCase):
+    def test_referenced_license_texts_are_preserved(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "common"
+            source.mkdir()
+            text = b"Complete upstream license\n"
+            (source / "GPL-3").write_bytes(text)
+            result = collector.collect_common_licenses(root / "output", source)
+            self.assertEqual(result["issues"], [])
+            self.assertEqual((root / "output/common-licenses/GPL-3").read_bytes(), text)
+            self.assertEqual(len(result["notices"]), 1)
+
+
 if __name__ == "__main__":
     unittest.main()
