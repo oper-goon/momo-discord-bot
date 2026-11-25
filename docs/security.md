@@ -95,6 +95,9 @@ files are disabled. Playback begins after bounded header probing and resumes
 interrupted HTTP streams with byte-range requests when the source supports it;
 files above 64 MiB remain unsupported.
 
+yt-dlp prints an allowlist of music metadata fields as JSON records, excluding
+unused caption and format inventories. The total output remains bounded to
+2 MiB, and records are checked against the requested entry limit.
 yt-dlp runs without a shell or operator configuration, with bounded JSON,
 diagnostics, playlist size, and time. Supported extractor sites are YouTube,
 SoundCloud, and Bandcamp. Resolution of arbitrary website extractors is not
